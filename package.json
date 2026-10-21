@@ -1,0 +1,11 @@
+{
+  "name": "terra-storm",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/engine.cjs && node tests/balance.cjs",
+    "test:ui": "node tests/ui.cjs",
+    "test:visual": "node tests/visual.cjs"
+  },
+  "devDependencies": { "playwright": "1.56.1" }
+}
