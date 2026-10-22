@@ -59,7 +59,10 @@ levels.append(build('Вершина империи','Азия • финал',gr
  ('India',['India','Nepal','Bangladesh','Bhutan']),('China',['China']),('Mongolia',['Mongolia']),('Myanmar',['Myanmar']),
  ('Thailand',['Thailand','Cambodia','Laos','Vietnam']),('South Korea',['South Korea','North Korea'])
 ]),{'India':1,'China':2,'Saudi Arabia':3,'Kazakhstan':4},5))
-levels[4]['enemyRate']=1.05
+# Normal campaigns compensate for three independent opponents and gradual departures.
+for li in (3,4):
+ levels[li]['enemyRate']=.8
+ levels[li]['aiInterval']*=1.25
 # Distinct tactical buildings appear only after the controls have been learned.
 for li,name,kind in [(2,'Germany','factory'),(3,'Democratic Republic of the Congo','factory'),(3,'Egypt','turret'),(4,'Iran','turret'),(4,'China','factory'),(4,'Afghanistan','fort')]:
  next(r for r in levels[li]['regions'] if r['name']==name)['kind']=kind

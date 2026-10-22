@@ -4,8 +4,8 @@ function commandPlayer(b){
  const own=b.regions.filter(r=>r.owner===1),others=b.regions.filter(r=>r.owner!==1);if(!others.length)return;
  // Attack from the nearest base, combining selected garrisons when necessary.
  let best=null,score=-Infinity;
- for(const t of others){const sources=own.filter(s=>s.units>4).sort((a,c)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(c.x-t.x,c.y-t.y));let sum=0,selected=[];
-  for(const s of sources){sum+=Math.floor(s.units);selected.push(s.id);const d=Math.hypot(s.x-t.x,s.y-t.y);if(sum>(t.units+4)*(t.kind==='fort'?1.45:1)){const v=(t.owner===0?15:8)-d*.02+(sum-t.units)*.05-selected.length*2;if(v>score){score=v;best={selected:[...selected],id:t.id};}break;}}
+ for(const t of others){const incoming=b.units.filter(u=>u.owner===1&&u.to===t.id).length+b.waves.filter(w=>w.owner===1&&w.to===t.id).reduce((n,w)=>n+w.left,0);if(incoming>t.units+8)continue;const sources=own.filter(s=>b.available(s.id)>4).sort((a,c)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(c.x-t.x,c.y-t.y));let sum=0,selected=[];
+  for(const s of sources){sum+=b.available(s.id);selected.push(s.id);const d=Math.hypot(s.x-t.x,s.y-t.y);if(sum>(t.units+4)*(t.kind==='fort'?1.45:1)){const v=(t.owner===0?15:8)-d*.02+(sum-t.units)*.05-selected.length*2;if(v>score){score=v;best={selected:[...selected],id:t.id};}break;}}
  }
  if(best)b.command(best.selected,best.id);
 }

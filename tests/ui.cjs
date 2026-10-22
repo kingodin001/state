@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),fs=require(
 const {Economy}=require('../app/src/main/assets/game/collection.js');const url='file://'+path.resolve(__dirname,'../app/src/main/assets/game/index.html');
 const launch={headless:true,args:['--no-sandbox','--disable-dev-shm-usage']};if(process.env.CHROMIUM_PATH)launch.executablePath=process.env.CHROMIUM_PATH;
 const snapshot=p=>p.evaluate(()=>terraSnapshot());
-async function points(p,level){return p.evaluate(index=>{const m=TERRA_LEVELS[index],W=innerWidth,H=innerHeight,s=Math.min((W-36)/m.width,(H-314)/m.height)*.98,x=18+(W-36-m.width*s)/2,y=157+(H-314-m.height*s)/2;return m.regions.map(r=>({id:r.id,name:r.name,x:x+r.center[0]*s,y:y+r.center[1]*s,owner:r.owner}));},level);}
+async function points(p,level){return p.evaluate(index=>{const m=TERRA_LEVELS[index],v=terraSnapshot().camera,s=v.s,x=v.x,y=v.y;return m.regions.map(r=>({id:r.id,name:r.name,x:x+r.center[0]*s,y:y+r.center[1]*s,owner:r.owner}));},level);}
 (async()=>{
  const browser=await chromium.launch(launch),errors=[];
  for(const size of (process.env.TERRA_DENSE_ONLY?[]:[{width:390,height:844},{width:360,height:640},{width:412,height:915}])){
@@ -16,7 +16,7 @@ async function points(p,level){return p.evaluate(index=>{const m=TERRA_LEVELS[in
   await p.reload();await p.waitForTimeout(1300);assert.equal((await snapshot(p)).progress.collection.equipped.fighter,'f1');assert.equal((await snapshot(p)).progress.collection.chests.basic,0);
   await p.locator('#gift').click();await p.locator('#claim-gift').click();assert(await p.locator('#claim-gift').isDisabled());await p.locator('#close-modal').click();
   await p.locator('[data-upgrade="1"]').click();assert.equal((await snapshot(p)).progress.upgrades[1],1);
-  await p.locator('#play').click();const pts=await points(p,0),a=pts.find(r=>r.name==='California'),b=pts.find(r=>r.name==='Nevada');await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:8});await p.mouse.up();await p.waitForTimeout(1700);assert((await snapshot(p)).battle.stats.sent>=21);assert.equal((await snapshot(p)).battle.regions[1].owner,1);
+  await p.locator('#play').click();const pts=await points(p,0),a=pts.find(r=>r.name==='California'),b=pts.find(r=>r.name==='Nevada');await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:8});await p.mouse.up();await p.waitForFunction(()=>terraSnapshot().battle.regions[1].owner===1,{},{timeout:8000});assert((await snapshot(p)).battle.stats.sent>=21);assert.equal((await snapshot(p)).battle.regions[1].owner,1);
   await p.locator('#pause').click();const t=(await snapshot(p)).battle.time;await p.waitForTimeout(300);assert.equal((await snapshot(p)).battle.time,t);await p.locator('#restart').click();assert.equal((await snapshot(p)).battle.stats.sent,0);assert.equal((await snapshot(p)).battle.regions[1].owner,0);
   await p.locator('#leader-skill').click();const before=(await snapshot(p)).battle.regions[0].units;await p.mouse.click(a.x,a.y);assert((await snapshot(p)).battle.regions[0].units>=before+21.9);assert.equal((await snapshot(p)).battle.leaderCharges,1);
   await p.locator('#pause').click();await p.locator('#back-menu').click();assert.equal((await snapshot(p)).mode,'menu');

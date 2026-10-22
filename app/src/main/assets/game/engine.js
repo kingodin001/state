@@ -1,6 +1,7 @@
 /* Terra Storm simulation. Independent of rendering, storage and Android. */
 (function(root){
 'use strict';
+const field=root.TerraField||(typeof require!=='undefined'?require('./field.js'):null),timing=field.TIMING;
 class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math.imul(this.state,1664525)+1013904223)>>>0;return this.state/4294967296;} }
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
@@ -11,18 +12,20 @@ class Battle {
   this.production=1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};for(const f of this.factions)this.aiTimers[f]=level.aiInterval+this.rng.next()*1.2;
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=level.seed===1&&!options.skipTutorial;
-  this.firstCommand=false;this.lastCollisionCheck=0;
+  this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
  }
  emit(type,data={}){this.events.push({type,...data});}
  drainEvents(){return this.events.splice(0);}
+ reserved(id){return this.waves.filter(w=>w.from===id&&w.owner===this.regions[id].owner).reduce((n,w)=>n+w.left,0);}
+ available(id){return Math.max(0,Math.floor(this.regions[id].units)-this.reserved(id));}
  command(sources,target,fraction=1,owner=1){
   if(this.result||this.paused||!this.regions[target])return 0;
   let sent=0;const dest=this.regions[target];
   for(const id of [...new Set(sources)]){
    const s=this.regions[id];if(!s||s.id===target||s.owner!==owner)continue;
-   const count=Math.floor(s.units*Math.min(1,Math.max(.05,fraction)));if(count<1)continue;
-   s.units-=count;s.pulse=.3;
-   this.waves.push({from:s.id,to:target,owner,count,left:count,clock:0,sequence:0});sent+=count;
+   const count=Math.floor(this.available(id)*Math.min(1,Math.max(.05,fraction)));if(count<1)continue;
+   s.pulse=.3;
+   this.waves.push({from:s.id,to:target,owner,count,left:count,sequence:0});sent+=count;
   }
   if(sent&&owner===1){this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
   return sent;
@@ -45,22 +48,22 @@ class Battle {
   const enemies=this.regions.filter(r=>r.owner!==owner);if(!enemies.length)return;
   let best=null,bestScore=-Infinity;
   for(const s of own){
-   if(s.units<5)continue;
+   const available=this.available(s.id);if(available<5)continue;
    for(const t of enemies){
     const d=distance(s,t);const incoming=this.units.filter(u=>u.owner===owner&&u.to===t.id).length+this.waves.filter(w=>w.owner===owner&&w.to===t.id).reduce((sum,w)=>sum+w.left,0);
-    const needed=t.units+(t.owner?d/220*.8:0)+2-incoming;
+    const needed=t.units+(t.owner?d/timing.marchSpeed*.8:0)+2-incoming;
     if(needed<0)continue;
-    const score=(s.units-needed)*.6-d*.025+(t.owner===0?8:0)+(t.kind==='factory'?7:0)+this.rng.next()*4;
+    const score=(available-needed)*.6-d*.025+(t.owner===0?8:0)+(t.kind==='factory'?7:0)+this.rng.next()*4;
     if(score>bestScore){bestScore=score;best={s,t,needed};}
    }
   }
-  if(best&&(best.s.units>best.needed*1.13||best.s.units>=this.level.cap*.9)){
-   this.command([best.s.id],best.t.id,best.s.units>25?.85:1,owner);return;
+  if(best&&(this.available(best.s.id)>best.needed*1.13||this.available(best.s.id)>=this.level.cap*.9)){
+   this.command([best.s.id],best.t.id,this.available(best.s.id)>25?.85:1,owner);return;
   }
   // Interior garrisons reinforce the closest threatened front.
   if(own.length>1){
    const fronts=own.map(r=>({r,d:Math.min(...enemies.map(t=>distance(r,t)))})).sort((a,b)=>a.d-b.d);
-   const rear=own.filter(r=>r.id!==fronts[0].r.id&&r.units>15).sort((a,b)=>b.units-a.units)[0];
+   const rear=own.filter(r=>r.id!==fronts[0].r.id&&this.available(r.id)>15).sort((a,b)=>this.available(b.id)-this.available(a.id))[0];
    if(rear)this.command([rear.id],fronts[0].r.id,.7,owner);
   }
  }
@@ -97,11 +100,20 @@ class Battle {
     }
    }
   }
-  for(const wave of this.waves){
-   wave.clock+=dt;while(wave.left>0&&wave.clock>=.038){
-    wave.clock-=.038;const a=this.regions[wave.from],b=this.regions[wave.to];const d=Math.max(1,distance(a,b));const nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
-    const offset=((wave.sequence%5)-2)*6+(this.rng.next()-.5)*3;wave.sequence++;
-    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:a.x+nx*offset,y:a.y+ny*offset,tx:b.x,ty:b.y,speed:(205+this.rng.next()*25)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
+  // Reserved troops stay in the garrison, defend it, and leave one at a time.
+  // A single departure clock per base prevents repeated orders multiplying its throughput.
+  this.waves=this.waves.filter(w=>w.left>0&&this.regions[w.from].owner===w.owner);
+  for(const a of this.regions){
+   let wave=this.waves.find(w=>w.from===a.id&&w.left>0);
+   if(!wave){this.departureClocks[a.id]=0;continue;}
+   this.departureClocks[a.id]=(this.departureClocks[a.id]||0)+dt;
+   while(wave&&this.departureClocks[a.id]>=timing.departureInterval){
+    this.departureClocks[a.id]-=timing.departureInterval;
+    if(a.units<1){for(const w of this.waves)if(w.from===a.id)w.left=0;break;}
+    const b=this.regions[wave.to],d=Math.max(1,distance(a,b)),nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
+    const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;
+    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:timing.marchSpeed*(1+(this.rng.next()-.5)*timing.marchVariation)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
+    wave=this.waves.find(w=>w.from===a.id&&w.left>0);
    }
   }
   this.waves=this.waves.filter(w=>w.left>0);
@@ -129,7 +141,7 @@ class Battle {
   if(!owners.has(1)){this.result='lose';this.emit('finish',{result:'lose'});}
   else if(owners.size===1&&this.regions.every(r=>r.owner===1)){this.result='win';this.emit('finish',{result:'win'});}
  }
- totals(){const a=[0,0,0,0,0];for(const r of this.regions)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;for(const w of this.waves)a[w.owner]+=w.left;return a;}
+  totals(){const a=[0,0,0,0,0];for(const r of this.regions)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}
  territoryShare(){const a=[0,0,0,0,0];for(const r of this.regions)a[r.owner]++;return a;}
 }
 root.TerraBattle=Battle;root.TerraRandom=Random;if(typeof module!=='undefined')module.exports={Battle,Random,distance};

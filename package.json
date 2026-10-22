@@ -1,11 +1,13 @@
 {
   "name": "terra-storm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/collection.cjs && node tests/balance.cjs",
-    "test:ui": "node tests/ui.cjs",
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs && node tests/balance.cjs",
+    "test:ui": "node tests/ui.cjs && node tests/battle-ui.cjs && node tests/victory.cjs",
     "test:visual": "node tests/visual.cjs"
   },
-  "devDependencies": { "playwright": "1.56.1" }
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
 }
