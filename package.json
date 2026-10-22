@@ -1,9 +1,9 @@
 {
   "name": "terra-storm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs && node tests/balance.cjs",
+    "test": "node --test tests/engine.cjs tests/collection.cjs && node tests/balance.cjs",
     "test:ui": "node tests/ui.cjs",
     "test:visual": "node tests/visual.cjs"
   },

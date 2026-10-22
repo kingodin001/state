@@ -5,8 +5,8 @@ class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
-  this.level=level;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
-  this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0}));
+  this.level=level;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.leaderCharges=2;this.leaderCooldown=0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
+  this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0}));
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
   this.production=1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};for(const f of this.factions)this.aiTimers[f]=level.aiInterval+this.rng.next()*1.2;
@@ -33,6 +33,12 @@ class Battle {
   else if(type==='shield'){r.shield=14;this.cooldowns[type]=35;this.emit('shield',{id:target});}
   else return false;
   this.skillCharges[type]--;return true;
+ }
+ activateLeader(target){
+  const r=this.regions[target];if(this.result||this.paused||!r||this.leaderCharges<=0||this.leaderCooldown>0)return false;
+  if(this.leaderType===1){if(r.owner===0||r.owner===1)return false;r.frozen=8;this.emit('freeze',{id:target});}
+  else{if(r.owner!==1)return false;if(this.leaderType===0){r.units+=22;this.emit('reinforce',{id:target});}else if(this.leaderType===2){r.shield=12;this.emit('shield',{id:target});}else{this.productionBoost=10;this.emit('boost',{id:target});}}
+  this.leaderCharges--;this.leaderCooldown=24;return true;
  }
  ai(owner){
   const own=this.regions.filter(r=>r.owner===owner);if(!own.length)return;
@@ -74,14 +80,15 @@ class Battle {
   let left=Math.min(Math.max(dt,0),.5);while(left>1e-7){const d=Math.min(left,1/40);this.tick(d);left-=d;if(this.result)break;}
  }
  tick(dt){
-  this.time+=dt;
+  this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
-   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);
-   if(r.owner&&r.units<this.level.cap){
-    let rate=r.owner===1?this.production:this.level.enemyRate;
+   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);
+   const cap=r.owner===1?this.playerLimit:this.level.cap;
+   if(r.owner&&r.units<cap&&r.frozen<=0){
+    let rate=r.owner===1?this.production*(this.productionBoost>0?1.8:1):this.level.enemyRate;
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
-    r.units=Math.min(this.level.cap,r.units+dt*rate*(r.kind==='factory'?1.6:1));
+    r.units=Math.min(cap,r.units+dt*rate*(r.kind==='factory'?1.6:1));
    }
    if(r.kind==='turret'&&r.owner){
     r.shot-=dt;if(r.shot<=0){
@@ -94,7 +101,7 @@ class Battle {
    wave.clock+=dt;while(wave.left>0&&wave.clock>=.038){
     wave.clock-=.038;const a=this.regions[wave.from],b=this.regions[wave.to];const d=Math.max(1,distance(a,b));const nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
     const offset=((wave.sequence%5)-2)*6+(this.rng.next()-.5)*3;wave.sequence++;
-    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:a.x+nx*offset,y:a.y+ny*offset,tx:b.x,ty:b.y,speed:205+this.rng.next()*25,dead:false});wave.left--;
+    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:a.x+nx*offset,y:a.y+ny*offset,tx:b.x,ty:b.y,speed:(205+this.rng.next()*25)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
    }
   }
   this.waves=this.waves.filter(w=>w.left>0);

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pro.vymi.terrastorm">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
-    <application android:allowBackup="true" android:label="Терра Шторм" android:icon="@drawable/ic_launcher" android:roundIcon="@drawable/ic_launcher" android:theme="@style/AppTheme" android:supportsRtl="true" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
+    <application android:allowBackup="true" android:label="Терра Шторм" android:icon="@drawable/terra_icon" android:roundIcon="@drawable/terra_icon" android:theme="@style/AppTheme" android:supportsRtl="true" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
         <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|keyboardHidden|uiMode" >
             <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
         </activity>

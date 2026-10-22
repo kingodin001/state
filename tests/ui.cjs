@@ -1,46 +1,36 @@
-const assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs');
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
-const url='file://'+path.resolve(__dirname,'../app/src/main/assets/game/index.html');
-const args={headless:true,args:['--no-sandbox','--disable-dev-shm-usage']};if(process.env.CHROMIUM_PATH)args.executablePath=process.env.CHROMIUM_PATH;
+const assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs');const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const {Economy}=require('../app/src/main/assets/game/collection.js');const url='file://'+path.resolve(__dirname,'../app/src/main/assets/game/index.html');
+const launch={headless:true,args:['--no-sandbox','--disable-dev-shm-usage']};if(process.env.CHROMIUM_PATH)launch.executablePath=process.env.CHROMIUM_PATH;
+const snapshot=p=>p.evaluate(()=>terraSnapshot());
+async function points(p,level){return p.evaluate(index=>{const m=TERRA_LEVELS[index],W=innerWidth,H=innerHeight,s=Math.min((W-36)/m.width,(H-314)/m.height)*.98,x=18+(W-36-m.width*s)/2,y=157+(H-314-m.height*s)/2;return m.regions.map(r=>({id:r.id,name:r.name,x:x+r.center[0]*s,y:y+r.center[1]*s,owner:r.owner}));},level);}
 (async()=>{
- const browser=await chromium.launch(args);const errors=[];
+ const browser=await chromium.launch(launch),errors=[];
  for(const size of (process.env.TERRA_DENSE_ONLY?[]:[{width:390,height:844},{width:360,height:640},{width:412,height:915}])){
-  const c=await browser.newContext({viewport:size,deviceScaleFactor:1,isMobile:true,hasTouch:true});const p=await c.newPage();p.on('pageerror',e=>errors.push(String(e)));await p.goto(url);await p.waitForTimeout(1400);
-  assert.equal((await p.evaluate(()=>terraSnapshot())).mode,'menu');
-  for(const id of ['play','nav-world','nav-army','nav-tasks','gift','leader']){const b=await p.locator('#'+id).boundingBox();assert(b&&b.x>=0&&b.y>=0&&b.x+b.width<=size.width+1&&b.y+b.height<=size.height+1,id+' is on screen');}
-  await p.locator('#gift').click();await p.locator('#claim-gift').click();assert.equal((await p.evaluate(()=>terraSnapshot())).progress.coins,50);assert(await p.locator('#claim-gift').isDisabled());await p.locator('#close-modal').click();
-  await p.locator('[data-upgrade="1"]').click();assert.equal((await p.evaluate(()=>terraSnapshot())).progress.upgrades[1],1);assert.equal((await p.evaluate(()=>terraSnapshot())).progress.coins,0);
-  await p.reload();await p.waitForTimeout(1400);assert.equal((await p.evaluate(()=>terraSnapshot())).progress.upgrades[1],1);
-  await p.locator('#nav-army').click();await p.locator('[data-tab="fighter"]').click();await p.locator('[data-skin="1"]').click();assert.equal((await p.evaluate(()=>terraSnapshot())).progress.fighter,0);await p.locator('#close-modal').click();
-  await p.locator('#play').click();await p.waitForTimeout(100);
-  const points=await p.evaluate(()=>{
-   const map=TERRA_LEVELS[0],W=innerWidth,H=innerHeight,left=18,right=W-18,top=157,bottom=H-157,s=Math.min((right-left)/map.width,(bottom-top)/map.height)*.98,x=left+(right-left-map.width*s)/2,y=top+(bottom-top-map.height*s)/2;
-   return map.regions.map(r=>({name:r.name,x:x+r.center[0]*s,y:y+r.center[1]*s}));
-  });
-  const a=points.find(r=>r.name==='California'),b=points.find(r=>r.name==='Nevada');
-  await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:8});await p.mouse.up();await p.waitForTimeout(1700);
-  let snap=await p.evaluate(()=>terraSnapshot());assert(snap.battle.stats.sent>=18,'Drag sends troops');assert.equal(snap.battle.regions[1].owner,1,'Nevada captured by touch order');
-  await p.locator('#pause').click();const old=(await p.evaluate(()=>terraSnapshot())).battle.time;await p.waitForTimeout(400);assert.equal((await p.evaluate(()=>terraSnapshot())).battle.time,old);
-  await p.locator('#restart').click();snap=await p.evaluate(()=>terraSnapshot());assert.equal(snap.battle.stats.sent,0);assert.equal(snap.battle.regions[1].owner,0);assert.equal(snap.battle.units,0);
-  await p.locator('#pause').click();await p.locator('#back-menu').click();assert.equal((await p.evaluate(()=>terraSnapshot())).mode,'menu');
-  await p.evaluate(()=>{const now=Date.now();document.dispatchEvent(new Event('terraPause'));Date.now=()=>now+3600000;document.dispatchEvent(new Event('terraResume'));});
-  assert.equal((await p.evaluate(()=>terraSnapshot())).progress.coins,100,'Background earnings are credited once');
-  await p.evaluate(()=>document.dispatchEvent(new Event('terraResume')));assert.equal((await p.evaluate(()=>terraSnapshot())).progress.coins,100);
-  console.log('PASS mobile UI',size.width+'x'+size.height);await c.close();
+  const c=await browser.newContext({viewport:size,deviceScaleFactor:1,isMobile:true,hasTouch:true}),p=await c.newPage();p.on('pageerror',e=>errors.push(String(e)));await p.goto(url);await p.waitForTimeout(1400);
+  const initial=await snapshot(p);assert.equal(initial.progress.coins,250);assert.equal(initial.progress.gems,120);assert.equal(initial.progress.collection.cards.b0.owned,true);
+  for(const id of ['play','nav-store','nav-army','nav-world','nav-albums','nav-events','wallet-coins','wallet-gems','wallet-supply']){const b=await p.locator('#'+id).boundingBox();assert(b&&b.x>=0&&b.y>=0&&b.x+b.width<=size.width+1&&b.y+b.height<=size.height+1,id+' is on screen');}
+  await p.locator('#nav-store').click();assert.equal((await snapshot(p)).screen,'store');await p.locator('[data-shop-gift]').click();assert.equal((await snapshot(p)).progress.coins,330);assert.equal((await snapshot(p)).progress.gems,128);assert(await p.locator('[data-shop-gift]').isDisabled());
+  await p.locator('[data-chest-open="basic"]').click();await p.locator('[data-reveal-chest="basic"]').click();assert.equal((await snapshot(p)).progress.collection.chests.basic,0);assert((await snapshot(p)).progress.coins>330);await p.locator('[data-loot-close]').click();
+  const cash=(await snapshot(p)).progress.coins,gems=(await snapshot(p)).progress.gems;await p.locator('[data-exchange="coins:0"]').click();assert.equal((await snapshot(p)).progress.coins,cash+500);assert.equal((await snapshot(p)).progress.gems,gems-20);
+  await p.locator('#nav-army').click();await p.locator('[data-category="fighter"]').click();await p.locator('[data-card="f1"]').click();await p.locator('[data-buy-card="f1"]').click();assert.equal((await snapshot(p)).progress.collection.equipped.fighter,'f1');await p.locator('#close-modal').click();
+  await p.reload();await p.waitForTimeout(1300);assert.equal((await snapshot(p)).progress.collection.equipped.fighter,'f1');assert.equal((await snapshot(p)).progress.collection.chests.basic,0);
+  await p.locator('#gift').click();await p.locator('#claim-gift').click();assert(await p.locator('#claim-gift').isDisabled());await p.locator('#close-modal').click();
+  await p.locator('[data-upgrade="1"]').click();assert.equal((await snapshot(p)).progress.upgrades[1],1);
+  await p.locator('#play').click();const pts=await points(p,0),a=pts.find(r=>r.name==='California'),b=pts.find(r=>r.name==='Nevada');await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:8});await p.mouse.up();await p.waitForTimeout(1700);assert((await snapshot(p)).battle.stats.sent>=21);assert.equal((await snapshot(p)).battle.regions[1].owner,1);
+  await p.locator('#pause').click();const t=(await snapshot(p)).battle.time;await p.waitForTimeout(300);assert.equal((await snapshot(p)).battle.time,t);await p.locator('#restart').click();assert.equal((await snapshot(p)).battle.stats.sent,0);assert.equal((await snapshot(p)).battle.regions[1].owner,0);
+  await p.locator('#leader-skill').click();const before=(await snapshot(p)).battle.regions[0].units;await p.mouse.click(a.x,a.y);assert((await snapshot(p)).battle.regions[0].units>=before+21.9);assert.equal((await snapshot(p)).battle.leaderCharges,1);
+  await p.locator('#pause').click();await p.locator('#back-menu').click();assert.equal((await snapshot(p)).mode,'menu');
+  const income=(await snapshot(p)).progress.coins;await p.evaluate(()=>{const now=Date.now();document.dispatchEvent(new Event('terraPause'));Date.now=()=>now+3601000;document.dispatchEvent(new Event('terraResume'));});assert.equal((await snapshot(p)).progress.coins,income+100);await p.evaluate(()=>document.dispatchEvent(new Event('terraResume')));assert.equal((await snapshot(p)).progress.coins,income+100);
+  console.log('PASS store, arsenal, persistence, battle and income',size.width+'x'+size.height);await c.close();
  }
- // Inspect the dense final map and every modal after unlocking in a test profile.
- const c=await browser.newContext({viewport:{width:390,height:844}});await c.addInitScript(()=>localStorage.setItem('terra-storm-v1',JSON.stringify({unlocked:4,level:4,coins:1000})));const p=await c.newPage();p.on('pageerror',e=>errors.push(String(e)));await p.goto(url);await p.waitForTimeout(1300);
- assert.equal((await p.evaluate(()=>terraSnapshot())).level,4);
- const out=path.resolve(__dirname,'../test-results');fs.mkdirSync(out,{recursive:true});await p.screenshot({path:out+'/level5-menu.png'});
- for(const id of ['nav-army','leader','nav-tasks','settings','nav-world']){await p.locator('#'+id).click();await p.screenshot({path:out+'/'+id+'.png'});await p.locator('#close-modal').click();}
- await p.locator('#play').click();await p.waitForTimeout(200);
- const cdp=await c.newCDPSession(p);
- await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:130,y:360},{x:220,y:360}]});
- await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:85,y:360},{x:265,y:360}]});
- await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
- assert(await p.locator('#zoom-reset').isVisible(),'Two fingers zoom the map');assert.equal((await p.evaluate(()=>terraSnapshot())).battle.stats.commands,0,'Zoom does not send a troop command');await p.locator('#zoom-reset').click();
- await p.locator('#reinforce').click();assert.equal(await p.locator('#reinforce').getAttribute('class'),'selected');
- const home=await p.evaluate(()=>{const map=TERRA_LEVELS[4],W=innerWidth,H=innerHeight,left=18,right=W-18,top=157,bottom=H-157,s=Math.min((right-left)/map.width,(bottom-top)/map.height)*.98,x=left+(right-left-map.width*s)/2,y=top+(bottom-top-map.height*s)/2,r=map.regions.find(r=>r.owner===1);return{x:x+r.center[0]*s,y:y+r.center[1]*s,id:r.id};});
- const before=(await p.evaluate(()=>terraSnapshot())).battle.regions[home.id].units;await p.mouse.click(home.x,home.y);assert((await p.evaluate(()=>terraSnapshot())).battle.regions[home.id].units>=before+24.9);assert(await p.locator('#reinforce').isDisabled());
- await p.screenshot({path:out+'/level5-battle.png'});assert.deepEqual(errors,[]);console.log('PASS all modal screens, final map, no JavaScript errors');await browser.close();
+ const fixture={coins:3000,wins:0,captures:0,sent:0,level:4,unlocked:4,upgrades:[0,0,0],owned:{base:[0],fighter:[0],color:[0]}};const e=new Economy(fixture);fixture.sound=false;fixture.gems=400;e.grantShards('b0',20);for(const id of ['l1','l2','l3'])fixture.collection.cards[id]={owned:true,level:1,shards:0};fixture.collection.boosters.reinforce=1;
+ const c=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await c.addInitScript(d=>localStorage.setItem('terra-storm-v1',JSON.stringify(d)),fixture);const p=await c.newPage();p.on('pageerror',e=>errors.push(String(e)));await p.goto(url);await p.waitForTimeout(1300);
+ const out=path.resolve(__dirname,'../test-results/v2');fs.mkdirSync(out,{recursive:true});await p.screenshot({path:out+'/level5-menu.png'});
+ await p.locator('#nav-army').click();await p.locator('.collect-card[data-card="b0"]').click();await p.locator('[data-upgrade-card="b0"]').click();assert.equal((await snapshot(p)).progress.collection.cards.b0.level,2);await p.locator('#close-modal').click();
+ for(const [id,name]of [['nav-store','store'],['nav-army','arsenal'],['nav-albums','albums'],['nav-events','events']]){await p.locator('#'+id).click();await p.screenshot({path:out+'/'+name+'.png'});assert(await p.locator('#wallet-gems').isVisible());}
+ await p.locator('#nav-world').click();await p.locator('#play').click();assert.equal((await snapshot(p)).battle.skillCharges.reinforce,2);assert.equal((await snapshot(p)).progress.collection.boosters.reinforce,0);
+ const cdp=await c.newCDPSession(p);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:130,y:360},{x:220,y:360}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:85,y:360},{x:265,y:360}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});assert(await p.locator('#zoom-reset').isVisible());assert.equal((await snapshot(p)).battle.stats.commands,0);await p.locator('#zoom-reset').click();
+ await p.locator('#reinforce').click();const pts=await points(p,4),home=pts.find(r=>r.owner===1),before=(await snapshot(p)).battle.regions[home.id].units;await p.mouse.click(home.x,home.y);assert((await snapshot(p)).battle.regions[home.id].units>=before+24.9);assert.equal((await snapshot(p)).battle.skillCharges.reinforce,1);await p.screenshot({path:out+'/level5-battle.png'});
+ await p.locator('#pause').click();await p.locator('#back-menu').click();await p.locator('#nav-events').click();const stock=(await snapshot(p)).progress.supply;await p.locator('[data-start-operation]').click();assert.equal((await snapshot(p)).progress.supply,stock-1);assert.equal((await snapshot(p)).mode,'battle');
+ console.log('PASS upgrades, all full-screen sections, pinch, consumables and operations');assert.deepEqual(errors,[]);console.log('PASS no JavaScript errors');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1);});
