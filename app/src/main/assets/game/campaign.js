@@ -23,6 +23,13 @@
  }
  const levels=Array.from({length:TOTAL},(_,i)=>make(i));
  function reward(level){return {gems:8+Math.min(4,Math.floor(Math.max(0,level)/5))*2,supply:1,shards:3+Math.min(7,Math.floor(Math.max(0,level)/10))};}
+ // Upgrades must not leave every opponent at a fixed 12–15 units.
+ // This is our explicit balance correction; original server balance is unavailable.
+ function combat(level,options={}){
+  const home=level.regions.find(r=>r.owner===1),playerStart=(home?.units||18)+(options.start||0),tier=(level.index||0)/(TOTAL-1),margin=level.index===0?0:3+Math.floor(tier*7);
+  return {...level,enemyRate:level.enemyRate,enemyCap:options.limit||level.cap,
+   regions:level.regions.map(r=>({...r,units:r.owner>1?Math.max(r.units,playerStart+margin):r.units}))};
+ }
  function normalize(state){
   state.level=Math.max(0,Math.min(TOTAL-1,Math.floor(Number(state.level)||0)));state.unlocked=Math.max(0,Math.min(TOTAL-1,Math.floor(Number(state.unlocked)||0)));
   state.completed=[...new Set((state.completed||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<TOTAL))];
@@ -30,5 +37,5 @@
   while(state.completed.includes(state.unlocked)&&state.unlocked<TOTAL-1)state.unlocked++;
   state.level=Math.min(state.level,state.unlocked);state.upgrades=Array.from({length:4},(_,i)=>Math.max(0,Math.min(20,Math.floor(state.upgrades?.[i]||0))));return state;
  }
- const api={TOTAL,CHAPTER_SIZE,templates,levels,make,reward,normalize};g.TerraCampaign=api;g.TERRA_LEVELS=levels;if(typeof module!=='undefined')module.exports=api;
+ const api={TOTAL,CHAPTER_SIZE,templates,levels,make,combat,reward,normalize};g.TerraCampaign=api;g.TERRA_LEVELS=levels;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

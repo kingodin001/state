@@ -9,7 +9,7 @@ OUT="$ROOT/build/manual"
 JAVAC="${TERRA_JAVAC:-javac}"
 mkdir -p "$OUT/classes" "$OUT/dex" "$OUT/res"
 "$BUILD_TOOLS/aapt2" compile --dir "$ROOT/app/src/main/res" -o "$OUT/res.zip"
-"$BUILD_TOOLS/aapt2" link -o "$OUT/resources.apk" -I "$PLATFORM" --manifest "$ROOT/app/src/main/AndroidManifest.xml" --java "$OUT/generated" --min-sdk-version 26 --target-sdk-version 35 --version-code 4 --version-name 0.4.0 -A "$ROOT/app/src/main/assets" "$OUT/res.zip"
+"$BUILD_TOOLS/aapt2" link -o "$OUT/resources.apk" -I "$PLATFORM" --manifest "$ROOT/app/src/main/AndroidManifest.xml" --java "$OUT/generated" --min-sdk-version 26 --target-sdk-version 35 --version-code 5 --version-name 0.5.0 -A "$ROOT/app/src/main/assets" "$OUT/res.zip"
 "$JAVAC" -source 8 -target 8 -encoding UTF-8 -bootclasspath "$PLATFORM" -d "$OUT/classes" "$ROOT/app/src/main/java/pro/vymi/terrastorm/MainActivity.java"
 mapfile -t CLASSES < <(find "$OUT/classes" -name '*.class')
 bash "$BUILD_TOOLS/d8" --lib "$PLATFORM" --min-api 26 --output "$OUT/dex" "${CLASSES[@]}"
@@ -17,9 +17,9 @@ cp "$OUT/resources.apk" "$OUT/unsigned.apk"
 (cd "$OUT/dex" && zip -q -u "$OUT/unsigned.apk" classes.dex)
 "$BUILD_TOOLS/zipalign" -f -p 4 "$OUT/unsigned.apk" "$OUT/aligned.apk"
 if [[ -n "${TERRA_KEYSTORE_FILE:-}" ]]; then
-  bash "$BUILD_TOOLS/apksigner" sign --ks "$TERRA_KEYSTORE_FILE" --ks-key-alias terrastorm --ks-pass env:TERRA_KEYSTORE_PASSWORD --out "$OUT/TerraStorm-0.4.0.apk" "$OUT/aligned.apk"
-  bash "$BUILD_TOOLS/apksigner" verify --verbose "$OUT/TerraStorm-0.4.0.apk"
+  bash "$BUILD_TOOLS/apksigner" sign --ks "$TERRA_KEYSTORE_FILE" --ks-key-alias terrastorm --ks-pass env:TERRA_KEYSTORE_PASSWORD --out "$OUT/TerraStorm-0.5.0.apk" "$OUT/aligned.apk"
+  bash "$BUILD_TOOLS/apksigner" verify --verbose "$OUT/TerraStorm-0.5.0.apk"
 else
-  cp "$OUT/aligned.apk" "$OUT/TerraStorm-0.4.0-unsigned.apk"
+  cp "$OUT/aligned.apk" "$OUT/TerraStorm-0.5.0-unsigned.apk"
   printf '%s\n' 'Unsigned APK built. Set TERRA_KEYSTORE_FILE and TERRA_KEYSTORE_PASSWORD to sign.'
 fi

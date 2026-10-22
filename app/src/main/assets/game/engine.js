@@ -6,7 +6,7 @@ class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
-  this.level=level;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.leaderCharges=2;this.leaderCooldown=0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
+  this.level=level;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.leaderCharges=2;this.leaderCooldown=0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0}));this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
   this.production=1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
@@ -99,7 +99,7 @@ class Battle {
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
    r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){r.poison=Math.max(0,r.poison-dt);r.units=Math.max(0,r.units-dt*1.5);}
-   const cap=r.owner===1?this.playerLimit:this.level.cap;
+   const cap=r.owner===1?this.playerLimit:this.enemyLimit;
    if(r.owner&&r.units<cap&&r.frozen<=0){
     let rate=r.owner===1?this.production*(this.productionBoost>0?1.8:1):this.level.enemyRate;
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;

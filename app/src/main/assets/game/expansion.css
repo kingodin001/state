@@ -26,3 +26,38 @@ header{left:9px;right:9px;gap:6px}.currency-row{gap:4px}.wallet{padding:1px 3px;
 .card-ability-stats{display:flex;justify-content:center;gap:7px;margin:12px 0}.card-ability-stats>div{flex:1;min-width:0;background:#dceaff;border:1px solid white;border-radius:7px;padding:10px 5px;text-align:center}.card-ability-stats small{display:block;font-size:7px;color:#7c94b7;margin-bottom:6px}.card-ability-stats b{font-size:10px;color:#4c6e9f;overflow-wrap:anywhere}
 .resource-stars{background:linear-gradient(135deg,#fff7b2 3%,#ffdf62 22%,#ffbf32 54%,#e49624 55%,#ffcb4c 85%);clip-path:polygon(50% 0,63% 34%,100% 37%,72% 60%,80% 100%,50% 78%,20% 100%,28% 60%,0 37%,37% 34%);filter:drop-shadow(0 2px 0 #b48335)}.sticker-wallet{display:flex;align-items:center;justify-content:space-between;background:#d9e8ff;border:1px solid white;border-radius:9px;padding:12px;margin:14px 0;color:#52729f}.sticker-wallet .cost b{font-size:20px}.sticker-wallet>span:last-child{font-size:10px;font-weight:900}.sticker-set-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.world-sticker{min-width:0;position:relative;height:175px;overflow:hidden;background:linear-gradient(#c3e5ff,#5b95cd);border:2px solid #cce9ff;border-radius:12px;box-shadow:0 3px 0 #6c97c8;color:white;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;padding:9px 5px}.world-sticker.style-1{background:linear-gradient(#ffefa0,#ba8b48);border-color:#fff0b8}.world-sticker.style-2{background:linear-gradient(#eab3d7,#a46c9e);border-color:#ffe1f7}.world-sticker.style-3{background:linear-gradient(#a6a1de,#534c92);border-color:#d1d5ff}.world-sticker>.art{width:77px;height:78px;position:absolute;bottom:39px;right:4px;filter:drop-shadow(0 2px 1px #2f4b7f88);z-index:1}.world-sticker .stamp-geography{position:absolute;top:11px;left:8px;width:calc(100% - 16px);height:109px;opacity:.75;filter:drop-shadow(0 2px 1px #365b8b66)}.world-sticker>b{font-size:9px;position:relative;z-index:1;text-shadow:0 1px #4d689c;line-height:1.4}.world-sticker>small{font-size:7px;margin-top:6px;position:relative;z-index:1}.world-sticker.missing{filter:grayscale(.8);opacity:.5}.sticker-pack-loot{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:20px 0}.album-collection-link{margin:0 0 17px}.album-collection-link>.gold-button{min-height:39px}.daily-refresh{display:flex;align-items:center;justify-content:space-between;gap:13px;color:#e3eeff;margin:0 0 14px}.daily-refresh>span{font-size:9px}.daily-refresh>button{width:144px;flex-shrink:0;min-height:33px;font-size:8px}.daily-refresh .resource-icon{width:17px;height:17px}.daily-refresh .cost b{font-size:10px}.shortage-hero{display:flex;align-items:center;justify-content:center;padding:18px}.shortage-hero .resource-icon{height:100px;width:100px}#map-modifiers{display:flex;justify-content:center;gap:5px;margin-top:5px}#map-modifiers:empty{display:none}#map-modifiers button{pointer-events:auto;padding:4px 6px;border-radius:5px;background:#e7f1ff;border:1px solid white;box-shadow:0 1px 0 #91abd2;font-size:6px;color:#5a6caa;font-weight:900}.modifier-hero{height:95px;display:flex;align-items:center;justify-content:center;border-radius:15px;background:radial-gradient(#c9c8ff,#deeaff);margin:20px 0;color:#9284c9}.modifier-hero svg{height:60px;width:60px}
 #countdown{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#2b4b7d22;pointer-events:none}#countdown>b{font-family:TerraDisplay,Arial,sans-serif;font-size:120px;line-height:1.2;color:#ffdf71;-webkit-text-stroke:3px #fff4ba;text-shadow:0 7px 0 #b78636,0 12px 16px #2e4d8144}#countdown>span{font-family:TerraDisplay,Arial,sans-serif;font-size:15px;color:white;text-shadow:0 2px #486799}.battle-ranking{margin:16px 0;padding:13px 10px;background:#deebff;border:2px solid white;border-radius:10px;color:#5676a6}.battle-ranking>strong{font-size:11px;text-align:center;display:block;margin:0 0 10px}.battle-ranking>div{display:flex;align-items:center;gap:8px;margin-top:8px;min-height:25px}.battle-ranking i{height:23px;width:23px;flex-shrink:0;border:1px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:900}.battle-ranking b{font-size:10px;flex:1;overflow-wrap:anywhere}.battle-ranking span{font-size:9px}
+
+/* All three chest cards fit together, including narrow screens and large system text. */
+.chests-grid{width:100%;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.chest-card,.chest-card>*{min-width:0;max-width:100%}.chest-card{overflow:hidden}
+.chest-card h3{font-size:clamp(6px,2.05vw,10px);white-space:normal;overflow-wrap:anywhere;min-height:22px;display:flex;align-items:center;justify-content:center}
+.chest-card>small{font-size:clamp(6px,1.65vw,8px);white-space:normal;line-height:1.4;min-height:23px}
+.chest-card .art{width:100%;height:clamp(72px,24vw,112px)}
+.chest-card .green-button{min-width:0;font-size:clamp(10px,3vw,13px);gap:3px;min-height:34px}
+.chest-card .resource-icon{width:21px!important;height:21px!important;min-width:21px!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#zoom-reset{display:none!important}
+
+/* Reference CanvasScaler: 1080×2160, match width; GameplayView top anchor y=-128. */
+#app{--design-unit:calc(min(100vw,600px)/1080)}
+#battle-top{top:calc(var(--design-unit)*78);left:calc(var(--design-unit)*74);right:calc(var(--design-unit)*74);height:calc(var(--design-unit)*100)}
+#battle-top .battle-title{height:100%}#battle-top #pause{width:calc(var(--design-unit)*100);height:calc(var(--design-unit)*100);border-radius:9px}
+#battle-top .battle-title>div,#battle-top #help,#force-counts{display:none}
+#balance{position:absolute;width:calc(var(--design-unit)*560);height:calc(var(--design-unit)*48);top:calc(var(--design-unit)*26);left:50%;transform:translateX(-50%);margin:0;gap:0;background:#cbcbcb;border:2px solid white;border-radius:6px}
+#battle-bottom{left:15px;right:15px;bottom:max(12px,env(safe-area-inset-bottom));padding:0;height:53px}
+#battle-bottom #skill-hint,#battle-bottom #region-status{display:none}
+#battle-bottom .battle-tools{gap:7px}#battle-bottom .battle-tools button{height:50px;border-radius:9px}
+#battle-bottom .battle-tools small{font-size:6px}#battle-bottom .battle-tools svg{height:19px;width:19px}
+#battle-bottom #leader-skill .art{width:35px;height:35px}
+#app[data-battle-mode="rush"] #battle-time{display:block;position:absolute;left:50%;top:calc(var(--design-unit)*113);transform:translateX(-50%);font-size:14px;color:#656565}
+#app[data-battle-mode="rush"] #battle-top .battle-title>div{display:block}
+#app[data-battle-mode="rush"] #battle-label{display:none}
+
+#app[data-mode="menu"] #menu-bottom{background:linear-gradient(transparent,#e6e6e6 20%)}
+#app[data-mode="menu"] #map-caption b{color:#555}#app[data-mode="menu"] #map-caption span{color:#888}
+
+.chest-card>small{overflow-wrap:anywhere}
+
+/* Store prefab: 980-unit content, 271-unit cards, centres at 156/490/824. */
+#hub-screen{padding-left:calc(var(--design-unit)*50);padding-right:calc(var(--design-unit)*50)}
+.chests-grid{grid-template-columns:repeat(3,minmax(0,calc(var(--design-unit)*271)));gap:calc(var(--design-unit)*63);justify-content:center}

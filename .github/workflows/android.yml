@@ -30,6 +30,6 @@ jobs:
         run: gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: TerraStorm-0.4.0-debug
+          name: TerraStorm-0.5.0-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30

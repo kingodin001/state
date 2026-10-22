@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const launch={headless:true,args:['--no-sandbox','--disable-dev-shm-usage']};if(process.env.CHROMIUM_PATH)launch.executablePath=process.env.CHROMIUM_PATH;
-const url='file://'+path.resolve(__dirname,'../app/src/main/assets/game/index.html'),out=path.resolve(__dirname,'../test-results/v3');fs.mkdirSync(out,{recursive:true});
+const url='file://'+path.resolve(__dirname,'../app/src/main/assets/game/index.html'),out=path.resolve(__dirname,'../test-results/v5');fs.mkdirSync(out,{recursive:true});
 const snap=p=>p.evaluate(()=>terraSnapshot()),point=(s,id)=>({x:s.battle.regions[id].screenX,y:s.battle.regions[id].screenY});
 async function drag(p,a,b){await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:10});await p.mouse.up();}
 (async()=>{
@@ -11,15 +11,14 @@ async function drag(p,a,b){await p.mouse.move(a.x,a.y);await p.mouse.down();awai
    const c=await browser.newContext({viewport:size,isMobile:true,hasTouch:true});await c.addInitScript(level=>localStorage.setItem('terra-storm-v1',JSON.stringify({level,unlocked:4,sound:false,upgrades:[0,0,0]})),level);
    const p=await c.newPage();p.on('pageerror',e=>errors.push(String(e)));await p.goto(url);await p.waitForTimeout(1300);await p.locator('#play').click();let s=await snap(p);
    for(const r of s.battle.regions.filter(r=>r.owner))assert(r.screenX>=10&&r.screenX<size.width-10&&r.screenY>s.camera.rect.y+10&&r.screenY<s.camera.rect.y+s.camera.rect.height-10,'initial faction bases are visible');
-   for(const id of ['pause','help','zoom-reset','select-all','fraction','leader-skill']){const b=await p.locator('#'+id).boundingBox();assert(b&&b.x>=0&&b.y>=0&&b.x+b.width<=size.width+1&&b.y+b.height<=size.height+1,id+' is accessible');}
+   for(const id of ['pause','select-all','fraction','leader-skill']){const b=await p.locator('#'+id).boundingBox();assert(b&&b.x>=0&&b.y>=0&&b.x+b.width<=size.width+1&&b.y+b.height<=size.height+1,id+' is accessible');}
    if(size.width===390){await p.screenshot({path:out+'/level'+(level+1)+'-battle.png'});metrics.push({level:level+1,scale:s.camera.s,rect:s.camera.rect});}
    const home=point(s,s.battle.regions.find(r=>r.owner===1).id);
-   await p.locator('#zoom-reset').click();s=await snap(p);assert(s.camera.overview);const m=await p.evaluate(i=>({width:TERRA_LEVELS[i].width,height:TERRA_LEVELS[i].height}),level);assert(s.camera.x>=0&&s.camera.x+m.width*s.camera.s<=size.width+.1);assert(s.camera.y>=s.camera.rect.y&&s.camera.y+m.height*s.camera.s<=s.camera.rect.y+s.camera.rect.height+.1);
-   await p.locator('#zoom-reset').click();s=await snap(p);assert(!s.camera.overview);
-   const x=s.camera.x;await drag(p,{x:size.width/2,y:s.camera.rect.y+14},{x:size.width/2+34,y:s.camera.rect.y+20});assert(Math.abs((await snap(p)).camera.x-x)>15);assert.equal((await snap(p)).battle.stats.commands,0);
+   assert(await p.locator('#zoom-reset').isHidden());const fixed={...s.camera};
+   await drag(p,{x:size.width/2,y:s.camera.rect.y+14},{x:size.width/2+34,y:s.camera.rect.y+20});s=await snap(p);assert.equal(s.camera.x,fixed.x);assert.equal(s.camera.y,fixed.y);assert.equal(s.camera.s,fixed.s);assert.equal(s.battle.stats.commands,0);
+   await p.mouse.wheel(0,-500);assert.equal((await snap(p)).camera.s,fixed.s);
    if(size.width===390&&level===0){
-    // Reset any pan, then verify the whole order lifecycle through actual input.
-    await p.locator('#zoom-reset').click();await p.locator('#zoom-reset').click();s=await snap(p);let a=point(s,0),b=point(s,1);
+    s=await snap(p);let a=point(s,0),b=point(s,1);
     await p.mouse.move(a.x,a.y);await p.mouse.down();await p.mouse.move(b.x,b.y,{steps:8});await p.dispatchEvent('#map','pointercancel',{pointerId:1});await p.mouse.up();assert.equal((await snap(p)).battle.stats.commands,0);
     await p.locator('#fraction').click();await p.locator('[data-fraction="25"]').click();assert.equal(await p.locator('#fraction b').textContent(),'25%');await drag(p,a,b);s=await snap(p);assert.equal(s.battle.stats.commands,1);assert(s.battle.stats.sent>=5&&s.battle.stats.sent<=6);assert(s.battle.regions[0].units>=19);assert.equal(s.battle.regions[1].owner,0);
     await p.locator('#pause').click();await p.locator('#restart').click();s=await snap(p);a=point(s,0);b=point(s,1);
@@ -34,7 +33,7 @@ async function drag(p,a,b){await p.mouse.move(a.x,a.y);await p.mouse.down();awai
    }
    await c.close();
   }
-  console.log('PASS all five battle cameras, HUD, overview and pan',size.width+'x'+size.height);
+  console.log('PASS all five battle cameras, HUD and fixed camera',size.width+'x'+size.height);
  }
- assert.deepEqual(errors,[]);fs.writeFileSync(out+'/metrics.json',JSON.stringify(metrics,null,2));console.log('PASS arrow preview, progressive launch, fractions, cancellation, multi-base/tap orders, pinch suppression; no JS errors');await browser.close();
+ assert.deepEqual(errors,[]);fs.writeFileSync(out+'/metrics.json',JSON.stringify(metrics,null,2));console.log('PASS arrow preview, progressive launch, fractions, cancellation, multi-base/tap orders, multi-touch cancellation; no JS errors');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1);});

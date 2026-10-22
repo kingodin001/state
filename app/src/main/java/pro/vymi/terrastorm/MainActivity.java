@@ -28,7 +28,7 @@ public final class MainActivity extends Activity {
         }
         immersive();
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.rgb(237,242,247));
+        webView.setBackgroundColor(Color.rgb(230,230,230));
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -37,6 +37,7 @@ public final class MainActivity extends Activity {
         settings.setAllowFileAccessFromFileURLs(false);
         settings.setAllowUniversalAccessFromFileURLs(false);
         settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setTextZoom(100);
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
