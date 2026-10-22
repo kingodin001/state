@@ -15,10 +15,11 @@ function bounds(map,overview){
  return {x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
 }
 function camera(map,rect,options={}){
- const b=bounds(map,options.overview),pad=options.overview?12:25;
- const s=Math.min((rect.width-pad*2)/Math.max(1,b.width),(rect.height-pad*2)/Math.max(1,b.height));
+ const b=bounds(map,options.overview),pad=options.overview?12:25,top=options.overview?40:42;
+ const s=Math.min((rect.width-pad*2)/Math.max(1,b.width),(rect.height-top-pad)/Math.max(1,b.height));
  const zoom=options.zoom||1;
- return {s:s*zoom,baseScale:s,x:rect.x+rect.width/2-(b.x+b.width/2)*s*zoom+(options.pan?.x||0),y:rect.y+rect.height/2-(b.y+b.height/2)*s*zoom+(options.pan?.y||0),rect:{...rect},bounds:b};
+ const center=options.focus||{x:b.x+b.width/2,y:b.y+b.height/2};
+ return {s:s*zoom,baseScale:s,x:rect.x+rect.width/2-center.x*s*zoom+(options.pan?.x||0),y:rect.y+top+(rect.height-top-pad)/2-center.y*s*zoom+(options.pan?.y||0),rect:{...rect},bounds:b};
 }
 const api={TIMING,inside,slot,bounds,camera};root.TerraField=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

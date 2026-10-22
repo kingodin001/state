@@ -1,5 +1,5 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {Battle}=require('../app/src/main/assets/game/engine.js'),field=require('../app/src/main/assets/game/field.js'),levels=require('../app/src/main/assets/game/maps.js');
+const {Battle}=require('../app/src/main/assets/game/engine.js'),field=require('../app/src/main/assets/game/field.js'),levels=require('../app/src/main/assets/game/campaign.js').levels;
 function fixture(){const b=new Battle({seed:2,cap:50,enemyRate:0,aiInterval:9999,regions:[{id:0,owner:1,units:50,center:[0,0],kind:'normal'},{id:1,owner:0,units:5,center:[1000,0],kind:'normal'},{id:2,owner:2,units:10,center:[2000,0],kind:'normal'}]});b.production=0;return b;}
 const advance=(b,t,fps=40)=>{for(let i=0;i<Math.round(t*fps);i++)b.step(1/fps);};
 test('A 50 troop order takes 4.75 seconds to depart, retains defenders and conserves population',()=>{

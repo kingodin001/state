@@ -15,3 +15,20 @@ Use case: stylized-concept. Production asset type: one transparent PNG sprite at
 ## Промпт иконки
 
 Use case: logo-brand / stylized-concept. Asset: finished square Android app launcher icon for an ORIGINAL mobile territory-conquest strategy game Terra Storm. No text, no typography, no numbers, no border. Full bleed glossy polished 3D toy-style icon. In the foreground a beautifully detailed royal-blue and gold miniature three-tower castle with a blue flag, built on a compact hexagonal land tile. A tiny friendly cobalt blue helmeted toy soldier with two black dot eyes at the front corner of the castle, a second small red troop on a neighboring red land tile at the lower right edge. The island board is made of interlocking map-shaped territories, vivid royal blue, coral red and pale blue, with bright white boundaries; a curving dotted line connects two territories to communicate conquest. Camera isometric close 3/4 top-down, castle occupies 65 percent of square and dominates recognizably even at 64px. Rounded premium mobile game 3D render, rich saturated colors, soft warm directional studio lighting, clean plastic-clay material, crisp edges, gold details and a bright sky-blue-to-deep-cobalt background with subtle luminous rays. Strong centered readable silhouette, everything important within central 80 percent so Android rounded icon crops are safe. ORIGINAL art, no existing game logos or branded character likenesses. Elegant expensive mobile strategy game icon, not a screenshot or a collage.
+
+
+# Дополнение 0.4.0
+
+Девять PNG созданы заново встроенным imagegen с прозрачным фоном; пять атласов и четыре значка используются непосредственно в APK. Чужие изображения не включены. Все атласы 1254×1254, изображения объектов выбираются по ячейкам; первые четыре базовых варианта категорий сохранены из нашего старого атласа.
+
+| Файл в `app/src/main/assets/game/art/` | Содержимое |
+| --- | --- |
+| resource-coins.png | Золотая монета с собственным рельефом |
+| resource-supply.png | Синий шестигранник с золотой стрелкой вверх |
+| resource-gems.png | Розовые огранённые кристаллы |
+| resource-tickets.png | Синий билет с золотыми стрелками перемотки |
+| bases-a.png, bases-b.png | Две сетки 4×4, 32 собственные архитектурные миниатюры |
+| fighters-a.png, fighters-b.png | Две сетки 4×4, 32 собственных бойца / аппарата |
+| leaders.png | Сетка 2×2: алхимик, хрономант, паладин, изобретатель |
+
+Направление промптов: оригинальные premium mobile strategy collectible assets, orthographic three-quarter view, richly saturated blue/gold and colorful enamel, rounded detailed toy materials, transparent background, no text or existing branded characters. Для листов: regular 4×4 (leaders 2×2) grid, independent complete objects, clear padding, no overlap; каждый объект задан отдельно. Для ресурсов: один крупный читаемый объект, золотой контур и выраженные объём / блики, прозрачный фон. Масштаб, выбор области и цвет фракции выполняет Canvas/CSS, сами PNG не перекрашены на диске.

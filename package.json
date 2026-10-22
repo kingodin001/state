@@ -1,10 +1,10 @@
 {
   "name": "terra-storm",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs && node tests/balance.cjs",
-    "test:ui": "node tests/ui.cjs && node tests/battle-ui.cjs && node tests/victory.cjs",
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/expansion.cjs && node tests/balance.cjs && node tests/progression.cjs",
+    "test:ui": "node tests/ui.cjs && node tests/battle-ui.cjs && node tests/victory.cjs && node tests/expansion-ui.cjs && node tests/campaign-layout.cjs && node tests/rush-ui.cjs",
     "test:visual": "node tests/visual.cjs"
   },
   "devDependencies": {

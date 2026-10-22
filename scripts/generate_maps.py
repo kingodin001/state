@@ -66,6 +66,8 @@ for li in (3,4):
 # Distinct tactical buildings appear only after the controls have been learned.
 for li,name,kind in [(2,'Germany','factory'),(3,'Democratic Republic of the Congo','factory'),(3,'Egypt','turret'),(4,'Iran','turret'),(4,'China','factory'),(4,'Afghanistan','fort')]:
  next(r for r in levels[li]['regions'] if r['name']==name)['kind']=kind
+from world_templates import add_worlds
+levels += add_worlds(countries)
 for level in levels:
  for r in level['regions']:
   # Place a dot cluster far enough inside the irregular coast.

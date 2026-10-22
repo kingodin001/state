@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test combat and five campaigns
+      - name: Test combat and all 200 campaign stages
         run: npm test
       - uses: actions/setup-java@v4
         with:
@@ -30,6 +30,6 @@ jobs:
         run: gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: TerraStorm-0.3.0-debug
+          name: TerraStorm-0.4.0-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30

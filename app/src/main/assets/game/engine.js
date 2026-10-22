@@ -7,7 +7,7 @@ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
   this.level=level;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.leaderCharges=2;this.leaderCooldown=0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
-  this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0}));
+  this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0}));this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
   this.production=1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};for(const f of this.factions)this.aiTimers[f]=level.aiInterval+this.rng.next()*1.2;
@@ -18,6 +18,10 @@ class Battle {
  drainEvents(){return this.events.splice(0);}
  reserved(id){return this.waves.filter(w=>w.from===id&&w.owner===this.regions[id].owner).reduce((n,w)=>n+w.left,0);}
  available(id){return Math.max(0,Math.floor(this.regions[id].units)-this.reserved(id));}
+ visible(owner,id){
+  if(!this.level.fog||this.regions[id].owner===owner)return true;const r=this.regions[id],range=this.level.vision||330;
+  return this.regions.some(s=>s.owner===owner&&distance(s,r)<=range)||this.units.some(u=>u.owner===owner&&distance(u,r)<=range*.6);
+ }
  command(sources,target,fraction=1,owner=1){
   if(this.result||this.paused||!this.regions[target])return 0;
   let sent=0;const dest=this.regions[target];
@@ -39,8 +43,15 @@ class Battle {
  }
  activateLeader(target){
   const r=this.regions[target];if(this.result||this.paused||!r||this.leaderCharges<=0||this.leaderCooldown>0)return false;
-  if(this.leaderType===1){if(r.owner===0||r.owner===1)return false;r.frozen=8;this.emit('freeze',{id:target});}
-  else{if(r.owner!==1)return false;if(this.leaderType===0){r.units+=22;this.emit('reinforce',{id:target});}else if(this.leaderType===2){r.shield=12;this.emit('shield',{id:target});}else{this.productionBoost=10;this.emit('boost',{id:target});}}
+  if(this.leaderType===1||this.leaderType===4){if(r.owner===0||r.owner===1)return false;if(this.leaderType===1){r.frozen=8;this.emit('freeze',{id:target});}else{r.poison=10;this.emit('poison',{id:target});}}
+  else{if(r.owner!==1)return false;
+   if(this.leaderType===0){r.units+=22;this.emit('reinforce',{id:target});}
+   else if(this.leaderType===2){r.shield=12;this.emit('shield',{id:target});}
+   else if(this.leaderType===3){this.productionBoost=10;this.emit('boost',{id:target});}
+   else if(this.leaderType===5){this.speedBoost=10;this.emit('boost',{id:target});}
+   else if(this.leaderType===6){const allies=this.regions.filter(s=>s.owner===1).sort((a,b)=>distance(a,r)-distance(b,r)).slice(0,3);for(const s of allies){s.shield=12;this.emit('shield',{id:s.id});}}
+   else if(this.leaderType===7){for(const u of this.units)if(u.owner!==1&&distance(u,r)<180){u.dead=true;this.stats.kills++;this.emit('clash',{x:u.x,y:u.y});}this.units=this.units.filter(u=>!u.dead);this.emit('blast',{x:r.x,y:r.y});}
+  }
   this.leaderCharges--;this.leaderCooldown=24;return true;
  }
  ai(owner){
@@ -51,7 +62,8 @@ class Battle {
    const available=this.available(s.id);if(available<5)continue;
    for(const t of enemies){
     const d=distance(s,t);const incoming=this.units.filter(u=>u.owner===owner&&u.to===t.id).length+this.waves.filter(w=>w.owner===owner&&w.to===t.id).reduce((sum,w)=>sum+w.left,0);
-    const needed=t.units+(t.owner?d/timing.marchSpeed*.8:0)+2-incoming;
+    const defense=this.visible(owner,t.id)?t.units:t.owner?15:8;
+    const needed=defense+(t.owner?d/timing.marchSpeed*.8:0)+2-incoming;
     if(needed<0)continue;
     const score=(available-needed)*.6-d*.025+(t.owner===0?8:0)+(t.kind==='factory'?7:0)+this.rng.next()*4;
     if(score>bestScore){bestScore=score;best={s,t,needed};}
@@ -72,7 +84,7 @@ class Battle {
   if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   const damage=r.kind==='fort'?.7:1;r.units-=damage;
   if(r.units<0){
-   const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;
+   const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;
    this.emit('capture',{id:r.id,owner:r.owner,oldOwner,x:r.x,y:r.y});
   }
@@ -83,15 +95,15 @@ class Battle {
   let left=Math.min(Math.max(dt,0),.5);while(left>1e-7){const d=Math.min(left,1/40);this.tick(d);left-=d;if(this.result)break;}
  }
  tick(dt){
-  this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);
+  this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);this.speedBoost=Math.max(0,this.speedBoost-dt);
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
-   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);
+   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){r.poison=Math.max(0,r.poison-dt);r.units=Math.max(0,r.units-dt*1.5);}
    const cap=r.owner===1?this.playerLimit:this.level.cap;
    if(r.owner&&r.units<cap&&r.frozen<=0){
     let rate=r.owner===1?this.production*(this.productionBoost>0?1.8:1):this.level.enemyRate;
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
-    r.units=Math.min(cap,r.units+dt*rate*(r.kind==='factory'?1.6:1));
+    r.units=Math.min(cap,r.units+dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1));
    }
    if(r.kind==='turret'&&r.owner){
     r.shot-=dt;if(r.shot<=0){
@@ -119,7 +131,9 @@ class Battle {
   this.waves=this.waves.filter(w=>w.left>0);
   for(const u of this.units){
    if(u.dead)continue;
-   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy),travel=u.speed*dt;
+   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=1;
+   for(const zone of this.level.zones||[])if(Math.hypot(u.x-zone.x,u.y-zone.y)<=zone.radius)factor=Math.min(factor,zone.factor);
+   const travel=u.speed*dt*factor*(u.owner===1&&this.speedBoost>0?1.4:1);
    if(d<=travel+5){u.dead=true;this.arrive(u);}else{u.x+=dx/d*travel;u.y+=dy/d*travel;}
   }
   // Spatial hash: opposing dots annihilate on contact, including crossing attacks.
@@ -140,6 +154,7 @@ class Battle {
   for(const u of this.units)owners.add(u.owner);for(const w of this.waves)owners.add(w.owner);
   if(!owners.has(1)){this.result='lose';this.emit('finish',{result:'lose'});}
   else if(owners.size===1&&this.regions.every(r=>r.owner===1)){this.result='win';this.emit('finish',{result:'win'});}
+  if(!this.result&&this.level.timeLimit&&this.time>=this.level.timeLimit){const share=this.territoryShare(),totals=this.totals(),score=f=>share[f]*10000+totals[f];this.result=[2,3,4].every(f=>score(1)>score(f))?'win':'lose';this.emit('finish',{result:this.result});}
  }
   totals(){const a=[0,0,0,0,0];for(const r of this.regions)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}
  territoryShare(){const a=[0,0,0,0,0];for(const r of this.regions)a[r.owner]++;return a;}

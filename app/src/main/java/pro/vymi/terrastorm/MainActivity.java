@@ -80,6 +80,9 @@ public final class MainActivity extends Activity {
         super.onDestroy();
     }
     private final class DeviceBridge {
+        @JavascriptInterface public void exitGame() {
+            runOnUiThread(new Runnable() { @Override public void run() { finish(); }});
+        }
         @JavascriptInterface public void vibrate() {
             runOnUiThread(new Runnable() { @Override public void run() {
                 Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);
