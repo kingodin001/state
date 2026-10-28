@@ -1,0 +1,833 @@
+{
+  "kind": "offline Unity preservation experiment",
+  "package": "pro.vymi.terrastorm.reference",
+  "version": "0.7.0-unity-test",
+  "sourceXapkSha256": "d5db5f8d8fb99b69b5fa88b014f0afbc6d5095a8c98987902631d56d946be0e8",
+  "apkSha256": "11631403f7d5400cacb550a27a4482aae64e8349c81a8783574937fe1f8858f0",
+  "apkBytes": 239526291,
+  "runtimeTested": false,
+  "sourceExecutableUnchanged": true,
+  "addressablesUnchanged": true,
+  "retainedSourceFiles": 1737,
+  "changedSourceFiles": [
+    "assets/bin/Data/sharedassets2.assets.split2",
+    "assets/bin/Data/sharedassets2.assets.split3",
+    "assets/bin/Data/sharedassets2.assets.split4",
+    "assets/bin/Data/sharedassets2.assets.split5",
+    "assets/bin/Data/143e1e11d349942ddb4807c5c4f2680d",
+    "assets/bin/Data/sharedassets1.assets",
+    "assets/bin/Data/sharedassets2.assets.split6",
+    "assets/bin/Data/sharedassets2.assets.split0",
+    "assets/bin/Data/globalgamemanagers",
+    "assets/bin/Data/sharedassets2.assets.split1",
+    "assets/bin/Data/4f52293c1de544ef8b2c044bd239bcd2"
+  ],
+  "assets": {
+    "changes": [
+      {
+        "sprite": "F_Cat",
+        "file": "sharedassets2.assets",
+        "id": 131,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Bat",
+        "file": "sharedassets2.assets",
+        "id": 134,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Gear",
+        "file": "sharedassets2.assets",
+        "id": 138,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Split Circle Symbol",
+        "file": "sharedassets2.assets",
+        "id": 141,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Phoenix",
+        "file": "sharedassets2.assets",
+        "id": 142,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Evil Eye",
+        "file": "sharedassets2.assets",
+        "id": 144,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Rocket",
+        "file": "sharedassets2.assets",
+        "id": 147,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Fleur-de-lis Emblem",
+        "file": "sharedassets2.assets",
+        "id": 148,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Gear",
+        "file": "sharedassets2.assets",
+        "id": 153,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Diamod",
+        "file": "sharedassets2.assets",
+        "id": 155,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Chevron",
+        "file": "sharedassets2.assets",
+        "id": 156,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Tamplier",
+        "file": "sharedassets2.assets",
+        "id": 157,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Four-Pointed Star",
+        "file": "sharedassets2.assets",
+        "id": 159,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Alien",
+        "file": "sharedassets2.assets",
+        "id": 162,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Star",
+        "file": "sharedassets2.assets",
+        "id": 163,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Dice",
+        "file": "sharedassets2.assets",
+        "id": 165,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Crescent Moon",
+        "file": "sharedassets2.assets",
+        "id": 167,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Stylized Hawk",
+        "file": "sharedassets2.assets",
+        "id": 169,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Royal Crown",
+        "file": "sharedassets2.assets",
+        "id": 172,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Bull Head",
+        "file": "sharedassets2.assets",
+        "id": 176,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Hexagonal Star",
+        "file": "sharedassets2.assets",
+        "id": 177,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Bear",
+        "file": "sharedassets2.assets",
+        "id": 180,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Crescent",
+        "file": "sharedassets2.assets",
+        "id": 182,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Skull",
+        "file": "sharedassets2.assets",
+        "id": 184,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Clover",
+        "file": "sharedassets2.assets",
+        "id": 186,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Spark",
+        "file": "sharedassets2.assets",
+        "id": 187,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Wolf Head",
+        "file": "sharedassets2.assets",
+        "id": 188,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Star Emblem",
+        "file": "sharedassets2.assets",
+        "id": 191,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Pac-Man",
+        "file": "sharedassets2.assets",
+        "id": 193,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Shield",
+        "file": "sharedassets2.assets",
+        "id": 197,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Circle",
+        "file": "sharedassets2.assets",
+        "id": 198,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Floral Emblem",
+        "file": "sharedassets2.assets",
+        "id": 201,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Yin-Yang",
+        "file": "sharedassets2.assets",
+        "id": 203,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Dual Rings",
+        "file": "sharedassets2.assets",
+        "id": 205,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Trident",
+        "file": "sharedassets2.assets",
+        "id": 206,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Smiley",
+        "file": "sharedassets2.assets",
+        "id": 208,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Triangle",
+        "file": "sharedassets2.assets",
+        "id": 209,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Diamond with Cutout",
+        "file": "sharedassets2.assets",
+        "id": 210,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Square",
+        "file": "sharedassets2.assets",
+        "id": 211,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Flower",
+        "file": "sharedassets2.assets",
+        "id": 213,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Spartan",
+        "file": "sharedassets2.assets",
+        "id": 216,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Lion Head",
+        "file": "sharedassets2.assets",
+        "id": 218,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Rook",
+        "file": "sharedassets2.assets",
+        "id": 219,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Square-Triangle",
+        "file": "sharedassets2.assets",
+        "id": 221,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Arrow",
+        "file": "sharedassets2.assets",
+        "id": 224,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Puffer",
+        "file": "sharedassets2.assets",
+        "id": 225,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Turtle",
+        "file": "sharedassets2.assets",
+        "id": 226,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Circle",
+        "file": "sharedassets2.assets",
+        "id": 230,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Heart",
+        "file": "sharedassets2.assets",
+        "id": 232,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Knight",
+        "file": "sharedassets2.assets",
+        "id": 233,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Nighthawk",
+        "file": "sharedassets2.assets",
+        "id": 234,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Helmet",
+        "file": "sharedassets2.assets",
+        "id": 235,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Pac-Man",
+        "file": "sharedassets2.assets",
+        "id": 237,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Crown",
+        "file": "sharedassets2.assets",
+        "id": 239,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Horse Head",
+        "file": "sharedassets2.assets",
+        "id": 240,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Phoenix",
+        "file": "sharedassets2.assets",
+        "id": 247,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Ghost",
+        "file": "sharedassets2.assets",
+        "id": 249,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Fish",
+        "file": "sharedassets2.assets",
+        "id": 250,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Evil Eye",
+        "file": "sharedassets2.assets",
+        "id": 252,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Ornamental Shield",
+        "file": "sharedassets2.assets",
+        "id": 253,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "F_Viking Skull",
+        "file": "sharedassets2.assets",
+        "id": 254,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Diamond",
+        "file": "sharedassets2.assets",
+        "id": 255,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Hawk Emblem",
+        "file": "sharedassets2.assets",
+        "id": 256,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "B_Heart",
+        "file": "sharedassets2.assets",
+        "id": 259,
+        "kind": "vector variant"
+      },
+      {
+        "sprite": "arrow",
+        "file": "143e1e11d349942ddb4807c5c4f2680d",
+        "textureFile": "4f52293c1de544ef8b2c044bd239bcd2",
+        "id": 1,
+        "newTexture": 3,
+        "size": [
+          512,
+          512
+        ],
+        "svgSha256": "955eacf530e5bab2d4467282deea361748eb129469b80b3c9f00ffcdeab4dad0"
+      },
+      {
+        "sprite": "State_logo",
+        "file": "sharedassets1.assets",
+        "textureFile": "sharedassets1.assets",
+        "id": 4,
+        "newTexture": 8,
+        "size": [
+          512,
+          283
+        ],
+        "svgSha256": "3f9b7e70f618a78fb0151435671c28718627dfd6fa501e94842658f11c7911c8"
+      },
+      {
+        "kind": "application identity",
+        "file": "globalgamemanagers",
+        "id": 1
+      }
+    ],
+    "serializedFilesWritten": [
+      "143e1e11d349942ddb4807c5c4f2680d",
+      "4f52293c1de544ef8b2c044bd239bcd2",
+      "globalgamemanagers",
+      "sharedassets1.assets",
+      "sharedassets2.assets"
+    ]
+  },
+  "limitations": [
+    "Android launch and gameplay not yet tested",
+    "Original third-party executable and assets remain",
+    "No own online, payment or advertisement service integration",
+    "Separate installation; no WebView save migration"
+  ],
+  "content": {
+    "source": "State.io 4.4.2",
+    "bundles": 88,
+    "levelPrefabs": 57,
+    "campaignPrefabs": 51,
+    "pvpPrefabs": 6,
+    "scenes": [
+      "Assets/_risk/Scenes/AppInitScene.unity",
+      "Assets/_risk/Scenes/AppLoadingScene.unity",
+      "Assets/_risk/Scenes/MainScene.unity",
+      "Assets/_risk/Scenes/AppConfigsScene.unity",
+      "Assets/_risk/Scenes/MainSagaGameplayScene.unity",
+      "Assets/_risk/Scenes/PVPGameplayScene.unity",
+      "Assets/_risk/Scenes/DailyOperationGameplayScene.unity"
+    ]
+  },
+  "objectProof": {
+    "sourceObjects": 63848,
+    "preservedObjects": 63848,
+    "missingObjects": [],
+    "changedObjects": [
+      {
+        "file": "sharedassets2.assets",
+        "id": 131,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 134,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 138,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 141,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 142,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 144,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 147,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 148,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 153,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 155,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 156,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 157,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 159,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 162,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 163,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 165,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 167,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 169,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 172,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 176,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 177,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 180,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 182,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 184,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 186,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 187,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 188,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 191,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 193,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 197,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 198,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 201,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 203,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 205,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 206,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 208,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 209,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 210,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 211,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 213,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 216,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 218,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 219,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 221,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 224,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 225,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 226,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 230,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 232,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 233,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 234,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 235,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 237,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 239,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 240,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 247,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 249,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 250,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 252,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 253,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 254,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 255,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 256,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets2.assets",
+        "id": 259,
+        "type": "Sprite"
+      },
+      {
+        "file": "143e1e11d349942ddb4807c5c4f2680d",
+        "id": 1,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets1.assets",
+        "id": 4,
+        "type": "Sprite"
+      },
+      {
+        "file": "sharedassets1.assets",
+        "id": 7,
+        "type": "SpriteAtlas"
+      },
+      {
+        "file": "globalgamemanagers",
+        "id": 1,
+        "type": "PlayerSettings"
+      },
+      {
+        "file": "4f52293c1de544ef8b2c044bd239bcd2",
+        "id": 2,
+        "type": "SpriteAtlas"
+      }
+    ],
+    "addedTextures": [
+      [
+        "4f52293c1de544ef8b2c044bd239bcd2",
+        3
+      ],
+      [
+        "sharedassets1.assets",
+        8
+      ]
+    ]
+  }
+}

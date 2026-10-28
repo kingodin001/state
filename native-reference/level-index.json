@@ -1,0 +1,360 @@
+{
+  "source": "State.io 4.4.2",
+  "bundles": 88,
+  "levelPrefabs": 57,
+  "campaignPrefabs": 51,
+  "pvpPrefabs": 6,
+  "scenes": [
+    "Assets/_risk/Scenes/AppInitScene.unity",
+    "Assets/_risk/Scenes/AppLoadingScene.unity",
+    "Assets/_risk/Scenes/MainScene.unity",
+    "Assets/_risk/Scenes/AppConfigsScene.unity",
+    "Assets/_risk/Scenes/MainSagaGameplayScene.unity",
+    "Assets/_risk/Scenes/PVPGameplayScene.unity",
+    "Assets/_risk/Scenes/DailyOperationGameplayScene.unity"
+  ],
+  "levels": [
+    {
+      "name": "Level_Africa",
+      "file": "CAB-b316035be00c157d1786eb02c7529717",
+      "id": "-7547071585324371462",
+      "pvp": false
+    },
+    {
+      "name": "Level_Africa_BM",
+      "file": "CAB-1967ede6c25978aeb931c42f5f978e12",
+      "id": "-5341523768169410306",
+      "pvp": false
+    },
+    {
+      "name": "Level_Africa_BM5_Cycled",
+      "file": "CAB-c6cb311949782bbc038a2387cbd1cc91",
+      "id": "-2499302866728563669",
+      "pvp": false
+    },
+    {
+      "name": "Level_Africa_BM5_Linear",
+      "file": "CAB-dcda8d8141ca2ef8318e20d1f189ad8e",
+      "id": "7504975119386522474",
+      "pvp": false
+    },
+    {
+      "name": "Level_Africa_f1",
+      "file": "CAB-663a647d75a2adb959b7544702d06db6",
+      "id": "-4654216875490328278",
+      "pvp": false
+    },
+    {
+      "name": "Level_Africa_pvp Variant",
+      "file": "CAB-91b393dcd5c58407f27c7e515a94f729",
+      "id": "-6294191656177273923",
+      "pvp": true
+    },
+    {
+      "name": "Level_America_2_pvp Variant",
+      "file": "CAB-99bb0dce1522fddc521bad03b4185787",
+      "id": "-1595525763858038580",
+      "pvp": true
+    },
+    {
+      "name": "Level_America_pvp Variant",
+      "file": "CAB-35ced398f2a45f498ef209753394d6a0",
+      "id": "851921223090426158",
+      "pvp": true
+    },
+    {
+      "name": "Level_Arabian_BM5_Cycled",
+      "file": "CAB-3f03bda3cd2b12679694143cc74276aa",
+      "id": "6943519895841035722",
+      "pvp": false
+    },
+    {
+      "name": "Level_Arabian_BM5_Linear",
+      "file": "CAB-ff8abaae834a4f5bba4cb682b0c6ec29",
+      "id": "-2797755455877656543",
+      "pvp": false
+    },
+    {
+      "name": "Level_Arabian_SVG",
+      "file": "CAB-18b91cc865698707e833f9f13c3df86e",
+      "id": "-1125774444499031719",
+      "pvp": false
+    },
+    {
+      "name": "Level_Arabian_SVG_BM",
+      "file": "CAB-e51ba7e957f74d90cc95f92b682967c7",
+      "id": "5134216152089671602",
+      "pvp": false
+    },
+    {
+      "name": "Level_China_BM5",
+      "file": "CAB-24a4a3ee16f93226b5041b6365e8f9f0",
+      "id": "6795874769134805702",
+      "pvp": false
+    },
+    {
+      "name": "Level_China_SVG_v2",
+      "file": "CAB-65b2ab8d3fae6bbc0c18ab685d714b46",
+      "id": "-7169011829402148473",
+      "pvp": false
+    },
+    {
+      "name": "Level_China_SVG_v2_BM",
+      "file": "CAB-932846eaed8a0a2d4659acc246adaa84",
+      "id": "-5583296519777981137",
+      "pvp": false
+    },
+    {
+      "name": "Level_EU_BM5_Cycled",
+      "file": "CAB-0ced74d42057f596ab5767fae4f6a9fc",
+      "id": "3513594712141192338",
+      "pvp": false
+    },
+    {
+      "name": "Level_EU_BM5_Linear",
+      "file": "CAB-b0eb6a363484cedfe77d514cdfd3dca8",
+      "id": "-7368656023474631323",
+      "pvp": false
+    },
+    {
+      "name": "Level_EU_SVG",
+      "file": "CAB-f898ae1df717bea67ba7c717546c6099",
+      "id": "-5302077401287104648",
+      "pvp": false
+    },
+    {
+      "name": "Level_EU_SVG_BM",
+      "file": "CAB-b016f0322294eed7dce96c09da436211",
+      "id": "1593883118320255794",
+      "pvp": false
+    },
+    {
+      "name": "Level_India_BM5",
+      "file": "CAB-22db8fccfa900a671216f68dd2e53396",
+      "id": "-9203148964814385102",
+      "pvp": false
+    },
+    {
+      "name": "Level_India_SVG",
+      "file": "CAB-8c0c86c16f8afcf41f1caaeb3014cc42",
+      "id": "-2787733748893555704",
+      "pvp": false
+    },
+    {
+      "name": "Level_India_SVG_BM",
+      "file": "CAB-02b83f1392bb90233f68cdee600403ea",
+      "id": "-3927732341218061193",
+      "pvp": false
+    },
+    {
+      "name": "Level_Italy_BM5",
+      "file": "CAB-1505e94cea012b4820d3a7213ad4984e",
+      "id": "-1196851785660861097",
+      "pvp": false
+    },
+    {
+      "name": "Level_Italy_SVG",
+      "file": "CAB-4c44c077d2710223ea7270469f037348",
+      "id": "-2625353091037477246",
+      "pvp": false
+    },
+    {
+      "name": "Level_Italy_SVG_BM",
+      "file": "CAB-9800c6e9dc3207eecc6f51c1758b83ab",
+      "id": "-6949660193993339683",
+      "pvp": false
+    },
+    {
+      "name": "Level_Italy_pvp Variant",
+      "file": "CAB-c02e2c81d021e244e9724e1238bfe981",
+      "id": "-2275699791783941314",
+      "pvp": true
+    },
+    {
+      "name": "Level_Japan_BM5_Cycled",
+      "file": "CAB-798de0368874e776fd40ed7cdf4786ae",
+      "id": "-4776038930164353297",
+      "pvp": false
+    },
+    {
+      "name": "Level_Japan_BM5_Linear",
+      "file": "CAB-c9e8b23479e851f7e791da947cd9fef1",
+      "id": "1636104344025184916",
+      "pvp": false
+    },
+    {
+      "name": "Level_Japan_SVG",
+      "file": "CAB-72c498de82a5c381704b962b3538058d",
+      "id": "-2917815765538665557",
+      "pvp": false
+    },
+    {
+      "name": "Level_Japan_SVG_BM",
+      "file": "CAB-0a1858a614b8639ed6404f2efdfad1af",
+      "id": "6744921325432116386",
+      "pvp": false
+    },
+    {
+      "name": "Level_Korea_BM5_Cycled",
+      "file": "CAB-ebfbcc68fa9eac5c56a86af149aa129c",
+      "id": "1075306086020018404",
+      "pvp": false
+    },
+    {
+      "name": "Level_Korea_BM5_Linear",
+      "file": "CAB-c4c209973e5afcf4100d62a7e725df52",
+      "id": "-3369926823093967185",
+      "pvp": false
+    },
+    {
+      "name": "Level_Korea_Fixed_SVG",
+      "file": "CAB-aad26932dec94e19c439830b8efe73b9",
+      "id": "4880715218996565758",
+      "pvp": false
+    },
+    {
+      "name": "Level_Korea_Fixed_SVG_BM",
+      "file": "CAB-391cd97059cdad276e18d098cbe275d5",
+      "id": "-3342454577186324883",
+      "pvp": false
+    },
+    {
+      "name": "Level_LatinAmerica",
+      "file": "CAB-c52f6ebbdf30c7952d1d378349865d7b",
+      "id": "6561916958687282088",
+      "pvp": false
+    },
+    {
+      "name": "Level_LatinAmerica_BM5_Cycled",
+      "file": "CAB-efa11cb98239ff50ab1fc35f9a42ad3f",
+      "id": "8655271382346306441",
+      "pvp": false
+    },
+    {
+      "name": "Level_LatinAmerica_BM5_Linear",
+      "file": "CAB-a9e9452f332d5ed7917996dcbff17ea2",
+      "id": "-58441281572623315",
+      "pvp": false
+    },
+    {
+      "name": "Level_LatinAmerica_f1",
+      "file": "CAB-875916f54c4e530fa9d674e850d2d0a2",
+      "id": "7557695035940696939",
+      "pvp": false
+    },
+    {
+      "name": "Level_LatinAmerica_f1_BM",
+      "file": "CAB-85d69dc4417cde1b758d3103842fee85",
+      "id": "562285851082560681",
+      "pvp": false
+    },
+    {
+      "name": "Level_Madagascar_Tutorial_1 Variant",
+      "file": "CAB-d708d93a869ca169f563f0b47775df9b",
+      "id": "-6657002176700007229",
+      "pvp": false
+    },
+    {
+      "name": "Level_Madagascar_Tutorial_2",
+      "file": "CAB-f884db738e663a0db97beda765a2b6a9",
+      "id": "-4846304606003271975",
+      "pvp": false
+    },
+    {
+      "name": "Level_Madagascar_Tutorial_2_hard Variant",
+      "file": "CAB-d708d93a869ca169f563f0b47775df9b",
+      "id": "8238239953881307597",
+      "pvp": false
+    },
+    {
+      "name": "Level_New_vs_OLD_pvp Variant",
+      "file": "CAB-ea492fbdaaae3c711a6e3a3c3842eff9",
+      "id": "208427960703378222",
+      "pvp": true
+    },
+    {
+      "name": "Level_Oceania_BM5",
+      "file": "CAB-6da901b1625f89509bc79b7ab5ab16ff",
+      "id": "4959433607637917060",
+      "pvp": false
+    },
+    {
+      "name": "Level_Oceania_SVG_v2",
+      "file": "CAB-b39c1256ebdcdecd860c31c58397fd71",
+      "id": "-7175117659043627529",
+      "pvp": false
+    },
+    {
+      "name": "Level_Oceania_SVG_v2_BM",
+      "file": "CAB-ca8e725ea4beb858ffd779c9101df831",
+      "id": "-8498952796107765250",
+      "pvp": false
+    },
+    {
+      "name": "Level_UK_BM5",
+      "file": "CAB-d70eac08d3a27decaa9b1033c54736ff",
+      "id": "-1425365805409269832",
+      "pvp": false
+    },
+    {
+      "name": "Level_UK_Irland_pvp",
+      "file": "CAB-6d749bf654f29372f731ba6103575358",
+      "id": "-8887750010312550172",
+      "pvp": true
+    },
+    {
+      "name": "Level_UK_SVG",
+      "file": "CAB-3c3abcddd11c523a7995562402ad8780",
+      "id": "-7801452316289074370",
+      "pvp": false
+    },
+    {
+      "name": "Level_UK_SVG_BM",
+      "file": "CAB-f378ebeec36dc308fcb4eb9925cb7b96",
+      "id": "2378213339816388352",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_0_SVG",
+      "file": "CAB-70753946b66a174523888c65ae873f8b",
+      "id": "4761897956690919384",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_0_SVG_With_BattleMechanics Variant",
+      "file": "CAB-1d5f155d556c0bf6635ba6f8bb2771ed",
+      "id": "6877492138747101745",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_0_SVG_With_Propaganda Variant",
+      "file": "CAB-1cddfebae2de1023f9270461c7fb1e19",
+      "id": "-7425031637389982290",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_0_SVG_With_SlowDownZones Variant",
+      "file": "CAB-16453fbd9398f629127b17dccc7126df",
+      "id": "2633907727044870187",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_0_SVG_With_Turrets Variant",
+      "file": "CAB-f443ba1c5235a8cf6a93c7e30d5d7415",
+      "id": "2248425594027653909",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_BM5_Linear",
+      "file": "CAB-873051ba36d54524d00db48c2bed5391",
+      "id": "-8488563970116918509",
+      "pvp": false
+    },
+    {
+      "name": "Level_USA_Cycle_SVG",
+      "file": "CAB-70753946b66a174523888c65ae873f8b",
+      "id": "7013688176045356616",
+      "pvp": false
+    }
+  ]
+}
