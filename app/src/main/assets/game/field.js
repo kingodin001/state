@@ -15,6 +15,16 @@ function bounds(map,overview){
  return {x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
 }
 function camera(map,rect,options={}){
+ if(map.reference&&map.stages){
+  const stage=options.stage||0,c=options.overview?map.previewCamera:map.stages[stage].camera,regs=options.overview?map.regions:map.regions.filter(r=>(r.stage||0)===stage),pad=options.overview?15:26,top=options.overview?16:42;
+  const xs=regs.map(r=>r.center[0]),ys=regs.map(r=>r.center[1]),b={x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
+  const sourceScale=rect.height/(2*c.halfHeight),fit=Math.min((rect.width-pad*2)/Math.max(1,b.width),(rect.height-top-pad)/Math.max(1,b.height)),s=Math.min(sourceScale,fit);
+  let x=rect.x+rect.width/2-c.center[0]*s,y=rect.y+rect.height/2-c.center[1]*s;
+  // Respect the serialized camera while keeping counters reachable on narrow phones.
+  x=Math.max(rect.x+pad-b.x*s,Math.min(rect.x+rect.width-pad-(b.x+b.width)*s,x));
+  y=Math.max(rect.y+top-b.y*s,Math.min(rect.y+rect.height-pad-(b.y+b.height)*s,y));
+  return {s,baseScale:s,x,y,rect:{...rect},bounds:b,sourceCamera:c,stage};
+ }
  const b=bounds(map,options.overview),pad=options.overview?12:25,top=options.overview?40:42;
  const s=Math.min((rect.width-pad*2)/Math.max(1,b.width),(rect.height-top-pad)/Math.max(1,b.height));
  const zoom=options.zoom||1;

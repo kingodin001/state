@@ -43,7 +43,7 @@ class Meta{
  speedSlot(index,now=Date.now()){const s=this.m.slots[index];if(!s||s.ends>0&&s.ends<=now||!this.spend('tickets',1))return false;s.ends=now;return true;}
  claimSlot(index,now=Date.now()){const s=this.m.slots[index];if(!s||!s.ends||s.ends>now)return false;this.eco.c.chests[s.type]++;this.m.slots[index]=null;return true;}
  league(){const points=this.m.rating;return {name:points<250?'БРОНЗА':points<700?'СЕРЕБРО':points<1400?'ЗОЛОТО':'АЛМАЗ',points,next:points<250?250:points<700?700:points<1400?1400:2000,wins:this.m.duelWins,battles:this.m.duels};}
- stickerId(level){const c=g.TerraCampaign,template=c?c.levels[level]?.template:level%20;return (template||0)*4+Math.floor(level/20)%4;}
+ stickerId(level){return Math.max(0,Math.floor(Number(level)||0))%80;}
  grantSticker(id){const duplicate=!!this.m.stickers[id];this.m.stickers[id]=(this.m.stickers[id]||0)+1;if(duplicate)this.m.albumStars++;return {id,duplicate};}
  buyStickerPack(){if(this.m.albumStars<20)return false;this.m.albumStars-=20;this.m.stickerPacks++;return true;}
  openStickerPack(){if(this.m.stickerPacks<1)return null;this.m.stickerPacks--;return Array.from({length:3},()=>this.grantSticker(Math.floor(this.eco.random()*80)));}

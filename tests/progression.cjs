@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),{Battle}=require('../app/src/main/ass
 const state={coins:0,level:0,unlocked:0,completed:[],stars:{},upgrades:[0,0,0,0],wins:0,captures:0,sent:0};campaign.normalize(state);const eco=new Economy(state),meta=new Meta(eco);
 function upgrade(){for(let n=0;n<100;n++){const choices=[0,1,3].filter(i=>state.upgrades[i]<20).map(i=>({i,cost:Math.floor((i===3?60:50)*Math.pow(1.48,state.upgrades[i]))})).sort((a,b)=>a.cost-b.cost);if(!choices.length||choices[0].cost>state.coins)break;state.coins-=choices[0].cost;state.upgrades[choices[0].i]++;}}
 function order(b){
- const own=b.regions.filter(r=>r.owner===1),others=b.regions.filter(r=>r.owner!==1);if(!own.length||!others.length)return;
+ const own=b.regions.filter(r=>r.active!==false&&r.owner===1),others=b.regions.filter(r=>r.active!==false&&r.owner!==1);if(!own.length||!others.length)return;
  if(b.leaderCooldown<=0&&b.leaderCharges>0){const base=[...own].sort((a,c)=>a.units-c.units)[0];b.activateLeader(base.id);}
  let best=null,score=-Infinity;
  for(const t of others){const incoming=b.units.filter(u=>u.owner===1&&u.to===t.id).length+b.waves.filter(w=>w.owner===1&&w.to===t.id).reduce((n,w)=>n+w.left,0);if(incoming>t.units+8)continue;
@@ -22,5 +22,5 @@ for(const l of campaign.levels){
  else{meta.result('campaign',true,b,true);const stars=b.time<95?3:b.time<170?2:1;meta.m.albumStars+=stars;state.stars[l.index]=stars;state.coins+=l.reward;state.wins++;state.captures+=b.stats.captured;state.sent+=b.stats.sent;state.completed.push(l.index);eco.victory(l.index);state.unlocked=Math.min(199,l.index+1);}
  if((l.index+1)%10===0)console.log('Chapter',Math.floor(l.index/10)+1,'wins',results.slice(-10).filter(x=>x.result==='win').length+'/10','coins',state.coins,'upgrades',state.upgrades.join('/'));
 }
-const fs=require('node:fs'),path=require('node:path'),out=path.join(__dirname,'../test-results/v5');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(out+'/progression.json',JSON.stringify({results,failures,coins:state.coins,upgrades:state.upgrades},null,2));
+const fs=require('node:fs'),path=require('node:path'),out=path.join(__dirname,'../test-results/v6');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(out+'/progression.json',JSON.stringify({results,failures,coins:state.coins,upgrades:state.upgrades},null,2));
 assert.deepEqual(failures,[],'Every campaign must be completable with legitimately earned upgrades');assert.equal(state.completed.length,200);assert.equal(eco.c.album.length,200);assert.equal(state.unlocked,199);assert.equal(Object.keys(meta.m.stickers).length,80);assert.equal(meta.m.stickerPacks,20);console.log('PASS all 200 scenarios, finite economy, 200 album entries, final unlock');

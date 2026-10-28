@@ -1,4 +1,4 @@
-const {Battle}=require('../app/src/main/assets/game/engine.js'),levels=require('../app/src/main/assets/game/campaign.js').levels.slice(0,5);
+const {Battle}=require('../app/src/main/assets/game/engine.js'),levels=require('../app/src/main/assets/game/maps.js').slice(0,5);
 // A simple expansion policy validates that every campaign can finish without buying upgrades.
 function commandPlayer(b){
  const own=b.regions.filter(r=>r.owner===1),others=b.regions.filter(r=>r.owner!==1);if(!others.length)return;

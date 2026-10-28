@@ -61,3 +61,5 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* Store prefab: 980-unit content, 271-unit cards, centres at 156/490/824. */
 #hub-screen{padding-left:calc(var(--design-unit)*50);padding-right:calc(var(--design-unit)*50)}
 .chests-grid{grid-template-columns:repeat(3,minmax(0,calc(var(--design-unit)*271)));gap:calc(var(--design-unit)*63);justify-content:center}
+
+#stage-label{position:absolute;top:calc(var(--design-unit)*118);left:50%;transform:translateX(-50%);white-space:nowrap;font-family:TerraDisplay,Arial,sans-serif;font-size:10px;letter-spacing:1px;color:#777}

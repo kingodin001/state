@@ -3,9 +3,9 @@ const campaign=require('../app/src/main/assets/game/campaign.js'),C=require('../
 function fresh(extra={}){const state={coins:0,wins:0,captures:0,sent:0,completed:[],stars:{},upgrades:[0,0,0,0],...extra};campaign.normalize(state);const eco=new C.Economy(state),meta=new Meta(eco);return {state,eco,meta};}
 function fixture(options={}){return new Battle({seed:2,cap:50,enemyRate:0,aiInterval:9999,regions:[{id:0,owner:1,units:30,center:[0,0],kind:'normal'},{id:1,owner:0,units:5,center:[400,300],kind:'normal'},{id:2,owner:2,units:20,center:[1000,0],kind:'normal'}],...options});}
 function advance(b,t){for(let i=0;i<Math.round(t*40);i++)b.step(.025);}
-test('200 unique scenarios use all twenty maps, valid chapters, increasing long-term enemy strength and bounded rewards',()=>{
- assert.equal(campaign.levels.length,200);assert.equal(campaign.templates.length,20);assert.equal(new Set(campaign.levels.map(l=>l.template)).size,20);
- const sig=new Set();for(const l of campaign.levels){sig.add(JSON.stringify([l.template,l.regions.map(r=>[r.owner,r.units,r.kind])]));assert.equal(l.chapter,Math.floor(l.index/10));assert(l.enemyRate>0&&l.enemyRate<=1.1);assert(l.aiInterval>=2);assert(l.regions.some(r=>r.owner===1));assert(l.regions.some(r=>r.owner>1));const reward=campaign.reward(l.index);assert(reward.gems>=8&&reward.gems<=16&&reward.shards<=10);}
+test('200 missions use all 51 imported layouts, valid chapters and bounded rewards',()=>{
+ assert.equal(campaign.levels.length,200);assert.equal(campaign.templates.length,20);assert.equal(new Set(campaign.levels.map(l=>l.layoutIndex)).size,51);
+ const sig=new Set();for(const l of campaign.levels){sig.add(JSON.stringify([l.index,l.layoutIndex,l.regions.map(r=>[r.owner,r.units,r.kind])]));assert.equal(l.chapter,Math.floor(l.index/10));assert(l.enemyRate>0&&l.enemyRate<=1.1);assert(l.aiInterval>=2);assert(l.regions.some(r=>r.owner===1));assert(l.regions.some(r=>r.owner>1));const reward=campaign.reward(l.index);assert(reward.gems>=8&&reward.gems<=16&&reward.shards<=10);}
  assert.equal(sig.size,200);assert(campaign.levels[199].enemyRate>campaign.levels[20].enemyRate);assert(campaign.levels[199].aiInterval<campaign.levels[20].aiInterval);
 });
 test('Five-level saves unlock level six, retain currencies, purchases and old income upgrade without a reset',()=>{

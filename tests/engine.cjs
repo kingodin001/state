@@ -1,10 +1,10 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {Battle}=require('../app/src/main/assets/game/engine.js');
-const levels=require('../app/src/main/assets/game/campaign.js').levels;
+const levels=require('../app/src/main/assets/game/maps.js');
 const mk=()=>({seed:2,cap:50,enemyRate:0,aiInterval:10000,regions:[{id:0,owner:1,units:20,center:[0,0],kind:'normal'},{id:1,owner:0,units:5,center:[100,0],kind:'normal'},{id:2,owner:2,units:20,center:[300,0],kind:'normal'}]});
 const advance=(b,t)=>{for(let i=0;i<t*40;i++)b.step(1/40);};
 test('All 200 scenarios have valid unique ids, finite polygons and bases inside bounds',()=>{
- assert.equal(levels.length,200);for(const l of levels){assert(l.regions.some(r=>r.owner===1));assert(l.regions.some(r=>r.owner>1));for(let i=0;i<l.regions.length;i++){const r=l.regions[i];assert.equal(r.id,i);assert(r.poly.length>=3);assert(r.poly.every(p=>p.every(Number.isFinite)));assert(r.center[0]>=0&&r.center[0]<=l.width+1);assert(r.center[1]>=0&&r.center[1]<=l.height+1);}}
+ const current=require('../app/src/main/assets/game/campaign.js').levels;assert.equal(current.length,200);for(const l of current){assert(l.regions.some(r=>r.owner===1));assert(l.regions.some(r=>r.owner>1));for(let i=0;i<l.regions.length;i++){const r=l.regions[i];assert.equal(r.id,i);assert(r.poly.length>=3);assert(r.poly.every(p=>p.every(Number.isFinite)));assert(r.center[0]>=0&&r.center[0]<=l.width+1);assert(r.center[1]>=0&&r.center[1]<=l.height+1);}}
 });
 test('Owned production grows at stated speed, neutrals do not produce',()=>{const b=new Battle(mk(),{production:2});advance(b,10);assert(Math.abs(b.regions[0].units-33.6)<1e-5);assert.equal(b.regions[1].units,5);});
 test('Production stops at 50; incoming reinforcements can exceed cap',()=>{const l=mk();l.regions[0].units=49;const b=new Battle(l);advance(b,10);assert.equal(b.regions[0].units,50);b.arrive({to:0,owner:1});assert.equal(b.regions[0].units,51);advance(b,2);assert.equal(b.regions[0].units,51);});
