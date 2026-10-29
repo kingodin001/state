@@ -1,0 +1,27 @@
+{
+  "version": "0.10.0",
+  "versionCode": 11,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 20829095,
+  "sha256": "3a339d762c29429dd1e1eb3e629c5bce0f1a585bfabc73a042eb2243e2db4574",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1203,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "physicalAndroidTested": false,
+  "unitTestsPassed": 64,
+  "browserViewports": [
+    "360x640",
+    "390x844",
+    "600x800"
+  ],
+  "extraBrowserChecks": [
+    "source sprite alpha",
+    "seven own leader assets",
+    "source bonus selection and stock persistence",
+    "eleven visible player colors"
+  ],
+  "parityComplete": false,
+  "knownValidationConcern": "One first 600x800 reload run returned default fighter; isolated retry and full instrumented retry preserved f13. Cause not established; Android save test pending."
+}
