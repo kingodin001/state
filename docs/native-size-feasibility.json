@@ -1,0 +1,49 @@
+{
+  "kind": "Compression feasibility only; not a working Android build",
+  "compression": "XZ/LZMA2 preset 6 with original bytes intact",
+  "groups": [
+    {
+      "group": "core_runtime",
+      "rawBytes": 153556856,
+      "sourceZipBytes": 42774497,
+      "xzPreset6Bytes": 26167604,
+      "files": 3,
+      "seconds": 61.0
+    },
+    {
+      "group": "unity_content",
+      "rawBytes": 104808991,
+      "sourceZipBytes": 50380875,
+      "xzPreset6Bytes": 36341108,
+      "files": 1695,
+      "seconds": 36.6
+    },
+    {
+      "group": "all_dex",
+      "rawBytes": 116209508,
+      "sourceZipBytes": 113373486,
+      "xzPreset6Bytes": 33205412,
+      "files": 16,
+      "seconds": 47.3
+    }
+  ],
+  "coreAndContentXzBytes": 62508712,
+  "allThreeXzBytes": 95714124,
+  "limitBytes": 40000000,
+  "notes": [
+    "Core excludes optional SDK native libraries.",
+    "Content includes all original Unity/Addressables files, including unused variants.",
+    "DEX includes SDK classes; no dependency-safe shrinking was performed.",
+    "XZ payloads need a custom unpacking host and are not installable APKs.",
+    "File preservation does not prove game startup or ad removal."
+  ],
+  "unpackedContentExperiment": {
+    "contentFiles": 1695,
+    "bundlesRepackedUncompressed": 88,
+    "xzPreset6Bytes": 33081568,
+    "coreAndContentXzBytes": 59249172,
+    "seconds": 53.6,
+    "note": "Experiment only; repacked bundles require catalogue CRC/hash/size updates; Android runtime not tested."
+  },
+  "sourceXapkSha256": "d5db5f8d8fb99b69b5fa88b014f0afbc6d5095a8c98987902631d56d946be0e8"
+}
