@@ -57,5 +57,13 @@
   "artifactFilename": "TerraStorm-0.9.0-offline-test.apk",
   "savedArtifactDownloadSha256Verified": true,
   "sourceBaseApkSha256": "012b1087a585ae3647d9b827ded597640726ca5d3709729aa9117a040e1faf3a",
-  "sourceArm64SplitSha256": "9ed5a1add768be9b0a19a71ab707a2a283f8ad817c19402ed6fadc35e51c9ad8"
+  "sourceArm64SplitSha256": "9ed5a1add768be9b0a19a71ab707a2a283f8ad817c19402ed6fadc35e51c9ad8",
+  "subsequentDeviceReport": {
+    "runtimeResult": "failed before gameplay",
+    "androidVersion": "14",
+    "exception": "Resources$NotFoundException: String resource ID #0x0",
+    "origin": "com.unity3d.player.U constructor",
+    "causeConfirmedFromOriginalBytecode": "game_view_content_description omitted by Android resource selection",
+    "fixedInVersionCode": 10
+  }
 }

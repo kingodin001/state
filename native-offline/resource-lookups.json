@@ -1,0 +1,731 @@
+[
+  {
+    "type": "attr",
+    "name": "alpha",
+    "sourceId": "0x7f040037",
+    "classes": [
+      "androidx/dynamicanimation/animation/DynamicAnimation.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "background",
+    "sourceId": "0x7f040051",
+    "classes": [
+      "androidx/core/app/NotificationCompat$WearableExtender.smali",
+      "com/google/firebase/crashlytics/internal/model/AutoCrashlyticsReportEncoder$CrashlyticsReportSessionEventApplicationEncoder.smali",
+      "com/google/firebase/crashlytics/internal/model/serialization/CrashlyticsReportJsonTransform.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "color",
+    "sourceId": "0x7f040103",
+    "classes": [
+      "com/unity/androidnotifications/UnityNotificationUtilities.smali",
+      "com/unity3d/player/a/K.smali",
+      "spacemadness/com/lunarconsole/console/DefaultRichTextFactory.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "content",
+    "sourceId": "0x7f040156",
+    "classes": [
+      "androidx/core/graphics/drawable/IconCompat.smali",
+      "androidx/core/provider/FontProvider.smali",
+      "com/google/android/gms/common/internal/zzam.smali",
+      "com/google/android/gms/dynamite/DynamiteModule.smali",
+      "com/google/android/gms/measurement/internal/zzpp.smali",
+      "com/google/firebase/crashlytics/internal/model/AutoCrashlyticsReportEncoder$CrashlyticsReportSessionEventLogEncoder.smali",
+      "com/google/firebase/crashlytics/internal/model/serialization/CrashlyticsReportJsonTransform.smali",
+      "kotlinx/serialization/internal/BooleanArraySerializer.smali",
+      "kotlinx/serialization/internal/ByteArraySerializer.smali",
+      "kotlinx/serialization/internal/CharArraySerializer.smali",
+      "kotlinx/serialization/internal/DoubleArraySerializer.smali",
+      "kotlinx/serialization/internal/FloatArraySerializer.smali",
+      "kotlinx/serialization/internal/IntArraySerializer.smali",
+      "kotlinx/serialization/internal/LongArraySerializer.smali",
+      "kotlinx/serialization/internal/ShortArraySerializer.smali",
+      "kotlinx/serialization/internal/UByteArraySerializer.smali",
+      "kotlinx/serialization/internal/UIntArraySerializer.smali",
+      "kotlinx/serialization/internal/ULongArraySerializer.smali",
+      "kotlinx/serialization/internal/UShortArraySerializer.smali",
+      "kotlinx/serialization/json/JsonArray.smali",
+      "kotlinx/serialization/json/JsonObject.smali",
+      "spacemadness/com/lunarconsole/console/LunarConsoleFileProvider.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "defaultValue",
+    "sourceId": "0x7f04019c",
+    "classes": [
+      "androidx/collection/LongSparseArrayKt.smali",
+      "kotlin/collections/ArraysKt__ArraysKt.smali",
+      "kotlin/collections/ArraysKt___ArraysKt.smali",
+      "kotlin/collections/CollectionsKt__CollectionsKt.smali",
+      "kotlin/collections/CollectionsKt___CollectionsKt.smali",
+      "kotlin/collections/MapsKt__MapWithDefaultKt.smali",
+      "kotlin/collections/MapsKt__MapsJVMKt.smali",
+      "kotlin/collections/MapsKt__MapsKt.smali",
+      "kotlin/collections/unsigned/UArraysKt___UArraysKt.smali",
+      "kotlin/sequences/SequencesKt__SequencesKt.smali",
+      "kotlin/sequences/SequencesKt___SequencesKt.smali",
+      "kotlin/text/StringsKt__StringsKt.smali",
+      "kotlin/text/StringsKt___StringsKt.smali",
+      "kotlinx/serialization/json/internal/DescriptorSchemaCache.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "dependency",
+    "sourceId": "0x7f0401a0",
+    "classes": [
+      "spacemadness/com/lunarconsole/dependency/Provider.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "duration",
+    "sourceId": "0x7f0401c9",
+    "classes": [
+      "androidx/transition/Transition.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "entries",
+    "sourceId": "0x7f0401e2",
+    "classes": [
+      "com/google/firebase/remoteconfig/internal/ConfigFetchHttpClient.smali",
+      "kotlin/enums/EnumEntriesKt.smali",
+      "kotlin/enums/EnumEntriesList.smali",
+      "kotlin/enums/EnumEntriesSerializationProxy.smali",
+      "okio/ZipFileSystem.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "font",
+    "sourceId": "0x7f040233",
+    "classes": [
+      "androidx/core/content/res/FontResourcesParserCompat.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "fragment",
+    "sourceId": "0x7f040243",
+    "classes": [
+      "androidx/fragment/app/FragmentLayoutInflaterFactory.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "icon",
+    "sourceId": "0x7f040262",
+    "classes": [
+      "androidx/core/app/NotificationCompatJellybean.smali",
+      "androidx/core/app/Person.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "key",
+    "sourceId": "0x7f0402a0",
+    "classes": [
+      "androidx/activity/result/ActivityResultRegistry.smali",
+      "androidx/collection/LruCache.smali",
+      "androidx/collection/internal/LruHashMap.smali",
+      "androidx/core/app/Person$Api22Impl.smali",
+      "androidx/core/app/Person.smali",
+      "androidx/datastore/core/MulticastFileObserver$Companion.smali",
+      "androidx/datastore/migrations/SharedPreferencesView.smali",
+      "androidx/datastore/preferences/core/MutablePreferences.smali",
+      "androidx/datastore/preferences/core/Preferences$Pair.smali",
+      "androidx/datastore/preferences/protobuf/MessageLiteToString.smali",
+      "androidx/lifecycle/SavedStateHandle$Companion.smali",
+      "androidx/lifecycle/SavedStateHandle$SavingStateLiveData.smali",
+      "androidx/lifecycle/SavedStateHandle.smali",
+      "androidx/lifecycle/SavedStateHandleController.smali",
+      "androidx/lifecycle/SavedStateHandlesProvider.smali",
+      "androidx/lifecycle/SavedStateViewModelFactory.smali",
+      "androidx/lifecycle/ViewModelProvider.smali",
+      "androidx/lifecycle/ViewModelStore.smali",
+      "androidx/lifecycle/viewmodel/CreationExtras$Empty.smali",
+      "androidx/lifecycle/viewmodel/MutableCreationExtras.smali",
+      "androidx/savedstate/SavedStateRegistry.smali",
+      "com/google/android/gms/common/api/internal/zabl.smali",
+      "com/google/android/gms/internal/measurement/zzafe.smali",
+      "com/google/android/gms/internal/measurement/zzzm.smali",
+      "com/google/android/gms/internal/play_billing/zzho.smali",
+      "com/google/common/collect/ImmutableSortedMap.smali",
+      "com/google/firebase/analytics/ParametersBuilder.smali",
+      "com/google/firebase/crashlytics/KeyValueBuilder.smali",
+      "com/google/firebase/crashlytics/internal/model/AutoCrashlyticsReportEncoder$CrashlyticsReportCustomAttributeEncoder.smali",
+      "com/google/firebase/crashlytics/internal/model/serialization/CrashlyticsReportJsonTransform.smali",
+      "com/google/firebase/datastorage/JavaDataStorage.smali",
+      "com/google/firebase/datastorage/JavaDataStorageKt.smali",
+      "com/google/firebase/encoders/proto/ProtobufDataEncoderContext.smali",
+      "com/google/firebase/remoteconfig/RemoteConfigKt.smali",
+      "com/google/firebase/remoteconfig/internal/DefaultsXmlParser.smali",
+      "kotlin/coroutines/AbstractCoroutineContextElement.smali",
+      "kotlin/coroutines/AbstractCoroutineContextKey.smali",
+      "kotlin/coroutines/CombinedContext.smali",
+      "kotlin/coroutines/ContinuationInterceptor$DefaultImpls.smali",
+      "kotlin/coroutines/CoroutineContext$Element$DefaultImpls.smali",
+      "kotlin/coroutines/EmptyCoroutineContext.smali",
+      "kotlinx/serialization/internal/ClassValueCache.smali",
+      "kotlinx/serialization/internal/ClassValueParametrizedCache.smali",
+      "kotlinx/serialization/internal/ClassValueReferences.smali",
+      "kotlinx/serialization/internal/ConcurrentHashMapCache.smali",
+      "kotlinx/serialization/internal/ConcurrentHashMapParametrizedCache.smali",
+      "kotlinx/serialization/internal/MapEntrySerializer.smali",
+      "kotlinx/serialization/internal/SerializerCache$DefaultImpls.smali",
+      "kotlinx/serialization/internal/SerializerCache.smali",
+      "kotlinx/serialization/json/JsonElementKt.smali",
+      "kotlinx/serialization/json/JsonObject.smali",
+      "kotlinx/serialization/json/internal/AbstractJsonLexer.smali",
+      "kotlinx/serialization/json/internal/AbstractJsonTreeEncoder.smali",
+      "kotlinx/serialization/json/internal/DescriptorSchemaCache.smali",
+      "kotlinx/serialization/json/internal/JsonExceptionsKt.smali",
+      "kotlinx/serialization/json/internal/JsonPrimitiveEncoder.smali",
+      "kotlinx/serialization/json/internal/JsonTreeEncoder.smali",
+      "kotlinx/serialization/json/internal/JsonTreeListEncoder.smali",
+      "kotlinx/serialization/json/internal/JsonTreeMapEncoder.smali",
+      "okio/Buffer.smali",
+      "okio/ByteString.smali",
+      "okio/HashingSink$Companion.smali",
+      "okio/HashingSink.smali",
+      "okio/HashingSource$Companion.smali",
+      "okio/HashingSource.smali",
+      "okio/SegmentedByteString.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "location",
+    "sourceId": "0x7f040303",
+    "classes": [
+      "androidx/core/content/ContextCompat$LegacyServiceMapHolder.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "menu",
+    "sourceId": "0x7f040350",
+    "classes": [
+      "androidx/activity/ComponentActivity.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "min",
+    "sourceId": "0x7f040353",
+    "classes": [
+      "com/google/android/gms/internal/play_billing/zzbn.smali",
+      "com/google/common/base/Stopwatch.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "number",
+    "sourceId": "0x7f0403ca",
+    "classes": [
+      "com/google/android/gms/internal/measurement/zzbj.smali",
+      "com/unity/androidnotifications/UnityNotificationUtilities.smali",
+      "kotlin/text/HexFormat.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "size",
+    "sourceId": "0x7f04047c",
+    "classes": [
+      "com/google/android/gms/common/util/WorkSourceUtil.smali",
+      "com/google/common/collect/Collections2.smali",
+      "com/google/common/collect/ImmutableMultimap$FieldSettersHolder.smali",
+      "com/google/common/collect/Sets.smali",
+      "com/google/firebase/crashlytics/internal/model/AutoCrashlyticsReportEncoder$CrashlyticsReportSessionEventApplicationExecutionBinaryImageEncoder.smali",
+      "com/google/firebase/crashlytics/internal/model/serialization/CrashlyticsReportJsonTransform.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "title",
+    "sourceId": "0x7f04052f",
+    "classes": [
+      "androidx/core/app/NotificationCompatJellybean.smali",
+      "com/android/billingclient/api/ProductDetails$SubscriptionOfferDetails.smali",
+      "com/android/billingclient/api/ProductDetails.smali",
+      "com/unity/androidnotifications/UnityNotificationManager.smali"
+    ]
+  },
+  {
+    "type": "attr",
+    "name": "values",
+    "sourceId": "0x7f04056c",
+    "classes": [
+      "androidx/collection/ArraySetKt.smali",
+      "androidx/lifecycle/SavedStateHandle$Companion.smali",
+      "androidx/lifecycle/SavedStateHandle.smali",
+      "kotlin/collections/ArrayAsCollection.smali",
+      "kotlinx/serialization/internal/EnumSerializer.smali"
+    ]
+  },
+  {
+    "type": "color",
+    "name": "staticSplashScreenBackgroundColor",
+    "sourceId": "0x7f060418",
+    "classes": [
+      "com/unity3d/player/a/K.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "FUNCTION",
+    "sourceId": "0x7f0a0004",
+    "classes": [
+      "kotlin/annotation/AnnotationTarget.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "MEDIUM",
+    "sourceId": "0x7f0a0006",
+    "classes": [
+      "com/google/android/gms/internal/measurement/zzyv.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "actions",
+    "sourceId": "0x7f0a0049",
+    "classes": [
+      "androidx/core/app/NotificationCompat$WearableExtender.smali",
+      "androidx/core/app/NotificationCompatJellybean.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "add",
+    "sourceId": "0x7f0a004f",
+    "classes": [
+      "androidx/datastore/preferences/protobuf/ExtensionRegistryLite.smali",
+      "com/google/android/gms/common/util/WorkSourceUtil.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "all",
+    "sourceId": "0x7f0a0058",
+    "classes": [
+      "com/google/android/gms/internal/measurement/zzaas.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "auto",
+    "sourceId": "0x7f0a0072",
+    "classes": [
+      "com/google/android/gms/measurement/internal/AppMeasurementDynamiteService.smali",
+      "com/google/android/gms/measurement/internal/zzhi.smali",
+      "com/google/android/gms/measurement/internal/zzic.smali",
+      "com/google/android/gms/measurement/internal/zzit.smali",
+      "com/google/android/gms/measurement/internal/zzkn.smali",
+      "com/google/android/gms/measurement/internal/zzkx.smali",
+      "com/google/android/gms/measurement/internal/zzky.smali",
+      "com/google/android/gms/measurement/internal/zzlj.smali",
+      "com/google/android/gms/measurement/internal/zzmb.smali",
+      "com/google/android/gms/measurement/internal/zzoa.smali",
+      "com/google/android/gms/measurement/internal/zzob.smali",
+      "com/google/android/gms/measurement/internal/zzpa.smali",
+      "com/google/android/gms/measurement/internal/zzpg.smali",
+      "com/google/android/gms/measurement/internal/zzx.smali",
+      "com/google/firebase/FirebaseCommonRegistrar.smali",
+      "com/google/firebase/analytics/connector/internal/zzc.smali",
+      "kotlinx/coroutines/DebugKt.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "content",
+    "sourceId": "0x7f0a0116",
+    "classes": [
+      "androidx/core/graphics/drawable/IconCompat.smali",
+      "androidx/core/provider/FontProvider.smali",
+      "com/google/android/gms/common/internal/zzam.smali",
+      "com/google/android/gms/dynamite/DynamiteModule.smali",
+      "com/google/android/gms/measurement/internal/zzpp.smali",
+      "com/google/firebase/crashlytics/internal/model/AutoCrashlyticsReportEncoder$CrashlyticsReportSessionEventLogEncoder.smali",
+      "com/google/firebase/crashlytics/internal/model/serialization/CrashlyticsReportJsonTransform.smali",
+      "kotlinx/serialization/internal/BooleanArraySerializer.smali",
+      "kotlinx/serialization/internal/ByteArraySerializer.smali",
+      "kotlinx/serialization/internal/CharArraySerializer.smali",
+      "kotlinx/serialization/internal/DoubleArraySerializer.smali",
+      "kotlinx/serialization/internal/FloatArraySerializer.smali",
+      "kotlinx/serialization/internal/IntArraySerializer.smali",
+      "kotlinx/serialization/internal/LongArraySerializer.smali",
+      "kotlinx/serialization/internal/ShortArraySerializer.smali",
+      "kotlinx/serialization/internal/UByteArraySerializer.smali",
+      "kotlinx/serialization/internal/UIntArraySerializer.smali",
+      "kotlinx/serialization/internal/ULongArraySerializer.smali",
+      "kotlinx/serialization/internal/UShortArraySerializer.smali",
+      "kotlinx/serialization/json/JsonArray.smali",
+      "kotlinx/serialization/json/JsonObject.smali",
+      "spacemadness/com/lunarconsole/console/LunarConsoleFileProvider.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "coordinator",
+    "sourceId": "0x7f0a011b",
+    "classes": [
+      "androidx/datastore/core/FileStorageConnection.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "direct",
+    "sourceId": "0x7f0a0132",
+    "classes": [
+      "com/google/firebase/components/Dependency.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "end",
+    "sourceId": "0x7f0a014a",
+    "classes": [
+      "androidx/privacysandbox/ads/adservices/measurement/DeletionRequest$Builder.smali",
+      "androidx/privacysandbox/ads/adservices/measurement/DeletionRequest.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "icon",
+    "sourceId": "0x7f0a01dc",
+    "classes": [
+      "androidx/core/app/NotificationCompatJellybean.smali",
+      "androidx/core/app/Person.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "info",
+    "sourceId": "0x7f0a01e9",
+    "classes": [
+      "com/google/common/io/TempFileCreator$JavaNioCreator.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "inline",
+    "sourceId": "0x7f0a01ea",
+    "classes": [
+      "com/google/android/datatransport/runtime/scheduling/persistence/SQLiteEventStore.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "item",
+    "sourceId": "0x7f0a02ca",
+    "classes": [
+      "androidx/activity/ComponentActivity.smali",
+      "androidx/core/content/res/ColorStateListInflaterCompat.smali",
+      "androidx/core/content/res/GradientColorInflaterCompat.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "item_name",
+    "sourceId": "0x7f0a02d4",
+    "classes": [
+      "com/google/android/gms/measurement/internal/zzjn.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "left",
+    "sourceId": "0x7f0a02e9",
+    "classes": [
+      "kotlin/coroutines/CombinedContext.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "line",
+    "sourceId": "0x7f0a02ee",
+    "classes": [
+      "kotlin/text/StringsKt__IndentKt.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "message",
+    "sourceId": "0x7f0a040e",
+    "classes": [
+      "androidx/datastore/core/CorruptionException.smali",
+      "com/google/android/gms/common/ConnectionResult.smali",
+      "com/google/firebase/logger/Logger$FakeLogger.smali",
+      "kotlin/NotImplementedError.smali",
+      "kotlin/time/InstantFormatException.smali",
+      "kotlinx/serialization/json/internal/AbstractJsonLexer.smali",
+      "kotlinx/serialization/json/internal/JsonDecodingException.smali",
+      "kotlinx/serialization/json/internal/JsonEncodingException.smali",
+      "kotlinx/serialization/json/internal/JsonException.smali",
+      "kotlinx/serialization/json/internal/JsonExceptionsKt.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "normal",
+    "sourceId": "0x7f0a048c",
+    "classes": [
+      "com/google/android/gms/cloudmessaging/CloudMessage.smali",
+      "com/google/firebase/messaging/MessagingAnalytics.smali",
+      "com/google/firebase/messaging/RemoteMessage.smali",
+      "com/google/firebase/messaging/cpp/MessageWriter.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "off",
+    "sourceId": "0x7f0a0490",
+    "classes": [
+      "kotlinx/coroutines/DebugKt.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "on",
+    "sourceId": "0x7f0a0494",
+    "classes": [
+      "kotlinx/coroutines/DebugKt.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "path",
+    "sourceId": "0x7f0a04b3",
+    "classes": [
+      "androidx/datastore/core/FileStorage.smali",
+      "kotlin/io/path/PathNode.smali",
+      "kotlin/io/path/PathRelativizer.smali",
+      "kotlin/io/path/PathsKt__PathUtilsKt.smali",
+      "kotlinx/serialization/json/internal/PolymorphicKt.smali",
+      "kotlinx/serialization/json/internal/TreeJsonEncoderKt.smali",
+      "okio/FileSystem.smali",
+      "okio/JvmSystemFileSystem.smali",
+      "okio/NioFileSystemWrappingFileSystem.smali",
+      "okio/NioSystemFileSystem.smali",
+      "okio/ZipFileSystem.smali",
+      "okio/internal/-FileSystem.smali",
+      "okio/internal/ResourceFileSystem.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "position",
+    "sourceId": "0x7f0a04bc",
+    "classes": [
+      "androidx/transition/ChangeBounds.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "scale",
+    "sourceId": "0x7f0a04db",
+    "classes": [
+      "com/google/firebase/crashlytics/internal/common/BatteryState.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "start",
+    "sourceId": "0x7f0a0515",
+    "classes": [
+      "androidx/privacysandbox/ads/adservices/measurement/DeletionRequest$Builder.smali",
+      "androidx/privacysandbox/ads/adservices/measurement/DeletionRequest.smali",
+      "kotlin/io/FileTreeWalk.smali",
+      "kotlin/io/path/PathTreeWalk.smali",
+      "kotlin/ranges/ComparableOpenEndRange.smali",
+      "kotlin/ranges/ComparableRange.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "text",
+    "sourceId": "0x7f0a0532",
+    "classes": [
+      "androidx/core/app/NotificationCompat$CarExtender.smali",
+      "androidx/core/app/NotificationCompat$MessagingStyle$Message.smali",
+      "kotlin/io/FilesKt__FileReadWriteKt.smali",
+      "kotlin/io/path/PathsKt__PathReadWriteKt.smali",
+      "kotlinx/serialization/json/internal/InternalJsonWriter$Companion.smali",
+      "kotlinx/serialization/json/internal/JsonToStringWriter.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "time",
+    "sourceId": "0x7f0a0545",
+    "classes": [
+      "androidx/core/app/NotificationCompat$MessagingStyle$Message.smali",
+      "com/google/firebase/Timestamp.smali",
+      "com/google/firebase/sessions/Time.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "title",
+    "sourceId": "0x7f0a0547",
+    "classes": [
+      "androidx/core/app/NotificationCompatJellybean.smali",
+      "com/android/billingclient/api/ProductDetails$SubscriptionOfferDetails.smali",
+      "com/android/billingclient/api/ProductDetails.smali",
+      "com/unity/androidnotifications/UnityNotificationManager.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "unitySurfaceView",
+    "sourceId": "0x7f0a0562",
+    "classes": [
+      "com/unity3d/player/U.smali",
+      "com/unity3d/player/UnityPlayerForGameActivity.smali"
+    ]
+  },
+  {
+    "type": "id",
+    "name": "unknown",
+    "sourceId": "0x7f0a0563",
+    "classes": [
+      "androidx/fragment/app/FragmentStateManager.smali",
+      "com/google/android/gms/common/internal/zzs.smali",
+      "com/google/android/gms/internal/measurement/zztt.smali",
+      "com/google/android/gms/measurement/internal/zzgi.smali",
+      "spacemadness/com/lunarconsole/console/ConsoleLogView.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "com.crashlytics.android.build_id",
+    "sourceId": "0x7f130082",
+    "classes": [
+      "com/google/firebase/crashlytics/internal/common/CommonUtils.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "com.google.firebase.crashlytics.unity_version",
+    "sourceId": "0x7f130083",
+    "classes": [
+      "com/google/firebase/crashlytics/internal/DevelopmentPlatformProvider$DevelopmentPlatform.smali",
+      "com/google/firebase/crashlytics/internal/DevelopmentPlatformProvider.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "copy",
+    "sourceId": "0x7f1300bb",
+    "classes": [
+      "kotlin/io/path/PathsKt__PathRecursiveFunctionsKt$copyToRecursively$5$2.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "defaults",
+    "sourceId": "0x7f1300e7",
+    "classes": [
+      "com/google/firebase/remoteconfig/RemoteConfigComponent.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "fcm_fallback_notification_channel_label",
+    "sourceId": "0x7f13013a",
+    "classes": [
+      "com/google/firebase/messaging/CommonNotificationBuilder.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "firebase_database_url",
+    "sourceId": "0x7f13013c",
+    "classes": [
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "game_view_content_description",
+    "sourceId": "0x7f13013d",
+    "classes": [
+      "com/unity3d/player/U.smali",
+      "com/unity3d/player/UnityPlayer.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "gcm_defaultSenderId",
+    "sourceId": "0x7f13013e",
+    "classes": [
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "google_api_key",
+    "sourceId": "0x7f13013f",
+    "classes": [
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "google_app_id",
+    "sourceId": "0x7f130140",
+    "classes": [
+      "com/google/android/gms/internal/measurement/zzez.smali",
+      "com/google/android/gms/measurement/internal/zzgi.smali",
+      "com/google/android/gms/measurement/internal/zzhu.smali",
+      "com/google/android/gms/measurement/internal/zzlj.smali",
+      "com/google/android/gms/measurement/internal/zzlt.smali",
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "google_storage_bucket",
+    "sourceId": "0x7f130142",
+    "classes": [
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "off",
+    "sourceId": "0x7f130243",
+    "classes": [
+      "kotlinx/coroutines/DebugKt.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "on",
+    "sourceId": "0x7f13024c",
+    "classes": [
+      "kotlinx/coroutines/DebugKt.smali"
+    ]
+  },
+  {
+    "type": "string",
+    "name": "project_id",
+    "sourceId": "0x7f130258",
+    "classes": [
+      "com/google/firebase/FirebaseOptions.smali"
+    ]
+  }
+]

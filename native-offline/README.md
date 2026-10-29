@@ -1,5 +1,10 @@
 # Offline native experiment 0.9.0 — 58.97 MB
 
+**Update: 0.9.0 failed on the user's phone before reaching gameplay.**
+The previously untested missing-name resource lookup is corrected in
+[0.9.1](RESOURCE_FIX_0.9.1.md). The measurements below describe the original
+0.9.0 artifact, not a successful device launch.
+
 **Status: signed packaging/integrity prototype, not a verified running clone.**
 The normal 0.8 WebView game is unchanged. This experiment has the separate
 package `pro.vymi.terrastorm.reference`, version code 9, and requires Android 11+
@@ -119,8 +124,13 @@ DEX, native executable or signing key is committed here.
     arrow timing, fixed camera, currency consistency, shop scrolling and saves.
     Compare screenshots at matching resolution before making parity claims.
 
-For changes to payloads already delivered, bump the manifest version **and**
-`OfflineFactory.DATA_DIRECTORY` so old prepared data cannot mask new content.
+For changes to gameplay payloads already delivered, bump the manifest version
+**and** `OfflineFactory.DATA_DIRECTORY`. A shell-only resource update may keep
+the directory when every gameplay/code/library payload is byte-identical, but
+must advance the resource-generation marker and refresh the private archive.
+0.9.1 does this with `android-shell-v10`; the old `complete-v1` marker alone is
+insufficient. Its compiler-generated `unity-resources.index` is also required
+by the new runtime resource preflight.
 
 Decoder documentation: <https://tukaani.org/xz/java.html>.
 Android loader APIs: <https://developer.android.com/reference/android/content/res/loader/ResourcesLoader>.

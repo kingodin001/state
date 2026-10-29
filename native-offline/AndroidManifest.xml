@@ -1,9 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pro.vymi.terrastorm.reference" android:versionCode="9" android:versionName="0.9.0-offline-experiment">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pro.vymi.terrastorm.reference" android:versionCode="10" android:versionName="0.9.1-resource-fix">
 <uses-sdk android:minSdkVersion="30" android:targetSdkVersion="35"/>
 <uses-permission android:name="android.permission.VIBRATE"/>
 <uses-feature android:glEsVersion="0x00030000" android:required="true"/>
 <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:xlargeScreens="true"/>
-<application android:name="pro.vymi.terrastorm.offline.OfflineApplication" android:appComponentFactory="pro.vymi.terrastorm.offline.OfflineFactory" android:label="Терра Шторм · Unity тест" android:allowBackup="false" android:extractNativeLibs="true" android:usesCleartextTraffic="false" android:allowNativeHeapPointerTagging="false" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
+<application android:name="pro.vymi.terrastorm.offline.OfflineApplication" android:appComponentFactory="pro.vymi.terrastorm.offline.OfflineFactory" android:label="Терра Шторм" android:allowBackup="false" android:extractNativeLibs="true" android:usesCleartextTraffic="false" android:allowNativeHeapPointerTagging="false" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
 <activity android:name="pro.vymi.terrastorm.offline.BootActivity" android:exported="true" android:screenOrientation="portrait"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
 <activity android:name="pro.vymi.terrastorm.offline.NativeGameActivity" android:exported="false" android:hardwareAccelerated="false" android:screenOrientation="userPortrait" android:configChanges="fontScale|density|layoutDirection|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc" android:theme="@style/UnityThemeSelector"><meta-data android:name="unityplayer.UnityActivity" android:value="true"/></activity>
 <meta-data android:name="unity.splash-mode" android:value="0"/>

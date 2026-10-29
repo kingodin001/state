@@ -11,6 +11,7 @@ import org.tukaani.xz.XZInputStream;
 public final class PayloadInstaller {
     public interface Progress { void update(long done, long total); }
     private static final int MEMORY_LIMIT_KIB = 192 * 1024;
+    private static final String SHELL_MARKER = "android-shell-v10";
     private final File source, directory;
     private final Progress progress;
     private long done, total;
@@ -63,10 +64,56 @@ public final class PayloadInstaller {
         e.setSize(size); e.setCompressedSize(size); e.setCrc(crc); e.setTime(315532800000L);
         return e;
     }
+    private void addAndroidResources(ZipFile apk, ZipOutputStream out) throws Exception {
+        Enumeration<? extends ZipEntry> entries = apk.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry e = entries.nextElement(); String name = e.getName();
+            if (e.isDirectory() || !(name.startsWith("res/") ||
+                    (name.startsWith("assets/") && !name.startsWith("assets/offline/")) ||
+                    name.equals("resources.arsc") || name.equals("AndroidManifest.xml"))) continue;
+            out.putNextEntry(entry(name, e.getSize(), e.getCrc()));
+            try (InputStream in = apk.getInputStream(e)) { copy(in, out, e.getSize()); }
+            out.closeEntry();
+        }
+    }
+    private void shellComplete() throws IOException {
+        try (FileOutputStream stamp = new FileOutputStream(new File(directory, SHELL_MARKER))) {
+            stamp.write(1); stamp.getFD().sync();
+        }
+    }
+    /** Resource-only update: retain verified game bytes, libraries and read-only DEX. */
+    private void refreshAndroidResources() throws Exception {
+        if (new File(directory, SHELL_MARKER).isFile()) return;
+        File target = new File(directory, "game-data.apk"), temp = new File(directory, "game-data.apk.tmp");
+        try (ZipFile apk = new ZipFile(source); ZipFile cached = new ZipFile(target)) {
+            Map<String, String[]> expected = index(apk, "assets/offline/game.index");
+            for (String[] row : expected.values()) total += Long.parseLong(row[1]);
+            try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(temp)))) {
+                for (String[] row : expected.values()) {
+                    ZipEntry e = cached.getEntry(row[0]);
+                    if (e == null || e.getSize() != Long.parseLong(row[1]) || e.getCrc() != Long.parseLong(row[2]))
+                        throw new IOException("Cached asset mismatch: " + row[0]);
+                    out.putNextEntry(entry(row[0], e.getSize(), e.getCrc()));
+                    try (InputStream in = cached.getInputStream(e)) {
+                        if (!copy(in, out, e.getSize()).equals(row[3])) throw new IOException("Cached asset checksum: " + row[0]);
+                    }
+                    out.closeEntry();
+                }
+                addAndroidResources(apk, out);
+            }
+        }
+        // Same-filesystem atomic replacement: an interrupted refresh keeps the
+        // existing completed archive, so a retry never consumes a partial file.
+        java.nio.file.Files.move(temp.toPath(), target.toPath(),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING, java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+        shellComplete();
+    }
     public void install() throws Exception {
         if (!directory.isDirectory() && !directory.mkdirs()) throw new IOException("Cannot create game directory");
         File marker = new File(directory, "complete-v1");
-        if (marker.isFile() && new File(directory, "game-data.apk").isFile()) return;
+        if (marker.isFile() && new File(directory, "game-data.apk").isFile()) {
+            refreshAndroidResources(); return;
+        }
         File libs = new File(directory, "lib");
         if (!libs.isDirectory() && !libs.mkdirs()) throw new IOException("Cannot create library directory");
         try (ZipFile zip = new ZipFile(source)) {
@@ -128,21 +175,13 @@ public final class PayloadInstaller {
                 if (seen.size() != gameIndex.size()) throw new IOException("Missing game assets");
                 // Public ResourcesLoader reads this archive as an APK. Android resources
                 // are already in the outer APK and need no duplicate download/payload.
-                Enumeration<? extends ZipEntry> entries = zip.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry e = entries.nextElement();
-                    if (e.isDirectory() || !(e.getName().startsWith("res/") ||
-                            (e.getName().startsWith("assets/") && !e.getName().startsWith("assets/offline/")) ||
-                            e.getName().equals("resources.arsc") || e.getName().equals("AndroidManifest.xml"))) continue;
-                    out.putNextEntry(entry(e.getName(), e.getSize(), e.getCrc()));
-                    try (InputStream resource = zip.getInputStream(e)) { copy(resource, out, e.getSize()); }
-                    out.closeEntry();
-                }
+                addAndroidResources(zip, out);
             }
             File target = new File(directory, "game-data.apk");
             if (target.exists() && !target.delete()) throw new IOException("Cannot replace game data");
             if (!temp.renameTo(target)) throw new IOException("Cannot install game data");
             try (FileOutputStream stamp = new FileOutputStream(marker)) { stamp.write(1); stamp.getFD().sync(); }
+            shellComplete();
         }
     }
     public static void main(String[] args) throws Exception {

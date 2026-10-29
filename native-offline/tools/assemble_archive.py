@@ -20,6 +20,10 @@ def main():
         for f in sorted((work/'offline').iterdir()):
             apk.write(f, 'assets/offline/'+f.name,
                       compress_type=ZIP_STORED if f.suffix == '.xz' else ZIP_DEFLATED, compresslevel=9)
+        contract = work/'unity-resources.index'
+        if not contract.is_file(): raise FileNotFoundError('Run select_resources.py to generate unity-resources.index')
+        if not (work/'offline/unity-resources.index').is_file():
+            apk.write(contract, 'assets/offline/unity-resources.index', compress_type=ZIP_DEFLATED, compresslevel=9)
         # Also communicates the original ARM64-only ABI to Android's installer.
         apk.writestr('lib/arm64-v8a/libmain.so', arm.read('lib/arm64-v8a/libmain.so'),
                      compress_type=ZIP_DEFLATED, compresslevel=9)
