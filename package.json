@@ -1,11 +1,12 @@
 {
   "name": "terra-storm",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/expansion.cjs tests/parity-fixes.cjs tests/reference.cjs && node tests/balance.cjs && node tests/progression.cjs",
-    "test:ui": "node tests/ui.cjs && node tests/battle-ui.cjs && node tests/victory.cjs && node tests/expansion-ui.cjs && node tests/campaign-layout.cjs && node tests/rush-ui.cjs && node tests/parity-ui.cjs && node tests/stages-ui.cjs",
-    "test:visual": "node tests/visual.cjs"
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs",
+    "test:ui": "node tests/source-ui.cjs",
+    "test:visual": "node tests/visual.cjs",
+    "prepare:assets": "python3 scripts/prepare_reference.py"
   },
   "devDependencies": {
     "playwright": "1.56.1"

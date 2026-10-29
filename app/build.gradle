@@ -6,8 +6,8 @@ android {
         applicationId 'pro.vymi.terrastorm'
         minSdk 26
         targetSdk 35
-        versionCode 6
-        versionName '0.6.0'
+        versionCode 8
+        versionName '0.8.0'
     }
     signingConfigs {
         release {
@@ -27,3 +27,9 @@ android {
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
 }
+
+tasks.register("prepareReferenceVisuals", Copy) {
+from zipTree(rootProject.file("reference-content/visuals.zip"))
+into "src/main/assets/game/reference/images"
+}
+tasks.named("preBuild").configure { dependsOn "prepareReferenceVisuals" }

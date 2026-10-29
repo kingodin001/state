@@ -10,6 +10,7 @@ class Meta{
   s.tickets=Math.max(0,Math.floor(s.tickets||0));if(!s.meta.ticketsGranted){s.tickets+=3;s.meta.ticketsGranted=true;}
   s.profileName=s.profileName||'Командир';s.collection.dailySlots=Math.max(3,Math.min(6,s.collection.dailySlots||3));this.refresh();
   this.m.stickers=this.m.stickers||{};this.m.stickerSets=this.m.stickerSets||[];this.m.stickerPacks=this.m.stickerPacks||0;this.m.albumStars=this.m.albumStars||0;
+  if(!this.m.sourceAlbumMigrated){this.m.legacyStickers={...this.m.stickers};this.m.legacyStickerSets=[...this.m.stickerSets];const migrated={};for(const [id,count] of Object.entries(this.m.stickers)){const key=Number(id)%54;migrated[key]=(migrated[key]||0)+count;}this.m.stickers=migrated;this.m.stickerSets=[];this.m.sourceAlbumMigrated=true;}
   if(!this.m.albumMigrated){this.m.albumStars+=Object.values(s.stars||{}).reduce((n,v)=>n+Math.max(0,Math.min(3,Number(v)||0)),0);for(const i of s.completed||[]){const id=this.stickerId(i);this.m.stickers[id]=Math.max(1,this.m.stickers[id]||0);}this.m.albumMigrated=true;}
  }
  get m(){return this.state.meta;}
@@ -43,11 +44,11 @@ class Meta{
  speedSlot(index,now=Date.now()){const s=this.m.slots[index];if(!s||s.ends>0&&s.ends<=now||!this.spend('tickets',1))return false;s.ends=now;return true;}
  claimSlot(index,now=Date.now()){const s=this.m.slots[index];if(!s||!s.ends||s.ends>now)return false;this.eco.c.chests[s.type]++;this.m.slots[index]=null;return true;}
  league(){const points=this.m.rating;return {name:points<250?'БРОНЗА':points<700?'СЕРЕБРО':points<1400?'ЗОЛОТО':'АЛМАЗ',points,next:points<250?250:points<700?700:points<1400?1400:2000,wins:this.m.duelWins,battles:this.m.duels};}
- stickerId(level){return Math.max(0,Math.floor(Number(level)||0))%80;}
+ stickerId(level){return Math.max(0,Math.floor(Number(level)||0))%54;}
  grantSticker(id){const duplicate=!!this.m.stickers[id];this.m.stickers[id]=(this.m.stickers[id]||0)+1;if(duplicate)this.m.albumStars++;return {id,duplicate};}
  buyStickerPack(){if(this.m.albumStars<20)return false;this.m.albumStars-=20;this.m.stickerPacks++;return true;}
- openStickerPack(){if(this.m.stickerPacks<1)return null;this.m.stickerPacks--;return Array.from({length:3},()=>this.grantSticker(Math.floor(this.eco.random()*80)));}
- claimStickerSet(world){if(!Number.isInteger(world)||world<0||world>=20||this.m.stickerSets.includes(world)||![0,1,2,3].every(i=>this.m.stickers[world*4+i]))return false;const reward={coins:150+world*10,gems:20,tickets:1};this.reward(reward);this.m.stickerSets.push(world);return reward;}
+ openStickerPack(){if(this.m.stickerPacks<1)return null;this.m.stickerPacks--;return Array.from({length:3},()=>this.grantSticker(Math.floor(this.eco.random()*54)));}
+ claimStickerSet(world){if(!Number.isInteger(world)||world<0||world>=9||this.m.stickerSets.includes(world)||![0,1,2,3,4,5].every(i=>this.m.stickers[world*6+i]))return false;const reward={coins:150+world*10,gems:20,tickets:1};this.reward(reward);this.m.stickerSets.push(world);return reward;}
  result(mode,won,battle,first=false){if(mode==='duel'){this.m.duels++;if(won)this.m.duelWins++;this.m.rating=Math.max(0,this.m.rating+(won?25:-12));}if(mode==='rush')this.m.bestRush=Math.max(this.m.bestRush,battle.stats.captured);if(mode==='campaign'&&won&&first){this.addChest(battle.level.index);this.grantSticker(this.stickerId(battle.level.index));if((battle.level.index+1)%10===0)this.m.stickerPacks++;}}
 }
 g.TerraMeta={Meta,packs,wheels,day,week};if(typeof module!=='undefined')module.exports=g.TerraMeta;

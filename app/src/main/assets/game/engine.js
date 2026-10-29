@@ -6,10 +6,10 @@ class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
-  this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.leaderCharges=2;this.leaderCooldown=0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
+  this.timing=level.sourcePort?field.SOURCE_TIMING:timing;this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.sourceLeader=options.sourceLeader;this.leaderCharges=level.sourcePort?(options.sourceLeader?Infinity:0):2;this.leaderCooldown=level.sourcePort&&options.sourceLeader?(options.sourceLeader.Cooldown||0)*(1-(options.sourceLeader.Preload||0)):0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0,shieldPoints:r.shieldPoints||0,bonusClaimed:false,hidden:!!level.tutorial&&!options.skipTutorial&&(level.tutorialHidden||[]).includes(r.id),active:(r.stage||0)===0}));for(const r of this.regions)r.active=r.active&&!r.hidden;this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
-  this.production=1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
+  this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?1:1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};for(const f of this.factions)this.aiTimers[f]=level.aiInterval+this.rng.next()*1.2;
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=(level.tutorial||!level.reference&&level.seed===1)&&!options.skipTutorial;
   this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
@@ -44,6 +44,7 @@ class Battle {
   this.skillCharges[type]--;return true;
  }
  activateLeader(target){
+  if(this.level.sourcePort)return this.activateSourceLeader();
   const r=this.regions[target];if(this.result||this.paused||this.stageTransition>0||!r||r.active===false||this.leaderCharges<=0||this.leaderCooldown>0)return false;
   if(this.leaderType===1||this.leaderType===4){if(r.owner===0||r.owner===1)return false;if(this.leaderType===1){r.frozen=8;this.emit('freeze',{id:target});}else{r.poison=10;this.emit('poison',{id:target});}}
   else{if(r.owner!==1)return false;
@@ -56,6 +57,18 @@ class Battle {
   }
   this.leaderCharges--;this.leaderCooldown=24;return true;
  }
+ activateSourceLeader(){
+  const s=this.sourceLeader;if(!s||this.result||this.paused||this.leaderCooldown>0)return false;
+  const allies=this.regions.filter(r=>r.active&&r.owner===1).sort((a,b)=>a.units-b.units),enemies=this.regions.filter(r=>r.active&&r.owner>1).sort((a,b)=>a.units-b.units);if(!allies.length)return false;
+  if(s.kind.includes('Sabotage')){if(!enemies.length)return false;const r=enemies[0];r.units-=Math.max(1,allies[0].units*s.Stat1);if(r.units<0){r.owner=1;r.units=-r.units;this.stats.captured++;this.emit('capture',{id:r.id,owner:1});}}
+  else if(s.kind.includes('IncreaseSpeed'))this.speedBoost=s.Stat2;
+  else if(s.kind.includes('Shield'))allies[0].shieldPoints+=Math.ceil(this.playerLimit*s.Stat1);
+  else if(s.kind.includes('ProductionBoost')){this.productionBoost=s.Stat2;this.sourceBoost=s.Stat1;}
+  else if(s.kind.includes('Berserker')){this.berserk=s.Stat2;this.berserkDamage=s.Stat1;}
+  else if(s.kind.includes('Poison'))for(const r of enemies){r.poison=s.Stat2;r.frozen=s.Stat2;}
+  else if(s.kind.includes('Freeze')){for(const r of enemies)r.frozen=s.Stat2;this.freezeEnemies=s.Stat2;}
+  this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
+ }
  ai(owner){
   const own=this.regions.filter(r=>r.active!==false&&r.owner===owner);if(!own.length)return;
   const enemies=this.regions.filter(r=>r.active!==false&&r.owner!==owner);if(!enemies.length)return;
@@ -65,7 +78,7 @@ class Battle {
    for(const t of enemies){
     const d=distance(s,t);const incoming=this.units.filter(u=>u.owner===owner&&u.to===t.id).length+this.waves.filter(w=>w.owner===owner&&w.to===t.id).reduce((sum,w)=>sum+w.left,0);
     const defense=this.visible(owner,t.id)?t.units:t.owner?15:8;
-    const needed=defense+(t.owner?d/timing.marchSpeed*.8:0)+2-incoming;
+    const needed=defense+(t.owner?d/this.timing.marchSpeed*.8:0)+2-incoming;
     if(needed<0)continue;
     const score=(available-needed)*.6-d*.025+(t.owner===0?8:0)+(t.kind==='factory'?7:0)+this.rng.next()*4;
     if(score>bestScore){bestScore=score;best={s,t,needed};}
@@ -85,7 +98,7 @@ class Battle {
   const r=this.regions[u.to];if(r.active===false)return;if(r.owner===u.owner){r.units=Math.min(999,r.units+1);return;}
   if(r.shieldPoints>0){r.shieldPoints--;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
-  const damage=r.kind==='fort'?.7:1;r.units-=damage;
+  const damage=(r.kind==='fort'?.7:1)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):1);r.units-=damage;
   if(r.units<0){
    const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;
@@ -101,15 +114,17 @@ class Battle {
  }
  tick(dt){
   if(this.stageTransition>0){this.stageTransition=Math.max(0,this.stageTransition-dt);return;}
-  this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);this.speedBoost=Math.max(0,this.speedBoost-dt);
+  this.berserk=Math.max(0,(this.berserk||0)-dt);this.freezeEnemies=Math.max(0,(this.freezeEnemies||0)-dt);this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);this.speedBoost=Math.max(0,this.speedBoost-dt);
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
    if(r.active===false)continue;
    r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){r.poison=Math.max(0,r.poison-dt);r.units=Math.max(0,r.units-dt*1.5);}
-   const cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
+   let cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
+   if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=r.owner===1?this.playerLimit:this.enemyLimit;
    if(r.owner&&r.units<cap&&r.frozen<=0){
-    let rate=r.owner===1?this.production*(this.productionBoost>0?1.8:1):this.level.enemyRate;
-    if(r.spawnRate!==undefined)rate=r.spawnRate*(r.owner===1?this.production:1);
+    let rate=r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
+    if(r.spawnRate!==undefined)rate=r.spawnRate*(r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):1);
+    if(this.level.sourcePort&&!(r.sourceSettings?.SpawnSpeed>=0))rate=r.owner===1?this.sourceProduction*this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
     r.units=Math.min(cap,r.units+dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1));
    }
@@ -127,21 +142,23 @@ class Battle {
    let wave=this.waves.find(w=>w.from===a.id&&w.left>0);
    if(!wave){this.departureClocks[a.id]=0;continue;}
    this.departureClocks[a.id]=(this.departureClocks[a.id]||0)+dt;
-   while(wave&&this.departureClocks[a.id]>=timing.departureInterval){
-    this.departureClocks[a.id]-=timing.departureInterval;
+   while(wave&&this.departureClocks[a.id]+1e-9>=(this.timing.departureInterval/(this.level.sourcePort&&a.owner===1?this.playerSpeed:1))){
+    this.departureClocks[a.id]-=this.timing.departureInterval/(this.level.sourcePort&&a.owner===1?this.playerSpeed:1);
+    for(let batch=0;batch<(this.timing.waveSize||1)&&wave;batch++){
     if(a.units<1){for(const w of this.waves)if(w.from===a.id)w.left=0;break;}
     const b=this.regions[wave.to],d=Math.max(1,distance(a,b)),nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
     const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;
-    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:timing.marchSpeed*(1+(this.rng.next()-.5)*timing.marchVariation)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
+    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:this.timing.marchSpeed*(1+(this.rng.next()-.5)*this.timing.marchVariation)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
     wave=this.waves.find(w=>w.from===a.id&&w.left>0);
+    }
    }
   }
   this.waves=this.waves.filter(w=>w.left>0);
   for(const u of this.units){
    if(u.dead)continue;
-   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=1;
+   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=u.owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1;
    for(const zone of this.level.zones||[])if((zone.stage===undefined||zone.stage===this.stage)&&Math.hypot(u.x-zone.x,u.y-zone.y)<=zone.radius)factor*=zone.factor;
-   const travel=u.speed*dt*factor*(u.owner===1&&this.speedBoost>0?1.4:1);
+   const travel=u.speed*dt*factor*(u.owner===1&&this.speedBoost>0?(this.level.sourcePort?1+(this.sourceLeader?.Stat1||0):1.4):1);
    if(d<=travel+5){u.dead=true;this.arrive(u);}else{u.x+=dx/d*travel;u.y+=dy/d*travel;}
   }
   // Spatial hash: opposing dots annihilate on contact, including crossing attacks.

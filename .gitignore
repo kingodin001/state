@@ -15,3 +15,5 @@ test-results/
 
 __pycache__/
 *.pyc
+
+app/src/main/assets/game/reference/images/

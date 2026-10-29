@@ -82,7 +82,8 @@ for g in gos:
  for o,d in mb(g):
   if '_cameraSettings'in d:
    cameras[g]=d['_cameraSettings']
-   if gos[g].m_Name.startswith('Level') and 'pvp' not in gos[g].m_Name.lower():roots.append(g)
+   if '_previewCamera' in d or gos[g].m_Name.startswith('Level'):roots.append(g)
+roots=[g for g in roots if not any(p in cameras for p in ancestors(g)[1:])]
 print('Found',len(roots),'level roots',len(cameras),'cameras',flush=True)
 levels=[]
 for root in roots:
@@ -97,12 +98,16 @@ for root in roots:
     tutorial=d['_tutorialData'].get('TutorialSteps',[]);tutorial_hidden=[str(p['m_PathID']) for p in d['_tutorialData'].get('BuildingsToHideBeforeTutorial',[])]
    if '_playerOnStart' not in d:continue
    sg=next((p for p in chain if p in stages),stages[0]);stage=stages.index(sg);country=next((p for p in chain[1:] if any(z.type.name=='SpriteRenderer' for z in components.get(p,[]))),None)
+   if not country:
+    for p in chain[1:]:
+     candidates=[q for q in gos if parent(q)==p and any(z.type.name=='SpriteRenderer' for z in components.get(q,[]))]
+     if len(candidates)==1:country=candidates[0];break
    if not country:errors.append([gos[root].m_Name,gos[g].m_Name,'no territory sprite']);continue
    try:geom=shape(country)
    except Exception as ex:errors.append([gos[root].m_Name,gos[g].m_Name,str(ex)[:90]]);continue
    if geom is None or geom.is_empty:errors.append([gos[root].m_Name,gos[g].m_Name,'empty outline']);continue
    pop=deref(o.read().m_GameObject);settings=next((dd for _,dd in mb(g) if '_overrideData' in dd),{})
-   spawn=next((dd['_spawnType'] for _,dd in (mb(g)+mb(country)) if '_spawnType' in dd),None)
+   spawn=next((dd['_spawnType'] for _,dd in sum((mb(p) for p in chain),[]) if '_spawnType' in dd),None)
    pos=world(g);parts=[geom] if geom.geom_type=='Polygon' else list(geom.geoms);parts.sort(key=lambda p:p.area,reverse=True)
    polys=[[[float(x),float(y)] for x,y in list(p.simplify(.003,preserve_topology=True).exterior.coords)[:-1]] for p in parts if p.area>.0001]
    regions.append({'sourceId':str(o.path_id),'name':gos[country].m_Name,'sourceStage':gos[sg].m_Name,'stage':stage,'center':pos,'polys':polys,'spawn':spawn,'override':settings.get('_overrideData') if settings.get('_isOverride') else None,'multiplier':settings.get('_startUnitsMultiplier',1),'kind':'normal'})
@@ -117,10 +122,10 @@ for root in roots:
   enemy=1
   for r in regions:
    if r['stage']!=stage:continue
-   r['owner']=1 if r['spawn']==0 else enemy+1 if r['spawn']==1 and enemy<4 else 0
+   r['owner']=1 if r['spawn']==0 else enemy+1 if r['spawn']==1 else 0
    if r['spawn']==1:enemy+=1
   # Some PvP prefabs have spawn positions on a separate child; declare any omission.
-  if not any(r['owner']==1 for r in regions if r['stage']==stage):errors.append([gos[root].m_Name,stage,'no player spawn'])
+  if not any(r['owner']==1 or 'pvp' in gos[root].m_Name.lower() and r['spawn']==2 for r in regions if r['stage']==stage):errors.append([gos[root].m_Name,stage,'no player spawn'])
  # Mechanic views that are active within their territory, not dormant generic indicators.
  for g in gos:
   chain=list(ancestors(g))
@@ -145,7 +150,7 @@ for root in roots:
   c=cameras[g];return {'center':tr([c['Position']['x'],c['Position']['y']]),'halfHeight':round(c['Size']*unit,3)}
  for i,r in enumerate(regions):
   r['id']=i;r['center']=tr(r['center']);r['polys']=[[tr(p) for p in poly] for poly in r['polys']];r['poly']=r['polys'][0];r['units']=r['override']['StartAmount'] if r['override'] else (15 if r['owner']==1 else 20 if r['owner']>1 else 5);r['units']=round(r['units']*r['multiplier']);r['sourceOverride']=bool(r['override'])
-  if r['override']:r['spawnRate']=r['override']['SpawnSpeed'];r['sourceCap']=r['override']['LimitAmount']
+  if r['override']:r['sourceSettings']=r['override'];r['spawnRate']=r['override']['SpawnSpeed'];r['sourceCap']=r['override']['LimitAmount']
   del r['override']
  for z in zones:z['x'],z['y']=tr([z['x'],z['y']]);z['radius']=round(z['radius']*unit,3)
  levels.append({'source':gos[root].m_Name,'sourceId':str(root[1]),'width':round((xmax-xmin)*unit,3),'height':round((ymax-ymin)*unit,3),'regions':regions,'stages':[{'name':gos[g].m_Name,'camera':cam(g),'regions':[r['id'] for r in regions if r['stage']==i]} for i,g in enumerate(stages)],'previewCamera':cam(root),'zones':zones,'tutorial':bool(tutorial),'tutorialTargets':[next((r['id'] for r in regions if r['sourceId']==str(t.get('Target',{}).get('m_PathID'))),-1) for t in tutorial],'tutorialHidden':[r['id'] for r in regions if r['sourceId'] in tutorial_hidden],'unit':unit})

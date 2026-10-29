@@ -31,5 +31,6 @@ function camera(map,rect,options={}){
  const center=options.focus||{x:b.x+b.width/2,y:b.y+b.height/2};
  return {s:s*zoom,baseScale:s,x:rect.x+rect.width/2-center.x*s*zoom+(options.pan?.x||0),y:rect.y+top+(rect.height-top-pad)/2-center.y*s*zoom+(options.pan?.y||0),rect:{...rect},bounds:b};
 }
-const api={TIMING,inside,slot,bounds,camera};root.TerraField=api;if(typeof module!=='undefined')module.exports=api;
+const SOURCE_TIMING=Object.freeze({departureInterval:.25,marchSpeed:120,marchVariation:0,waveSize:5});
+const api={SOURCE_TIMING,TIMING,inside,slot,bounds,camera};root.TerraField=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -11,7 +11,7 @@ for(const category of ['base','fighter','leader','color'])names[category].forEac
 });
 
 function day(now=Date.now()){const d=new Date(now);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
-function sheet(i){return i<16?'art/terra-collection.png':i<32?'art/bases-a.png':i<48?'art/bases-b.png':i<64?'art/fighters-a.png':i<80?'art/fighters-b.png':'art/leaders.png';}
+function sheet(i){return i<16?'art/terra-collection.webp':i<32?'art/bases-a.webp':i<48?'art/bases-b.webp':i<64?'art/fighters-a.webp':i<80?'art/fighters-b.png':'art/leaders.webp';}
 function rect(i){if(i>=16){const count=i>=80?2:4,n=i>=80?i-80:(i-16)%16,size=1254/count;return [n%count*size,Math.floor(n/count)*size,size,size];}const edges=[0,350,665,955,1254],row=Math.floor(i/4),col=i%4;return [col*313.5,edges[row],313.5,edges[row+1]-edges[row]];}
 function art(i,hue=0,extra=''){const [x,y,w,h]=rect(i),px=x/(1254-w)*100,py=y/(1254-h)*100;return '<span class="art '+extra+'" style="background-image:url(\''+sheet(i)+'\');background-size:'+1254/w*100+'% '+1254/h*100+'%;background-position:'+px+'% '+py+'%;'+(hue?'filter:hue-rotate('+hue+'deg)':'')+'" aria-hidden="true"></span>';}
 
@@ -45,8 +45,8 @@ class Economy{
  openChest(type){
   if(!['basic','royal','legend'].includes(type)||!this.c.chests[type])return null;this.c.chests[type]--;
   const tier=type==='basic'?0:type==='royal'?1:2,reward={coins:50+tier*100+Math.floor(this.random()*50),gems:3+tier*5,supply:1+tier};this.reward(reward);
-  const cards=[];for(let i=0;i<3+tier;i++){const pool=CATALOG.filter(c=>c.category!=='color'&&c.rarity<=Math.min(3,tier+1));const item=pool[Math.floor(this.random()*pool.length)],n=3+tier*3+Math.floor(this.random()*4);cards.push(this.grantShards(item.id,n));}
-  if(tier>0){const pool=CATALOG.filter(c=>c.category!=='color'&&c.rarity>=tier);const item=pool[Math.floor(this.random()*pool.length)];if(!this.inventory(item.id).owned){const inv=this.inventory(item.id);this.c.cards[item.id]={...inv,owned:true,level:1};cards.push({id:item.id,count:1,unlocked:true});}}
+  const cards=[];for(let i=0;i<3+tier;i++){const pool=CATALOG.filter(c=>c.category!=='color'&&(c.source?._isAvailable!==0)&&c.rarity<=Math.min(3,tier+1));const item=pool[Math.floor(this.random()*pool.length)],n=3+tier*3+Math.floor(this.random()*4);cards.push(this.grantShards(item.id,n));}
+  if(tier>0){const pool=CATALOG.filter(c=>c.category!=='color'&&(c.source?._isAvailable!==0)&&c.rarity>=tier);const item=pool[Math.floor(this.random()*pool.length)];if(!this.inventory(item.id).owned){const inv=this.inventory(item.id);this.c.cards[item.id]={...inv,owned:true,level:1};cards.push({id:item.id,count:1,unlocked:true});}}
   return {type,...reward,cards};
  }
  dailyOffers(){this.refresh();const seed=[...this.c.dailyDay].reduce((a,b)=>a+b.charCodeAt(0),0)+(this.c.dailyRefresh||0)*17;return Array.from({length:this.c.dailySlots||3},(_,i)=>i).map(i=>{const pool=CATALOG.filter(c=>c.category!=='color');const item=pool[(seed*7+i*13)%pool.length];return {slot:i,item,shards:5+i*3,cost:60+i*55,bought:this.c.dailyBought.includes(i)};});}

@@ -43,9 +43,14 @@ const offlineReward=offline>180?Math.floor(offline*(100+data.upgrades[2]*75)/360
 if(offlineReward){data.coins+=offlineReward;meta.m.lastOfflineReward=offlineReward;save();}
 let mode='menu',battle=null,currentLevel=data.level,modalType=null,selected=new Set(),fraction=1,casting=null,particles=[],shotLines=[],toastTimer=0,view={s:1,x:0,y:0},drag=null,pointer={x:0,y:0},lastFrame=performance.now(),lastUi=0,scale=1,zoom=1,pan={x:0,y:0},overview=false,defaultZoom=1,cameraFocus=null,cameraTween=null,hoverTarget=null,orderPulses=[],countdownActive=false,countdownRun=0;
 const canvas=$('map'),ctx=canvas.getContext('2d',{alpha:false});let W=400,H=800,DPR=1,paths=[],dots=[];
-let soundCtx=null;const artImage=new Image();artImage.src='art/terra-collection.png';
-const spriteCache=new Map(),spriteImages=new Map([['art/terra-collection.png',artImage]]);
+let soundCtx=null;const artImage=new Image();artImage.src='art/terra-collection.webp';
+const spriteCache=new Map(),spriteImages=new Map([['art/terra-collection.webp',artImage]]);
 function paintSprite(index,x,y,w,h,hue=0,tint=null){
+ const record=TerraSourceRuntime.vectorForArt(index);
+ if(record){const key=record.file+':'+(tint||'white');let image=spriteImages.get(record.file);if(!image){image=new Image();image.src=record.file;spriteImages.set(record.file,image);}if(!image.complete||!image.naturalWidth)return false;
+  if(!spriteCache.has(key)){const c=document.createElement('canvas');c.width=c.height=128;const sc=c.getContext('2d'),ratio=image.naturalWidth/image.naturalHeight;const rw=ratio>1?128:128*ratio,rh=ratio>1?128/ratio:128;sc.drawImage(image,(128-rw)/2,(128-rh)/2,rw,rh);if(tint){sc.globalCompositeOperation='source-in';sc.fillStyle=tint;sc.fillRect(0,0,128,128);}spriteCache.set(key,c);}ctx.drawImage(spriteCache.get(key),x,y,w,h);return true;
+ }
+
  const src=TerraCollection.sheet(index);if(!spriteImages.has(src)){const im=new Image();im.src=src;spriteImages.set(src,im);}const source=spriteImages.get(src);if(!source.complete||!source.naturalWidth)return false;const key=index+':'+hue+':'+(tint||'');
  if(!spriteCache.has(key)){const sprite=document.createElement('canvas');sprite.width=192;sprite.height=192;const sc=sprite.getContext('2d');if(hue)sc.filter='hue-rotate('+hue+'deg)';const crop=TerraCollection.rect(index).map((v,i)=>v*(i%2?source.naturalHeight:source.naturalWidth)/1254);sc.drawImage(source,...crop,0,0,192,192);if(tint){sc.filter='none';sc.globalCompositeOperation='source-atop';sc.globalAlpha=.72;sc.fillStyle=tint;sc.fillRect(0,0,192,192);}spriteCache.set(key,sprite);}
  ctx.drawImage(spriteCache.get(key),x,y,w,h);return true;
@@ -62,17 +67,17 @@ setInterval(musicBeat,480);
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2600);}
 function fmt(n){return n>=100000?(n/1000).toFixed(0)+'k':Math.floor(n).toLocaleString('ru-RU');}
 function time(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');}
-let colorKey=-1,factionPalette=[];
-function color(owner){
- const own=TerraCollection.COLORS[data.color%TerraCollection.COLORS.length];
- if(colorKey!==data.color){colorKey=data.color;const rgb=s=>s.match(/[a-f0-9]{2}/gi).map(x=>parseInt(x,16)),a=rgb(own);const pool=['#f43515','#a964e4','#f0b932','#488df5','#62bb49','#26bbb6'];factionPalette=pool.filter(c=>Math.hypot(...rgb(c).map((v,i)=>v-a[i]))>125);}
- return owner===0?palette[0]:owner===1?own:factionPalette[(owner-2)%factionPalette.length];
+function sourcePalette(owner){
+ const id=owner===0?'c_n':owner===1?eco.item(eco.c.equipped.color).nativeId:['c_2','c_4','c_6','c_8'].filter(x=>x!==eco.item(eco.c.equipped.color).nativeId)[(owner-2)%3];return TerraSource.palettes[eco.c.sourceStyle||'stl_1_origin'][id]||TerraSource.palettes.stl_1_origin.c_0;
 }
-function fill(owner){return '#ffffff';}
-function battleConfig(){return TerraCampaign.combat(levels[currentLevel],{start:data.upgrades[0]*3+eco.bonuses().start,production:1+data.upgrades[1]*.18+eco.bonuses().production,limit:eco.bonuses().limit});}
+function color(owner){return TerraSourceRuntime.hex(sourcePalette(owner).Base.Color);}
+function fill(owner){return TerraSourceRuntime.hex(sourcePalette(owner).Area.Color);}
+function sourceProduction(){return TerraSourceMath.upgrade(12,data.upgrades[1])*(1+eco.bonuses().production);}
+function sourceStart(){return Math.floor(TerraSourceMath.upgrade(11,data.upgrades[0])*(1+(eco.bonuses().sourcePassives[11]||0)));}
+function battleConfig(){return TerraCampaign.combat(levels[currentLevel],{start:sourceStart(),production:sourceProduction(),limit:eco.bonuses().limit});}
 function inside(x,y,poly){let v=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if(((a[1]>y)!==(b[1]>y))&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])v=!v;}return v;}
 function prepareMap(){
- const map=levels[currentLevel];paths=map.regions.map(r=>{const p=new Path2D();for(const poly of r.polys||[r.poly]){poly.forEach((a,i)=>i?p.lineTo(a[0],a[1]):p.moveTo(a[0],a[1]));p.closePath();}return p;});
+ const map=battle?battle.level:levels[currentLevel];paths=map.regions.map(r=>{const p=new Path2D();for(const poly of r.polys||[r.poly]){poly.forEach((a,i)=>i?p.lineTo(a[0],a[1]):p.moveTo(a[0],a[1]));p.closePath();}return p;});
  dots=map.regions.map(r=>Array.from({length:90},(_,i)=>({...TerraField.slot(r,i),phase:i*2.399963})));
  defaultZoom=1;zoom=1;cameraFocus=null;cameraTween=null;pan={x:0,y:0};overview=false;resize();
 
@@ -80,7 +85,7 @@ function prepareMap(){
 function resize(){
  const box=$('app').getBoundingClientRect();W=box.width;H=box.height;DPR=Math.min(2,window.devicePixelRatio||1);
  const cw=Math.round(W*DPR),ch=Math.round(H*DPR);if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}canvas.style.width=W+'px';canvas.style.height=H+'px';
- const map=levels[currentLevel];let rect;
+ const map=battle?battle.level:levels[currentLevel];let rect;
  if(mode==='battle'){
   const top=$('battle-top').getBoundingClientRect().bottom-box.top+13,bottom=$('battle-bottom').getBoundingClientRect().top-box.top-12;
   rect={x:0,y:top,width:W,height:Math.max(160,bottom-top)};
@@ -88,7 +93,7 @@ function resize(){
 
  }else{
   const top=$('map-caption').getBoundingClientRect().bottom-box.top+10,loadout=$('main-loadout'),bottom=(getComputedStyle(loadout).display!=='none'?loadout:$('menu-bottom')).getBoundingClientRect().top-box.top-12;
-  rect={x:12,y:top,width:W-24,height:Math.max(120,bottom-top)};view=TerraField.camera(map,rect,{overview:true});
+  rect={x:12,y:top,width:W-24,height:Math.max(120,bottom-top)};view=TerraField.camera(map,rect,{overview:!map.sourcePort});
  }
  $('zoom-reset').hidden=true;
 }
@@ -104,13 +109,13 @@ function updateMenu(){
  $('play-label').textContent=data.completed.includes(currentLevel)?'ИГРАТЬ СНОВА':'ИГРАТЬ';
  if(hub)hub.wallet();
  const specs=[['units','Стартовый отряд','бойцов','СТАРТОВЫЙ ОТРЯД','#63b3e9','#4196ca',0],['speed','Скорость производства','бойцов в секунду','ПРОИЗВОДСТВО','#a58cdb','#8c73be',1],['castle','Лимит гарнизона','бойцов на базе','ЛИМИТ ГАРНИЗОНА','#edba55','#d29b36',3]];
- $('upgrades').innerHTML=specs.map(sp=>{const i=sp[6],lv=data.upgrades[i],price=upgradePrice(i),value=upgradeValue(i);return '<article class="upgrade" style="--tone:'+sp[4]+';--dark:'+sp[5]+'"><div class="upgrade-icon">'+icon(sp[0])+'</div><strong>'+value+'</strong><span class="unit">'+sp[2]+'</span><h3>'+sp[3]+'</h3><span class="lv">УР. '+(lv+1)+'</span><button data-upgrade="'+i+'" aria-label="Улучшить: '+sp[1]+'" '+(data.coins<price||lv>=20?'disabled':'')+'>'+(lv>=20?'МАКС.':icon('coin')+fmt(price))+'</button></article>';}).join('');
+ $('upgrades').innerHTML=specs.map(sp=>{const i=sp[6],lv=data.upgrades[i],price=upgradePrice(i),value=upgradeValue(i);return '<article class="upgrade" style="--tone:'+sp[4]+';--dark:'+sp[5]+'"><div class="upgrade-icon">'+icon(sp[0])+'</div><strong>'+value+'</strong><span class="unit">'+sp[2]+'</span><h3>'+sp[3]+'</h3><span class="lv">УР. '+(lv+1)+'</span><button data-upgrade="'+i+'" aria-label="Улучшить: '+sp[1]+'" '+(data.coins<price||lv>=300?'disabled':'')+'>'+(lv>=300?'МАКС.':icon('coin')+fmt(price))+'</button></article>';}).join('');
  $('gift').querySelector('i').hidden=sameDay(data.daily,Date.now());
  $('nav-events').querySelector('i').hidden=!tasks().some(t=>t.current>=t.goal&&!data.claimed.includes(t.id));if(mode==='menu')resize();
 }
-function upgradePrice(i){return Math.floor((i===2?65:i===3?60:50)*Math.pow(1.48,data.upgrades[i]));}
-function upgradeValue(i){return i===0?(levels[currentLevel].regions.find(r=>r.owner===1)?.units||15)+data.upgrades[0]*3+eco.bonuses().start:i===1?(1+data.upgrades[1]*.18+eco.bonuses().production).toFixed(2):i===2?100+data.upgrades[2]*75:eco.bonuses().limit;}
-function buyUpgrade(i){if(!Number.isInteger(i)||i<0||i>3||data.upgrades[i]>=20||data.coins<upgradePrice(i))return false;data.coins-=upgradePrice(i);data.upgrades[i]++;save();updateMenu();tone(750);vibrate();return true;}
+function upgradePrice(i){return i===2?Math.floor(65*Math.pow(1.48,data.upgrades[i])):TerraSourceMath.upgradeCost(({0:11,1:12,3:10})[i],data.upgrades[i]);}
+function upgradeValue(i){return i===0?sourceStart():i===1?sourceProduction().toFixed(2):i===2?100+data.upgrades[2]*75:eco.bonuses().limit;}
+function buyUpgrade(i){if(!Number.isInteger(i)||i<0||i>3||data.upgrades[i]>=300||data.coins<upgradePrice(i))return false;data.coins-=upgradePrice(i);data.upgrades[i]++;save();updateMenu();tone(750);vibrate();return true;}
 function startBattle(options={}){
  eco.refresh();meta.refresh();const chosenMode=options.operation===true?'operation':['campaign','operation','duel','rush'].includes(options.mode)?options.mode:'campaign';
  if(currentLevel>=2&&options.loadout===undefined&&['reinforce','shield'].some(k=>eco.c.boosters[k]>0)){
@@ -123,13 +128,9 @@ function startBattle(options={}){
  closeModal(false);mode='battle';$('fraction-panel').hidden=true;$('app').dataset.mode='battle';selected.clear();casting=null;fraction=1;particles=[];shotLines=[];hoverTarget=null;drag=null;orderPulses=[];
  let config=battleConfig();
  if(battleMode==='operation')config={...config,enemyRate:config.enemyRate*1.15,aiInterval:config.aiInterval*.85,fog:currentLevel>=20,zones:currentLevel>=10?[{x:config.width/2,y:config.height/2,radius:110,factor:.5}]:config.zones};
- if(battleMode==='duel'||battleMode==='rush'){
-  const regions=config.regions.filter(r=>(r.stage||0)===0).map(r=>({...r,stage:0,sourceOverride:false,spawnRate:undefined,sourceCap:undefined}));config={...config,regions,tutorial:false,tutorialHidden:[],tutorialTargets:[],stages:[{...config.stages[0],regions:regions.map(r=>r.id)}]};
- }
- if(battleMode==='duel'){const home=config.regions.find(r=>r.owner===1),enemy=[...config.regions].filter(r=>r.id!==home.id).sort((a,b)=>Math.hypot(b.center[0]-home.center[0],b.center[1]-home.center[1])-Math.hypot(a.center[0]-home.center[0],a.center[1]-home.center[1]))[0];config={...config,aiInterval:3.2,enemyRate:.85+Math.min(.5,meta.m.rating/2000),fog:false,zones:[],regions:config.regions.map(r=>({...r,owner:r.id===home.id?1:r.id===enemy.id?2:0,units:r.id===home.id?15:r.id===enemy.id?22:6+r.id%7}))};}
- if(battleMode==='rush')config={...config,timeLimit:90};
- battle=new TerraBattle(config,{start:data.upgrades[0]*3+bonuses.start,production:data.upgrades[1],speed:bonuses.speed,limit:bonuses.limit,leader:bonuses.leader,skipTutorial:operationMode||data.completed.includes(currentLevel)});
- battle.production+=bonuses.production;
+ if(battleMode==='duel'||battleMode==='rush')config=TerraCampaign.pvp(currentLevel,{rush:battleMode==='rush',start:sourceStart(),production:sourceProduction(),limit:bonuses.limit});
+ battle=new TerraBattle(config,{start:0,production:0,sourceLeader:bonuses.sourceLeader,sourceProduction:sourceProduction(),speed:bonuses.speed,limit:bonuses.limit,leader:bonuses.leader,skipTutorial:operationMode||data.completed.includes(currentLevel)});
+
  for(const k of ['reinforce','shield'])if(currentLevel>=2&&options.loadout?.includes(k)&&eco.c.boosters[k]>0){eco.c.boosters[k]--;battle.skillCharges[k]++;}save();
  $('header').hidden=true;$('menu-top').hidden=true;$('menu-bottom').hidden=true;$('side-menu').hidden=true;$('map-caption').hidden=true;
  $('battle-top').hidden=false;$('battle-bottom').hidden=false;$('battle-label').textContent=({campaign:'УРОВЕНЬ ',operation:'ОПЕРАЦИЯ • ',duel:'ДУЭЛЬ С БОТОМ • ',rush:'ГОНКА • '}[battleMode])+(currentLevel+1);$('fraction').querySelector('b').textContent='100%';
@@ -145,7 +146,7 @@ function updateBattle(){
  $('force-counts').innerHTML=tot.map((n,i)=>i&&n?'<span style="color:'+color(i)+'"><i style="background:'+color(i)+'"></i>'+n+'</span>':'').join('');
  $('region-status').textContent='ТЕРРИТОРИИ '+shares[1]+' / '+count+'  •  АРМИЯ '+tot[1];
  for(const type of ['reinforce','shield']){$(type).disabled=!battle.skillCharges[type];$(type).classList.toggle('selected',casting===type);$(type).querySelector('i').textContent=battle.cooldowns[type]>0?Math.ceil(battle.cooldowns[type])+'с':battle.skillCharges[type];}
- const ability=$('leader-skill');ability.disabled=battle.leaderCharges<=0;ability.classList.toggle('selected',casting==='leader');ability.querySelector('i').textContent=battle.leaderCooldown>0?Math.ceil(battle.leaderCooldown)+'с':battle.leaderCharges;
+ const ability=$('leader-skill');ability.hidden=battle.level.sourcePort&&!battle.sourceLeader;ability.disabled=battle.leaderCharges<=0;ability.classList.toggle('selected',casting==='leader');ability.querySelector('i').textContent=battle.leaderCooldown>0?Math.ceil(battle.leaderCooldown)+'с':battle.level.sourcePort?'✓':battle.leaderCharges;
  $('select-all').classList.toggle('selected',selected.size>0);
  const ready=[...selected].filter(id=>battle.regions[id].active&&battle.regions[id].owner===1),amount=ready.reduce((n,id)=>n+Math.floor(battle.available(id)*fraction),0);
  $('selection-info').hidden=!ready.length;$('selection-info').textContent=ready.length+' '+(ready.length===1?'БАЗА':'БАЗЫ')+' · '+amount+' БОЙЦОВ';
@@ -182,7 +183,7 @@ function showWorld(page){
 
 function showSettings(){
  openModal('settings',head('Настройки')+'<div class="option-row">Звук<button id="sound-toggle" class="switch '+(data.sound?'on':'')+'" aria-label="Переключить звук"></button></div><div class="option-row">Вибрация<button id="vibration-toggle" class="switch '+(data.vibration?'on':'')+'" aria-label="Переключить вибрацию"></button></div><div class="option-row">Музыка<button id="music-toggle" class="switch '+(data.music?'on':'')+'" aria-label="Переключить музыку"></button></div><button class="secondary" data-feature="profile">Профиль командира</button><button class="secondary" data-feature="idle">Доход империи</button><button class="secondary" data-feature="rules">Правила и данные</button><button class="secondary" id="help-settings">Как играть</button><button class="secondary" id="about">Об игре</button><div class="footnote">ТЕРРА ШТОРМ • 0.5.0<br>Прогресс сохраняется автоматически</div>');
- $('music-toggle').onclick=()=>{data.music=!data.music;musicBeat();save();$('music-toggle').classList.toggle('on',data.music);};$('sound-toggle').onclick=()=>{data.sound=!data.sound;save();$('sound-toggle').classList.toggle('on',data.sound);tone();};$('vibration-toggle').onclick=()=>{data.vibration=!data.vibration;save();$('vibration-toggle').classList.toggle('on',data.vibration);vibrate();};$('help-settings').onclick=showHelp;$('about').onclick=()=>openModal('about',head('Терра Шторм')+'<p class="modal-sub">Стратегия в реальном времени. Захватывай территории, управляй армией и развивай своё государство.</p><p class="modal-sub">200 заданий на восстановленных картах, улучшения, командиры и коллекция оформления. Игра работает без подключения к интернету.</p><p class="modal-sub">Географические карты используются как условное игровое поле.</p><div class="footnote">Версия 0.6.0 • © 2026<br>Картография: Natural Earth, общественное достояние</div>');
+ $('music-toggle').onclick=()=>{data.music=!data.music;musicBeat();save();$('music-toggle').classList.toggle('on',data.music);};$('sound-toggle').onclick=()=>{data.sound=!data.sound;save();$('sound-toggle').classList.toggle('on',data.sound);tone();};$('vibration-toggle').onclick=()=>{data.vibration=!data.vibration;save();$('vibration-toggle').classList.toggle('on',data.vibration);vibrate();};$('help-settings').onclick=showHelp;$('about').onclick=()=>openModal('about',head('Терра Шторм')+'<p class="modal-sub">Стратегия в реальном времени. Захватывай территории, управляй армией и развивай своё государство.</p><p class="modal-sub">200 заданий на восстановленных картах, улучшения, командиры и коллекция оформления. Игра работает без подключения к интернету.</p><p class="modal-sub">Географические карты используются как условное игровое поле.</p><div class="footnote">Версия 0.8.0 • © 2026<br>Картография: Natural Earth, общественное достояние</div>');
 }
 function showPause(){if(!battle||battle.result)return;openModal('pause',head('Пауза')+'<p class="modal-sub">'+levels[currentLevel].name+' • '+time(battle.time)+'</p><button class="primary modal-primary" id="resume">ПРОДОЛЖИТЬ</button><button class="secondary" id="restart">Начать заново</button><button class="secondary" id="back-menu">В главное меню</button>');$('resume').onclick=()=>closeModal();$('restart').onclick=()=>startBattle({mode:battleMode});$('back-menu').onclick=()=>{if(battleMode!=='duel'){showMenu();return;}openModal('leave',head('Покинуть дуэль?')+'<p class="detail-description">Выход будет учтён как поражение. Ты потеряешь до 12 очков личной лиги.</p><button id="leave-duel" class="primary modal-primary">ПОКИНУТЬ</button><button id="stay-duel" class="secondary">ПРОДОЛЖИТЬ БОЙ</button>');$('stay-duel').onclick=()=>closeModal();$('leave-duel').onclick=()=>{battle.result='lose';finish('lose');showMenu();};};}
 function showHelp(){
@@ -211,7 +212,7 @@ function showGift(){
 }
 function mapPoint(ev){const r=canvas.getBoundingClientRect();return {x:(ev.clientX-r.left-view.x)/view.s,y:(ev.clientY-r.top-view.y)/view.s,sx:ev.clientX-r.left,sy:ev.clientY-r.top};}
 function regionAt(p){
- const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?data.upgrades[0]*3+eco.bonuses().start:0),active:(r.stage||0)===0}));
+ const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units,active:(r.stage||0)===0}));
  let nearest=null,min=Infinity;for(const r of regions){if(r.active===false)continue;const dy=r.owner?20:0,d=Math.min(Math.hypot(r.x-p.x,r.y-p.y)*view.s,Math.hypot((r.x-p.x)*view.s,(r.y-p.y)*view.s-dy));if(d<min){min=d;nearest=r;}}
  if(min<22)return nearest;
  const index=regions.findIndex(r=>r.active!==false&&(r.polys||[r.poly]).some(poly=>inside(p.x,p.y,poly)));return index<0?null:regions[index];
@@ -289,12 +290,12 @@ function render(now){
 
  if(cameraTween){cameraTween.elapsed+=dt;const f=Math.min(1,cameraTween.elapsed/.85),t=f*f*(3-2*f);for(const key of ['x','y','s'])view[key]=cameraTween.from[key]+(cameraTween.to[key]-cameraTween.from[key])*t;if(f===1)cameraTween=null;}
  if(now-lastUi>180){lastUi=now;if(mode==='battle')updateBattle();}
- ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='#e6e6e6';ctx.fillRect(0,0,W,H);
+ ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=TerraSourceRuntime.hex(TerraSource.styles.find(x=>x.id===eco.c.sourceStyle)?.background||TerraSource.styles[0].background);ctx.fillRect(0,0,W,H);
  ctx.save();ctx.beginPath();ctx.rect(view.rect.x,view.rect.y,view.rect.width,view.rect.height);ctx.clip();ctx.translate(view.x,view.y);ctx.scale(view.s,view.s);
- const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?data.upgrades[0]*3+eco.bonuses().start:0),active:(r.stage||0)===0}));
+ const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units,active:(r.stage||0)===0}));
  ctx.save();ctx.translate(0,4/view.s);ctx.fillStyle='#0000001a';for(const path of paths)ctx.fill(path);ctx.restore();
  for(let i=0;i<regions.length;i++){
-  const r=regions[i];const current=battle?battle.stage:0;ctx.globalAlpha=(r.stage||0)>current?.25:1;ctx.fillStyle=(r.stage||0)===current&&!r.owner?'#cccccc':fill(r.owner);ctx.strokeStyle='#e6e6e6';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
+  const r=regions[i];const current=battle?battle.stage:0;ctx.globalAlpha=(r.stage||0)>current?.25:1;ctx.fillStyle=fill(r.owner);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
   if(selected.has(r.id)&&mode==='battle'){ctx.globalAlpha=.22;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=3/view.s;ctx.stroke(paths[i]);}
   if(hoverTarget===r.id){ctx.globalAlpha=.2;ctx.fillStyle=r.owner===1?color(1):'#ff8c37';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(battle&&battle.level.fog&&r.active&&!battle.visible(1,r.id)){ctx.globalAlpha=.18;ctx.fillStyle='#293665';ctx.fill(paths[i]);ctx.globalAlpha=1;}
@@ -318,7 +319,7 @@ function render(now){
  if(hoverTarget!==null){const r=regions[hoverTarget];ctx.strokeStyle=r.owner===1?color(1):'#ff9c3c';ctx.lineWidth=3/view.s;ctx.beginPath();ctx.arc(r.x,r.y,25/view.s,0,Math.PI*2);ctx.stroke();}
  for(const r of regions){
   if(r.active===false)continue;
-  if(r.owner){const baseArt=r.owner===1?eco.item(eco.c.equipped.base):{art:4+(r.owner-2)%4,hue:(r.owner-1)*45};const size=36/view.s;paintSprite(baseArt.art,r.x-size/2,r.y-size/2,size,size,baseArt.hue);}
+  if(r.owner){const baseArt=r.owner===1?eco.item(eco.c.equipped.base):{art:4+(r.owner-2)%4,hue:(r.owner-1)*45};const size=36/view.s;paintSprite(baseArt.art,r.x-size/2,r.y-size/2,size,size,baseArt.hue,color(r.owner));}
  const counterY=r.owner?r.y-23/view.s:r.y;ctx.save();ctx.translate(0,counterY-r.y);
  const radius=(r.owner?13:12)/view.s;ctx.fillStyle=r.owner?color(r.owner):'#969696';ctx.strokeStyle='#fff';ctx.lineWidth=1.8/view.s;
   ctx.beginPath();ctx.arc(r.x,r.y,radius,0,Math.PI*2);ctx.fill();ctx.stroke();
@@ -369,11 +370,11 @@ document.addEventListener('terraPause',pauseApp);document.addEventListener('terr
 window.terraBack=()=>{if(!$('modal').hidden&&modalType!=='result'){closeModal();return true;}if(mode==='battle'){showPause();return true;}if(modalType==='result'){showMenu();return true;}if(hub&&hub.back())return true;openModal('exit',head('Выйти из игры?')+'<p class="detail-description">Твой прогресс сохранён. Вернуться к завоеваниям можно в любой момент.</p><button id="exit-confirm" class="primary modal-primary">ВЫЙТИ</button><button id="exit-cancel" class="secondary">ОСТАТЬСЯ</button>');$('exit-confirm').onclick=()=>{save();if(window.Android&&Android.exitGame)Android.exitGame();else closeModal();};$('exit-cancel').onclick=()=>closeModal();return true;};
 window.addEventListener('pagehide',save);setInterval(()=>{if(mode==='menu')save();},30000);
 // Read-only diagnostic snapshot, useful for regression tests and support.
-window.terraSnapshot=()=>({mode,battleMode,totalLevels:levels.length,camera:{...view,zoom,overview},selection:{sources:[...selected],target:hoverTarget,dragging:!!drag},screen:hub?hub.tab:'play',level:currentLevel,battle:battle?{stage:battle.stage,stageCount:battle.level.stages?.length||1,stageTransition:battle.stageTransition,fog:!!battle.level.fog,zones:battle.level.zones||[],timeLimit:battle.level.timeLimit||null,time:battle.time,result:battle.result,paused:battle.paused,stats:{...battle.stats},regions:battle.regions.map(r=>({id:r.id,active:r.active,stage:r.stage||0,kind:r.kind,owner:r.owner,units:r.units,available:battle.available(r.id),reserved:battle.reserved(r.id),screenX:r.x*view.s+view.x,screenY:r.y*view.s+view.y,visible:battle.visible(1,r.id)})),waves:battle.waves.map(w=>({...w})),troops:battle.units.map(u=>({id:u.id,owner:u.owner,x:u.x,y:u.y,speed:u.speed,from:u.from,to:u.to})),units:battle.units.length,skillCharges:{...battle.skillCharges},leaderCharges:battle.leaderCharges,leaderCooldown:battle.leaderCooldown,leaderType:battle.leaderType}:null,progress:JSON.parse(JSON.stringify(data))});
+window.terraSnapshot=()=>({mode,battleMode,totalLevels:levels.length,camera:{...view,zoom,overview},selection:{sources:[...selected],target:hoverTarget,dragging:!!drag},screen:hub?hub.tab:'play',level:currentLevel,battle:battle?{source:battle.level.source,sourceLevelId:battle.level.sourceLevelId,stage:battle.stage,stageCount:battle.level.stages?.length||1,stageTransition:battle.stageTransition,fog:!!battle.level.fog,zones:battle.level.zones||[],timeLimit:battle.level.timeLimit||null,time:battle.time,result:battle.result,paused:battle.paused,stats:{...battle.stats},regions:battle.regions.map(r=>({id:r.id,active:r.active,stage:r.stage||0,kind:r.kind,owner:r.owner,units:r.units,available:battle.available(r.id),reserved:battle.reserved(r.id),screenX:r.x*view.s+view.x,screenY:r.y*view.s+view.y,visible:battle.visible(1,r.id)})),waves:battle.waves.map(w=>({...w})),troops:battle.units.map(u=>({id:u.id,owner:u.owner,x:u.x,y:u.y,speed:u.speed,from:u.from,to:u.to})),units:battle.units.length,skillCharges:{...battle.skillCharges},leaderCharges:battle.leaderCharges,leaderCooldown:battle.leaderCooldown,leaderType:battle.leaderType}:null,progress:JSON.parse(JSON.stringify(data))});
 features=TerraFeatures.create({data,eco,meta,icon,save,toast,tone,head,openModal,closeModal,playMode:mode=>startBattle({mode}),refresh:()=>{if(hub){hub.wallet();if(hub.tab!=='play')hub.render();}updateMenu();}});
 hub=TerraScreens.create({data,eco,meta,features,icon,save,toast,tone,showMenu,showWorld,showTasks,showGift,updateMenu,openModal,closeModal,head,upgradePrice,upgradeValue,buyUpgrade,playOperation:()=>startBattle({operation:true})});
 setInterval(()=>{features.tick();if(mode==='menu'&&hub)hub.wallet();},5000);
-$('leader-skill').onclick=()=>{if(!battle)return;if(battle.leaderCooldown>0){speedupSkill('leader');return;}casting=casting==='leader'?null:'leader';selected.clear();$('skill-hint').textContent=casting?([1,4].includes(battle.leaderType)?'Выбери вражескую базу':'Выбери свою базу для приказа'):'Проведи от своей базы к цели';updateBattle();};
+$('leader-skill').onclick=()=>{if(!battle)return;if(battle.level.sourcePort){if(battle.activateLeader())tone(700);updateBattle();return;}if(battle.leaderCooldown>0){speedupSkill('leader');return;}casting=casting==='leader'?null:'leader';selected.clear();$('skill-hint').textContent=casting?([1,4].includes(battle.leaderType)?'Выбери вражескую базу':'Выбери свою базу для приказа'):'Проведи от своей базы к цели';updateBattle();};
 showMenu();requestAnimationFrame(render);setTimeout(()=>{$('loading').classList.add('out');setTimeout(()=>{$('loading').hidden=true;if(offlineReward)toast('Пока тебя не было: +'+offlineReward+' монет');},400);},850);
 })();
 // Native lifecycle can pause before WebView visibility has propagated.
