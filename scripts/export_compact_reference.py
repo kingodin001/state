@@ -75,8 +75,10 @@ for i,o in enumerate(objects):
  if any(x in name.lower() for x in ['azur','googleplay','google_play','airicore']):continue
  try:
   rid=o.assets_file.name+':'+str(o.path_id);digest=hashlib.sha256(rid.encode()).hexdigest()[:20];im=s.image.convert('RGBA')
+  # Tight sprite meshes describe an atlas hull, not opaque pixels.
+  # Preserve the real texture alpha for bases and fighters.
   if re.fullmatch(r'[BF]_.+',name):
-   mh=MeshHandler(s.m_RD,version=o.version);mh.process();vs=[(v[0]*.955+v[1]*.022,-v[1]*1.025) for v in mh.m_Vertices];xs=[v[0] for v in vs];ys=[v[1] for v in vs];x,y,w,h=min(xs),min(ys),max(xs)-min(xs),max(ys)-min(ys);paths=''.join('M'+' '.join('%g,%g'%vs[j] for j in tri)+'Z' for sm in mh.get_triangles() for tri in sm);fp=images/(digest+'.svg');fp.write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x} {y} {w} {h}"><path d="{paths}" fill="white"/></svg>')
+   fp=images/(digest+'.webp');im.save(fp,'WEBP',lossless=True,method=6)
   elif name=='State_logo':
    fp=images/(digest+'.svg');fp.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 256"><rect width="512" height="256" rx="40" fill="#153358"/><text x="256" y="114" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="78" fill="#59bbff">ТЕРРА</text><text x="256" y="211" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="78" fill="#ffb746">ШТОРМ</text></svg>')
   else:fp=images/(digest+'.webp');im.save(fp,'WEBP',quality=92,method=5)

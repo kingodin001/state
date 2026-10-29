@@ -18,6 +18,7 @@ function camera(map,rect,options={}){
  if(map.reference&&map.stages){
   const stage=options.stage||0,c=options.overview?map.previewCamera:map.stages[stage].camera,regs=options.overview?map.regions:map.regions.filter(r=>(r.stage||0)===stage),pad=options.overview?15:26,top=options.overview?16:42;
   const xs=regs.map(r=>r.center[0]),ys=regs.map(r=>r.center[1]),b={x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
+  if(map.sourcePort){const s=rect.height/(2*c.halfHeight);return {s,baseScale:s,x:rect.x+rect.width/2-c.center[0]*s,y:rect.y+rect.height/2-c.center[1]*s,rect:{...rect},bounds:b,sourceCamera:c,stage};}
   const sourceScale=rect.height/(2*c.halfHeight),fit=Math.min((rect.width-pad*2)/Math.max(1,b.width),(rect.height-top-pad)/Math.max(1,b.height)),s=Math.min(sourceScale,fit);
   let x=rect.x+rect.width/2-c.center[0]*s,y=rect.y+rect.height/2-c.center[1]*s;
   // Respect the serialized camera while keeping counters reachable on narrow phones.

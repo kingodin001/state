@@ -3,17 +3,22 @@
 'use strict';
 const field=root.TerraField||(typeof require!=='undefined'?require('./field.js'):null),timing=field.TIMING;
 class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math.imul(this.state,1664525)+1013904223)>>>0;return this.state/4294967296;} }
+const rules=root.TerraSourceRules||(typeof require!=='undefined'?require('./source-rules.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
   this.timing=level.sourcePort?field.SOURCE_TIMING:timing;this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.sourceLeader=options.sourceLeader;this.leaderCharges=level.sourcePort?(options.sourceLeader?Infinity:0):2;this.leaderCooldown=level.sourcePort&&options.sourceLeader?(options.sourceLeader.Cooldown||0)*(1-(options.sourceLeader.Preload||0)):0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0,shieldPoints:r.shieldPoints||0,bonusClaimed:false,hidden:!!level.tutorial&&!options.skipTutorial&&(level.tutorialHidden||[]).includes(r.id),active:(r.stage||0)===0}));for(const r of this.regions)r.active=r.active&&!r.hidden;this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
-  this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?1:1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
-  this.aiTimers={};for(const f of this.factions)this.aiTimers[f]=level.aiInterval+this.rng.next()*1.2;
+  this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
+  this.aiTimers={};this.botProfiles={};this.pendingAI=[];this.configureBots();
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=(level.tutorial||!level.reference&&level.seed===1)&&!options.skipTutorial;
   this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
  }
+ configureBots(){
+  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
+ }
+ aiOrder(owner,sources,target,fraction){const b=this.botProfiles[owner];if(b)this.pendingAI.push({owner,sources,target,fraction,delay:rules.range(b.behavior._sendingDelay,()=>this.rng.next())});else this.command(sources,target,fraction,owner);}
  stageRegions(){return this.regions.filter(r=>(r.stage||0)===this.stage);}
  isActive(id){return !!this.regions[id]?.active;}
  emit(type,data={}){this.events.push({type,...data});}
@@ -70,6 +75,7 @@ class Battle {
   this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
  }
  ai(owner){
+  const profile=this.botProfiles[owner],preset=profile?.preset,settings=preset?._baseCalculationSettings;if(settings?._maxBuildingsMove===0)return;
   const own=this.regions.filter(r=>r.active!==false&&r.owner===owner);if(!own.length)return;
   const enemies=this.regions.filter(r=>r.active!==false&&r.owner!==owner);if(!enemies.length)return;
   let best=null,bestScore=-Infinity;
@@ -85,13 +91,13 @@ class Battle {
    }
   }
   if(best&&(this.available(best.s.id)>best.needed*1.13||this.available(best.s.id)>=this.level.cap*.9)){
-   this.command([best.s.id],best.t.id,this.available(best.s.id)>25?.85:1,owner);return;
+   this.aiOrder(owner,[best.s.id],best.t.id,preset&&!preset._isPartialMoveEnabled?1:this.available(best.s.id)>25?.85:1);return;
   }
   // Interior garrisons reinforce the closest threatened front.
   if(own.length>1){
    const fronts=own.map(r=>({r,d:Math.min(...enemies.map(t=>distance(r,t)))})).sort((a,b)=>a.d-b.d);
    const rear=own.filter(r=>r.id!==fronts[0].r.id&&this.available(r.id)>15).sort((a,b)=>this.available(b.id)-this.available(a.id))[0];
-   if(rear)this.command([rear.id],fronts[0].r.id,.7,owner);
+   if(rear)this.aiOrder(owner,[rear.id],fronts[0].r.id,preset&&!preset._isPartialMoveEnabled?1:.7);
   }
  }
  arrive(u){
@@ -173,13 +179,14 @@ class Battle {
   }
   this.units=this.units.filter(u=>!u.dead);
   if(!this.tutorial||this.firstCommand&&this.time>13){
-   for(const owner of this.factions){this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){this.aiTimers[owner]=this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
+   for(const owner of this.factions){this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){const profile=this.botProfiles[owner];this.aiTimers[owner]=profile?rules.range(profile.preset._baseCalculationSettings._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
   }
+  for(const order of this.pendingAI){order.delay-=dt;if(order.delay<=0)this.command(order.sources,order.target,order.fraction,order.owner);}this.pendingAI=this.pendingAI.filter(x=>x.delay>0);
   const current=this.stageRegions(),owners=new Set(current.map(r=>r.owner).filter(Boolean));
   for(const u of this.units)owners.add(u.owner);for(const w of this.waves)owners.add(w.owner);
   if(!owners.has(1)){this.result='lose';this.emit('finish',{result:'lose'});}
   else if(owners.size===1&&current.every(r=>r.owner===1)){if(this.level.stages&&this.stage<this.level.stages.length-1)this.nextStage();else{this.result='win';this.emit('finish',{result:'win'});}}
-  if(!this.result&&this.level.timeLimit&&this.time>=this.level.timeLimit){const share=this.territoryShare(),totals=this.totals(),score=f=>share[f]*10000+totals[f];this.result=[2,3,4].every(f=>score(1)>score(f))?'win':'lose';this.emit('finish',{result:this.result});}
+  if(!this.result&&this.level.timeLimit&&this.time>=this.level.timeLimit){const share=this.territoryShare(),totals=this.totals(),score=f=>share[f]*10000+totals[f];this.result=this.factions.every(f=>score(1)>score(f))?'win':'lose';this.emit('finish',{result:this.result});}
  }
   revealTutorial(id){
    if(!this.tutorial||!this.level.tutorialTargets)return;
@@ -189,11 +196,11 @@ class Battle {
   nextStage(){
    this.stage++;this.stageTransition=.85;this.units=[];this.waves=[];this.departureClocks={};this.firstCommand=true;
    for(const r of this.regions){r.pulse=0;r.active=(r.stage||0)===this.stage;r.hidden=false;if(r.active){const source=this.level.regions[r.id];r.owner=source.owner;r.units=source.units+(r.owner===1?(this.options.start||0):0);r.shieldPoints=source.shieldPoints||0;}}
-   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);for(const f of this.factions)this.aiTimers[f]=this.level.aiInterval+this.rng.next();
+   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);this.pendingAI=[];this.configureBots();
    this.emit('stage',{stage:this.stage,total:this.level.stages.length});
   }
-  totals(){const a=[0,0,0,0,0];for(const r of this.regions)if(r.active!==false)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}
- territoryShare(){const a=[0,0,0,0,0];for(const r of this.regions)if(r.active!==false)a[r.owner]++;return a;}
+  totals(){const a=Array(Math.max(4,...this.regions.map(r=>r.owner))+1).fill(0);for(const r of this.regions)if(r.active!==false)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}
+ territoryShare(){const a=Array(Math.max(4,...this.regions.map(r=>r.owner))+1).fill(0);for(const r of this.regions)if(r.active!==false)a[r.owner]++;return a;}
 }
 root.TerraBattle=Battle;root.TerraRandom=Random;if(typeof module!=='undefined')module.exports={Battle,Random,distance};
 })(typeof globalThis!=='undefined'?globalThis:this);

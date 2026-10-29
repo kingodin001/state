@@ -32,3 +32,20 @@ Use case: logo-brand / stylized-concept. Asset: finished square Android app laun
 | leaders.png | Сетка 2×2: алхимик, хрономант, паладин, изобретатель |
 
 Направление промптов: оригинальные premium mobile strategy collectible assets, orthographic three-quarter view, richly saturated blue/gold and colorful enamel, rounded detailed toy materials, transparent background, no text or existing branded characters. Для листов: regular 4×4 (leaders 2×2) grid, independent complete objects, clear padding, no overlap; каждый объект задан отдельно. Для ресурсов: один крупный читаемый объект, золотой контур и выраженные объём / блики, прозрачный фон. Масштаб, выбор области и цвет фракции выполняет Canvas/CSS, сами PNG не перекрашены на диске.
+
+
+## Семь отдельных лидеров, 0.10.0
+
+Сгенерированы по отдельным исходным карточкам, с сохранением ракурса и пропорций, прозрачным фоном, без текста и интерфейса. Преобразованы в WebP ≤512px. Во всех запросах: один персонаж целиком, центрирован, игровая 3D/chibi-иллюстрация, прозрачный фон, без пьедестала и дополнительных персонажей.
+
+| Файл в `app/src/main/assets/game/art/leaders` | Изменения в запросе |
+|---|---|
+| l_1.webp | Navy field uniform, copper buttons, teal scarf, blond moustache, saluting hat. |
+| l_2.webp | Midnight teal lamellar armor, brass details, indigo helmet, asymmetric golden crescent, white goatee, saber. |
+| l_3.webp | Steel/copper armor, turquoise crest, navy round shield, golden sun emblem. |
+| l_berserk.webp | Dark braided beard with silver streak, moss green tunic, brass details, two steel axes. |
+| l_biohazard.webp | Plum/navy coat, teal beaked mask, copper details, amber lenses, top hat, green flask and cane. |
+| l_cryomancer.webp | Indigo hood, turquoise mask, silver fasteners, teal armor, cyan eyes, ice glow. |
+| l_production.webp | Navy bicorne with copper cog, teal/cream coat, copper epaulettes, brown hair and moustache, bronze tipped baton. |
+
+Иллюстрации подключены в SourceRuntime к своим именам лидеров. Боевые силуэты баз/бойцов взяты отдельно из исходных прозрачных текстур: портреты не подменяют их.

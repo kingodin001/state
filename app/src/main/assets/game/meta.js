@@ -7,7 +7,7 @@ function week(now){const d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate
 class Meta{
  constructor(eco){this.eco=eco;this.state=eco.state;const s=this.state;
   if(!s.meta)s.meta={version:1,ticketsGranted:false,profileTitle:'Командир',rating:0,duels:0,duelWins:0,bestRush:0,packs:[],slots:[null,null,null],wheelDay:'',wheelSpins:0,weekly:{},weeklyClaims:[],instantAt:0,supplyAt:Date.now(),lastOfflineReward:0};
-  s.tickets=Math.max(0,Math.floor(s.tickets||0));if(!s.meta.ticketsGranted){s.tickets+=3;s.meta.ticketsGranted=true;}
+  s.tickets=Math.max(0,Math.floor(s.tickets||0));if(!s.meta.ticketsGranted){if(!eco.source)s.tickets+=3;s.meta.ticketsGranted=true;}
   s.profileName=s.profileName||'Командир';s.collection.dailySlots=Math.max(3,Math.min(6,s.collection.dailySlots||3));this.refresh();
   this.m.stickers=this.m.stickers||{};this.m.stickerSets=this.m.stickerSets||[];this.m.stickerPacks=this.m.stickerPacks||0;this.m.albumStars=this.m.albumStars||0;
   if(!this.m.sourceAlbumMigrated){this.m.legacyStickers={...this.m.stickers};this.m.legacyStickerSets=[...this.m.stickerSets];const migrated={};for(const [id,count] of Object.entries(this.m.stickers)){const key=Number(id)%54;migrated[key]=(migrated[key]||0)+count;}this.m.stickers=migrated;this.m.stickerSets=[];this.m.sourceAlbumMigrated=true;}
@@ -17,16 +17,16 @@ class Meta{
  refresh(now=Date.now()){
   const m=this.m,s=this.state,d=day(now),w=week(now);if(m.wheelDay!==d){m.wheelDay=d;m.wheelSpins=0;m.dailyRefreshes=0;}
   if(m.weekly.key!==w){m.weekly={key:w,wins:s.wins||0,captures:s.captures||0,sent:s.sent||0};}
-  if(s.supply>=10)m.supplyAt=now;else{const elapsed=Math.max(0,now-m.supplyAt),n=Math.floor(elapsed/(HOUR/2));if(n){s.supply=Math.min(10,s.supply+n);m.supplyAt+=n*HOUR/2;}}
+  if(this.eco.source||s.supply>=10)m.supplyAt=now;else{const elapsed=Math.max(0,now-m.supplyAt),n=Math.floor(elapsed/(HOUR/2));if(n){s.supply=Math.min(10,s.supply+n);m.supplyAt+=n*HOUR/2;}}
   return this;
  }
  spend(kind,n){return this.eco.spend(kind,n);}
  reward(value){this.eco.reward(value);}
- buyPack(id){const p=packs[id];if(!p||this.m.packs.includes(id)||!this.spend('gems',p.cost))return false;this.reward(p.reward);this.eco.c.chests[p.chest]++;this.m.packs.push(id);return true;}
- diamonds(index){const p=[[600,10],[1800,30],[4500,75],[12000,200]][index];if(!p||!this.spend('coins',p[0]))return false;this.reward({gems:p[1]});return true;}
- tickets(index){const p=[[8,2],[30,10],[70,25],[130,50]][index];if(!p||!this.spend('gems',p[0]))return false;this.reward({tickets:p[1]});return true;}
- unlockDailySlot(){const n=this.eco.c.dailySlots;if(n>=6||!this.spend('gems',20+(n-3)*15))return false;this.eco.c.dailySlots++;return true;}
- refreshOffers(){this.refresh();const n=this.m.dailyRefreshes||0;if(n>=3||!this.spend('gems',5+n*5))return false;this.m.dailyRefreshes=n+1;this.eco.c.dailyRefresh=n+1;this.eco.c.dailyBought=[];return true;}
+ buyPack(id){if(this.eco.source)return false;const p=packs[id];if(!p||this.m.packs.includes(id)||!this.spend('gems',p.cost))return false;this.reward(p.reward);this.eco.c.chests[p.chest]++;this.m.packs.push(id);return true;}
+ diamonds(index){if(this.eco.source)return false;const p=[[600,10],[1800,30],[4500,75],[12000,200]][index];if(!p||!this.spend('coins',p[0]))return false;this.reward({gems:p[1]});return true;}
+ tickets(index){if(this.eco.source)return false;const p=[[8,2],[30,10],[70,25],[130,50]][index];if(!p||!this.spend('gems',p[0]))return false;this.reward({tickets:p[1]});return true;}
+ unlockDailySlot(){if(this.eco.source)return false;const n=this.eco.c.dailySlots;if(n>=6||!this.spend('gems',20+(n-3)*15))return false;this.eco.c.dailySlots++;return true;}
+ refreshOffers(){if(this.eco.source)return false;this.refresh();const n=this.m.dailyRefreshes||0;if(n>=3||!this.spend('gems',5+n*5))return false;this.m.dailyRefreshes=n+1;this.eco.c.dailyRefresh=n+1;this.eco.c.dailyBought=[];return true;}
  spin(now=Date.now()){
   this.refresh(now);if(this.m.wheelSpins>=3)return null;if(this.m.wheelSpins>0&&!this.spend('tickets',1))return null;this.m.wheelSpins++;
   const index=Math.floor(this.eco.random()*wheels.length),prize={...wheels[index],index};
