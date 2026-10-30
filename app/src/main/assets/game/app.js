@@ -105,6 +105,7 @@ function showMenu(){
  $('battle-top').hidden=true;$('battle-bottom').hidden=true;$('hint').hidden=true;closeModal(false);if(hub)hub.home();prepareMap();updateMenu();
 }
 function updateMenu(){
+ document.querySelectorAll('[data-feature]').forEach(el=>{const kind=el.dataset.feature,level=TerraSourceRules.featureLevel(kind);if(level){el.disabled=!TerraSourceRules.featureAvailable(kind,data);el.title=el.disabled?'С уровня '+level:'';}});
  $('coins').textContent=fmt(data.coins);$('level-label').textContent='УРОВЕНЬ '+(currentLevel+1);$('map-name').textContent=levels[currentLevel].name;$('map-subtitle').textContent=levels[currentLevel].subtitle;const modifiers=levels[currentLevel];$('map-modifiers').innerHTML=(modifiers.fog?'<button data-feature="fog">ТУМАН РАЗВЕДКИ ?</button>':'')+((modifiers.zones||[]).length?'<button data-feature="slow">ЗОНА ЗАМЕДЛЕНИЯ ?</button>':'');
  const current=levels[currentLevel],start=currentLevel-current.sourceStageIndex,stageCount=TerraCampaign.get(currentLevel).sourceStageCount;$('campaign-dots').innerHTML=Array.from({length:stageCount},(_,j)=>'<i class="'+(data.completed.includes(start+j)?'done':j===current.sourceStageIndex?'current':'')+'"></i>').join('');document.querySelector('.campaign-progress>span').textContent=current.name+' • '+(current.sourceStageIndex+1)+' / '+stageCount;
  $('play-label').innerHTML='ИГРАТЬ<small>УРОВЕНЬ '+(currentLevel+1)+'</small>';
@@ -164,25 +165,29 @@ function updateBattle(){
  $('selection-info').hidden=!ready.length;$('selection-info').textContent=ready.length+' '+(ready.length===1?'БАЗА':'БАЗЫ')+' · '+amount+' БОЙЦОВ';
  if(currentLevel===0&&!data.completed.includes(0)&&battle.firstCommand){$('hint').textContent=battle.regions.filter(r=>r.active&&r.owner===1).length>1?'Теперь отправь бойцов к вражеской базе':'Каждая захваченная база производит бойцов';if(battle.time>25)$('hint').hidden=true;}
 }
+function sourceResult(won,reward){
+ const prefix=won?'source-win':'source-lose',art=won?'cb711f91c5a274db488448c7416ed481:1':'e72513c886c8c4f6f82e82f8d783d181:1';
+ return '<div class="source-result '+(won?'won':'lost')+'"><div class="source-result-frame" id="'+prefix+'-frame"></div><div class="source-result-ribbon" id="'+prefix+'-ribbon"></div><div id="'+prefix+'-art">'+TerraSourceRuntime.image(art)+'</div><h2 id="'+prefix+'-title">'+(won?'ПОБЕДА':'ПОРАЖЕНИЕ')+'</h2><div id="'+prefix+'-reward-label">ТВОЯ НАГРАДА</div><div class="source-result-reward" id="'+prefix+'-reward">'+TerraUI.amount('coins',reward)+'</div>'+(won?'<div id="source-win-multiply" class="source-result-multiply"><b>ПОЛУЧИТЬ ×3 МОНЕТ</b><div>'+TerraUI.amount('coins',reward*3)+'</div><button class="blue-button" disabled>БЕСПЛАТНО — ВИДЕО</button></div>':'')+'<button class="primary" id="'+(won?'next-level':'retry')+'">'+(won?'ПРОДОЛЖИТЬ':'ЕЩЁ РАЗ')+'</button><button class="text-action" id="result-menu">В главное меню</button></div>';
+}
 function finish(result){
- const b=battle,won=result==='win',first=won&&battleMode==='campaign'&&!data.completed.includes(currentLevel);meta.result(battleMode,won,b,first);if(won){
+ const b=battle;if(!b||b.rewardSettled)return;b.rewardSettled=true;const won=result==='win',first=won&&battleMode==='campaign'&&!data.completed.includes(currentLevel);meta.result(battleMode,won,b,first);if(won){
   data.wins++;data.captures+=b.stats.captured;data.sent+=b.stats.sent;data.commands+=b.stats.commands;
   eco.victory(currentLevel,!operationMode);
   const reward=operationMode?Math.floor(levels[currentLevel].reward*.6):eco.stageReward(currentLevel);data.coins+=reward;
   if(first)data.completed.push(currentLevel);if(!operationMode){data.unlocked=Math.max(data.unlocked,currentLevel+1);TerraCampaign.ensure(data.unlocked);}
-  const stars=b.time<95?3:b.time<170?2:1;if(!operationMode){meta.m.albumStars+=Math.max(0,stars-(data.stars[currentLevel]||0));data.stars[currentLevel]=Math.max(data.stars[currentLevel]||0,stars);}save();
+  const stars=b.time<95?3:b.time<170?2:1;if(!b.level.sourcePort&&!operationMode){meta.m.albumStars+=Math.max(0,stars-(data.stars[currentLevel]||0));data.stars[currentLevel]=Math.max(data.stars[currentLevel]||0,stars);}save();
   for(let i=0;i<75;i++)particles.push({screen:true,x:W/2,y:H*.35,vx:(Math.random()-.5)*230,vy:-Math.random()*200-60,life:2+Math.random(),color:['#6cb7ed','#79cd8e','#f0bf5b','#b5a0e1'][i%4]});
-  openModal('result','<div class="result-icon">'+icon('trophy')+'</div><h2 class="result-title">ПОБЕДА!</h2><div class="result-sub">'+(levels[currentLevel].name+' — под твоим флагом')+'</div><div style="text-align:center;margin-top:13px;color:#edb344;display:flex;justify-content:center;gap:5px">'+Array.from({length:3},(_,i)=>icon('star',i<stars?'#edb344':'#d9e2eb')).join('')+'</div><div class="result-stats"><div><b>'+time(b.time)+'</b><small>ВРЕМЯ</small></div><div><b>'+b.stats.captured+'</b><small>ЗАХВАЧЕНО</small></div><div><b>'+b.stats.sent+'</b><small>ОТПРАВЛЕНО</small></div></div><div class="reward">'+icon('coin')+'+'+reward+'</div><button class="primary modal-primary" id="next-level">'+'ПРОДОЛЖИТЬ'+icon('arrow')+'</button><button class="text-action" id="result-menu">В главное меню</button>');
+  openModal('result',sourceResult(true,reward));TerraLayout.apply();
   $('next-level').onclick=()=>{if(operationMode){startBattle({mode:battleMode});return;}currentLevel++;TerraCampaign.ensure(currentLevel);data.level=currentLevel;save();showMenu();};
   tone(660,.2);setTimeout(()=>tone(880,.25),150);
  }else{
-  data.sent+=b.stats.sent;data.commands+=b.stats.commands;data.captures+=b.stats.captured;save();
-  openModal('result','<div class="result-icon" style="background:#f8e8e3">'+icon('flag','#e78a78')+'</div><h2 class="result-title" style="color:#dc8a79">ЕЩЁ ПОПЫТКА</h2><div class="result-sub">Измени тактику и верни свои территории</div><div class="result-stats"><div><b>'+time(b.time)+'</b><small>ВРЕМЯ</small></div><div><b>'+b.stats.captured+'</b><small>ЗАХВАЧЕНО</small></div></div><button class="primary modal-primary" id="retry">НАЧАТЬ ЗАНОВО</button><button class="text-action" id="result-menu">В главное меню</button>');$('retry').onclick=()=>startBattle({mode:battleMode});tone(200,.2);
+  data.sent+=b.stats.sent;data.commands+=b.stats.commands;data.captures+=b.stats.captured;const reward=battleMode==='campaign'?eco.defeatReward(currentLevel):0;data.coins+=reward;save();
+  openModal('result',sourceResult(false,reward));TerraLayout.apply();$('retry').onclick=()=>startBattle({mode:battleMode});tone(200,.2);
  }
  if(battleMode==='rush'||battleMode==='duel'){const shares=b.territoryShare(),totals=b.totals(),factions=[1,...b.factions].map(owner=>({owner,territories:shares[owner],troops:totals[owner]})).sort((a,c)=>c.territories-a.territories||c.troops-a.troops);const table=document.createElement('div');table.className='battle-ranking';table.innerHTML=(battleMode==='duel'?'<strong>ОЧКИ ЛИГИ: '+meta.m.rating+'</strong>':'<strong>ИТОГ ГОНКИ</strong>')+factions.map((f,i)=>'<div><i style="background:'+color(f.owner)+'">'+(i+1)+'</i><b>'+(f.owner===1?TerraUI.escape(data.profileName):'Бот '+(f.owner-1))+'</b><span>'+f.territories+' терр. · '+f.troops+' бойцов</span></div>').join('');$('panel-content').insertBefore(table,$('next-level')||$('retry'));}
  $('result-menu').onclick=showMenu;
 }
-function openModal(type,html){modalType=type;drag=null;hoverTarget=null;$('fraction-panel').hidden=true;$('panel-content').innerHTML=html;$('modal').hidden=false;if(battle&&!battle.result)battle.paused=true;const close=$('close-modal');if(close)close.onclick=()=>closeModal();}
+function openModal(type,html){modalType=type;$('modal').dataset.kind=type;drag=null;hoverTarget=null;$('fraction-panel').hidden=true;$('panel-content').innerHTML=html;$('modal').hidden=false;if(battle&&!battle.result)battle.paused=true;const close=$('close-modal');if(close)close.onclick=()=>closeModal();}
 function closeModal(resume=true){$('modal').hidden=true;modalType=null;if(resume&&battle&&!battle.result)battle.paused=countdownActive;}
 function head(title){return '<div class="modal-head"><h2>'+title+'</h2><button class="close" id="close-modal" aria-label="Закрыть">×</button></div>';}
 function sameDay(a,b){return a&&new Date(a).toDateString()===new Date(b).toDateString();}
@@ -317,7 +322,7 @@ function render(now){
   if(battle&&battle.level.fog&&r.active&&!battle.visible(1,r.id)){ctx.globalAlpha=.18;ctx.fillStyle='#293665';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(r.pulse>0){ctx.globalAlpha=r.pulse*.35;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;}
  }
- ctx.globalAlpha=1;for(const zone of (battle?battle.level.zones:levels[currentLevel].zones)||[]){if(zone.stage!==undefined&&zone.stage!==(battle?.stage||0))continue;ctx.save();ctx.fillStyle=zone.factor>1?'#f4c04b32':'#8b6cce32';ctx.strokeStyle=zone.factor>1?'#d3a33588':'#7b69c988';ctx.lineWidth=2/view.s;ctx.setLineDash([4/view.s,5/view.s]);ctx.beginPath();ctx.arc(zone.x,zone.y,zone.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#6558a6';ctx.font='bold '+8/view.s+'px Arial';ctx.textAlign='center';ctx.fillText('×'+zone.factor,zone.x,zone.y+zone.radius*.5);ctx.restore();}
+ ctx.globalAlpha=1;for(const zone of (battle?battle.level.zones:levels[currentLevel].zones)||[]){if(zone.stage!==undefined&&zone.stage!==(battle?.stage||0))continue;ctx.save();ctx.fillStyle=zone.factor>1?'#f4c04b32':'#8b6cce32';ctx.strokeStyle=zone.factor>1?'#d3a33588':'#7b69c988';ctx.lineWidth=2/view.s;ctx.setLineDash([4/view.s,5/view.s]);ctx.beginPath();ctx.arc(zone.x,zone.y,zone.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#6558a6';ctx.font='bold '+8/view.s+'px SourceRoboto';ctx.textAlign='center';ctx.fillText('×'+zone.factor,zone.x,zone.y+zone.radius*.5);ctx.restore();}
  for(let i=0;i<regions.length;i++){
   const r=regions[i],qty=Math.min(150,Math.floor(r.units));if(!r.owner||r.active===false)continue;
   for(let j=0;j<qty&&j<dots[i].length;j++){const d=dots[i][j],wiggle=Math.sin(now*.0017+d.phase)*1.1;drawDot(d.x+wiggle,d.y,Math.max(2.7,1.75/view.s),r.owner,r.owner===1?data.fighter:0);}
@@ -340,10 +345,10 @@ function render(now){
  const radius=(r.owner?13:12)/view.s;ctx.fillStyle=r.owner?color(r.owner):'#969696';ctx.strokeStyle='#fff';ctx.lineWidth=1.8/view.s;
   ctx.beginPath();ctx.arc(r.x,r.y,radius,0,Math.PI*2);ctx.fill();ctx.stroke();
   if(battle&&r.owner&&battle.reserved(r.id)>0){const reserved=battle.reserved(r.id);ctx.strokeStyle='#fff';ctx.lineWidth=2.2/view.s;ctx.beginPath();ctx.arc(r.x,r.y,radius+3.5/view.s,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,reserved/Math.max(1,r.units)));ctx.stroke();}
-  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 '+(r.units>=100?11:13)/view.s+'px Arial';ctx.fillText(battle&&!battle.visible(1,r.id)?'?':Math.floor(r.units),r.x,r.y+.5/view.s);
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 '+(r.units>=100?11:13)/view.s+'px SourceRoboto';ctx.fillText(battle&&!battle.visible(1,r.id)?'?':Math.floor(r.units),r.x,r.y+.5/view.s);
   ctx.restore();
   if(r.kind!=='normal'){
-   ctx.fillStyle=r.kind==='factory'?'#63b882':r.kind==='turret'?'#d6967a':'#9c8ec6';ctx.beginPath();ctx.arc(r.x+10/view.s,r.y-12/view.s,6/view.s,0,6.3);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold '+7/view.s+'px Arial';ctx.fillText(r.kind==='factory'?'+':r.kind==='turret'?'⊕':r.kind==='reinforcement'?'+50':r.kind==='shield'?'◆':'▣',r.x+10/view.s,r.y-12/view.s);
+   ctx.fillStyle=r.kind==='factory'?'#63b882':r.kind==='turret'?'#d6967a':'#9c8ec6';ctx.beginPath();ctx.arc(r.x+10/view.s,r.y-12/view.s,6/view.s,0,6.3);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold '+7/view.s+'px SourceRoboto';ctx.fillText(r.kind==='factory'?'+':r.kind==='turret'?'⊕':r.kind==='reinforcement'?'+50':r.kind==='shield'?'◆':'▣',r.x+10/view.s,r.y-12/view.s);
   }
   if(r.poison>0){ctx.strokeStyle='#8cdd6e';ctx.lineWidth=3/view.s;ctx.globalAlpha=.75;ctx.beginPath();ctx.arc(r.x,r.y,24/view.s,0,6.3);ctx.stroke();ctx.globalAlpha=1;}
   if(r.frozen>0){ctx.strokeStyle='#83eeff';ctx.lineWidth=3/view.s;ctx.globalAlpha=.8;ctx.beginPath();ctx.arc(r.x,r.y,22/view.s,0,6.3);ctx.stroke();ctx.globalAlpha=1;}

@@ -16,5 +16,7 @@ const chestIds={basic:'booster_1',royal:'booster_0',legend:'booster_store_2',onb
 function chest(type){const id=chestIds[type],config=records('BoosterConfig').find(x=>x._id===id),store=records('BoostersStoreGroupConfig')[0]?._items.find(x=>x._boosterId===id);return config?{id,config,price:store?._price??null,currency:store?._costType===64?'gems':null,rolls:config._dropsData._rollsCountRange.x}:null;}
 const rarityNames=['COMMON','UNCOMMON','RARE','EPIC','LEGENDARY'];
 function weighted(rows,random){const sum=rows.reduce((n,r)=>n+r._weight,0);if(sum<=0)return null;let pick=random()*sum;for(const r of rows){pick-=r._weight;if(pick<0)return r;}return rows.at(-1);}
-const api={data:D,group,select,bot,chest,chestIds,rarityNames,weighted,range:(range,random)=>range.x+(range.y-range.x)*random()};g.TerraSourceRules=api;if(typeof module!=='undefined')module.exports=api;
+function featureLevel(kind){return kind==='duel'?D.PvpConfig[0]._rcData.PvpActivateFromLevel:kind==='rush'?D.RegionRushConfig[0]._remoteConfigData._activateFromLevel:kind==='wheel'?D.LuckyWheelConfig[0]._remoteConfigData._activateFromLevel:kind==='idle'?D.IdleEarningRewardsConfigs[0]._remoteConfigData._activateFromLevel:kind==='operation'?D.DailyOperationsConfig[0]._balanceData._availableFromLevel:0;}
+function featureAvailable(kind,state){return Math.max(state.level||0,state.unlocked||0)+1>=featureLevel(kind);}
+const api={featureLevel,featureAvailable,data:D,group,select,bot,chest,chestIds,rarityNames,weighted,range:(range,random)=>range.x+(range.y-range.x)*random()};g.TerraSourceRules=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
