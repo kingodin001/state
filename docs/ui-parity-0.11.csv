@@ -1,0 +1,100 @@
+scene,source_file,root_id,nodes,implementation,pixel_runtime_verified
+View - MenuView,level2,20,265,source feature unlock thresholds; remaining main-menu layout partial,no
+View - UINavigationMenuView,level2,279,199,some source coordinates bound; behavior/remaining geometry partial,no
+UIMainPopups_Canvas,level2,562,1,source exported; existing analogue requires comparison,no
+View - ExitFromGame,level2,973,24,source exported; existing analogue requires comparison,no
+View - Store,level2,1309,1560,source catalogs/grids partly bound; layout partial,no
+View - UIPvpSearchOpponentsView,level2,1336,45,source exported; existing analogue requires comparison,no
+View - Inventory,level2,1713,353,source catalogs/grids partly bound; layout partial,no
+View - CoreUpgrades,level2,2276,696,"source 936x475 three-card row, icons/frame/font and prices; header/stats presentation partial",no
+UIAlbumView,level2,2392,135,source catalogs/grids partly bound; layout partial,no
+View - TooltipView,level2,2812,3,source exported; existing analogue requires comparison,no
+View - UIPvpLeaderboardView,level2,2985,72,source exported; existing analogue requires comparison,no
+View - CountdownView,level2,3056,34,source exported; existing analogue requires comparison,no
+RegionRushStart - Popup,fc4fec878d6df4fb4b4a01b9e5ff9a0e,41,43,source exported; existing analogue requires comparison,no
+RegionRushRaceIsOver - Popup,d6e728f044d8849b1b231ba3aa901c89,21,22,source exported; existing analogue requires comparison,no
+UIChangeGPPStatePopup,ed740d72b5c1d46aab5c39391501896f,31,32,source exported; monetization/integration pending,no
+JustPlay UINoAdsOfferPopup Variant,a1ba4fb6f7d2047108b84b43745754ca,30,62,source exported; monetization/integration pending,no
+UIAlbumStarsStorePopup,1726e47b3e01e4b909d5fe9b309f1b04,158,173,source exported; existing analogue requires comparison,no
+UIStarterPackDevelopmentOfferPopup,e5b3551ca93964769a40df941a6c9e8a,58,61,source exported; monetization/integration pending,no
+UISkipitsPackOfferPopup Variant,8a4984143111e4f0d9fd3b7ddbcd7468,42,59,source exported; monetization/integration pending,no
+UIDailyOperationsPopup,d38a28905cf7346899eec3e58064e7b5,52,87,source exported; existing analogue requires comparison,no
+UIMiniShopPopup,92dfef70226994fbd956f7e6795bb893,456,725,source exported; existing analogue requires comparison,no
+UIAdLoadingPopup,000969f4715ce493097787bfff7bed8a,12,14,source exported; existing analogue requires comparison,no
+View - PartialMove,level4,31,13,some source coordinates bound; behavior/remaining geometry partial,no
+View - Bonuses,level4,108,174,source exported; existing analogue requires comparison,no
+View - WinView,level4,146,127,"source art/ribbon/frame positions, no invented time stars, source stage coins; dynamic reward animations partial",no
+View - ConfirmView,level4,175,24,source exported; existing analogue requires comparison,no
+View - GameplayView,level4,184,11,army-count weights + Area UI colors + source fill speed; remaining HUD/animations partial,no
+UIGameplayPopups_Canvas,level4,248,1,source exported; existing analogue requires comparison,no
+View - LoseView,level4,296,59,source art/ribbon/reward geometry and 0.4 currency factor; transitions partial,no
+View - AbilitiesView,level4,345,35,some source coordinates bound; behavior/remaining geometry partial,no
+UIInventoryColorPanel_Popup,c42a37e12f2bc4ce486a2bc0c3ac4a20,12,22,source exported; existing analogue requires comparison,no
+View - TutorialView Variant,sharedassets2.assets,405,13,source exported; existing analogue requires comparison,no
+UIReinforcementPopup,3991274f3eeb3d54b9438c10566abe37,76,84,source exported; existing analogue requires comparison,no
+UILeaderSkinPreviewAndInfoPopup,b3fda15d632eb49cfab27e8c16a01383,201,224,source exported; existing analogue requires comparison,no
+View - UISceneLoadingView,level1,9,18,source exported; existing analogue requires comparison,no
+UISettingsPopup,b28ceb1c811f54032831b6a51819a30e,322,334,source exported; existing analogue requires comparison,no
+UIHardMinistorePopup,f9f57c3107ecd41c69defea0631ea337,350,363,source exported; existing analogue requires comparison,no
+ProStatusKing UINoAdsOfferPopup Variant,4e465243c1b52499997937135454ab35,60,63,source exported; monetization/integration pending,no
+UIRewardsPopup,491580153a86b2e43afe1e9de4cc6f15,96,103,source exported; existing analogue requires comparison,no
+UIAlbumGeneratedPopup,28cf46d81fdd4f26b2766ae0e810b5a3,10,25,source exported; existing analogue requires comparison,no
+UIInfoPopup,c90467088ecb64ebe9693025650318fe,10,10,source exported; existing analogue requires comparison,no
+UIIdleEarningPopup,37ffaae3b5c7a48fb90ff4431cc63ebc,119,124,source exported; existing analogue requires comparison,no
+UIReinforcementActivationPopup,0fb3b56d64a3444fda1e959692dbb392,9,22,source exported; existing analogue requires comparison,no
+UILeaderSpeedupActivationPopup,8afcf1a86c82f4e06807d516425c8740,3,4,source exported; existing analogue requires comparison,no
+ProStatus UINoAdsOfferPopup Variant,b5de054684bf740e6ac1a07e71c84287,26,63,source exported; monetization/integration pending,no
+UINoAdsOfferPopup,44bc70d8e3eb349b1b23d8109d789df2,24,75,source exported; monetization/integration pending,no
+UIStickersSetPopup,b9d4723b87af64c4db6330ac57202310,311,339,source exported; existing analogue requires comparison,no
+UISkinPreviewAndInfoPopup,0cc8d743cac1943e7aa29b414f5ca058,201,221,source exported; existing analogue requires comparison,no
+UIOpenBoostersPopup,64608facc06624a6191b672125ae1080,15,141,source exported; existing analogue requires comparison,no
+View - BoosterStart,64608facc06624a6191b672125ae1080,53,24,source exported; existing analogue requires comparison,no
+View - CardsCollection,64608facc06624a6191b672125ae1080,54,70,source exported; existing analogue requires comparison,no
+UISupplyMinistorePopup,14df5699da42547aa92b9533783e077f,209,215,source exported; existing analogue requires comparison,no
+UIView - AppInit,level0,7,3,source exported; existing analogue requires comparison,no
+UILevelTutorialPopup,f705124806e39419ca7bed51a2754c7c,21,25,source exported; existing analogue requires comparison,no
+UILuckyWheelPopup,8714cc4f7528f4741977bfb6ed1ec993,185,192,source exported; existing analogue requires comparison,no
+UIDailyOperationsRulesPopup,66fbe8fead30944c1adc50b57580b22a,43,44,source exported; existing analogue requires comparison,no
+UIStickersSetRewardsPopup,6c3e35c164a8d416886b030228c61cbd,41,115,source exported; existing analogue requires comparison,no
+f_phoenix UIUniqueSkinOfferPopup Variant,6a54384dc72224f93b5f809d92bf910f,16,57,source exported; monetization/integration pending,no
+AlbumExpire UIOfferPopup Variant,794db8ba384c947ad9c7780a3c549903,30,70,source exported; monetization/integration pending,no
+BuyUsCoffee UINoAdsOfferPopup Variant,d39066bca40564cc8b4b686ec178387b,27,61,source exported; monetization/integration pending,no
+View - GameplayView,level5,22,11,army-count weights + Area UI colors + source fill speed; remaining HUD/animations partial,no
+View - UIPVPLoseWithLeaderboardView,level5,45,134,source exported; existing analogue requires comparison,no
+View - AbilitiesView,level5,99,35,some source coordinates bound; behavior/remaining geometry partial,no
+View - UIPVPGameplayView,level5,149,28,source exported; existing analogue requires comparison,no
+View - UIPvpLeaveGameView,level5,157,13,source exported; existing analogue requires comparison,no
+UIGameplayPopups_Canvas,level5,253,1,source exported; existing analogue requires comparison,no
+View - UIPVPWinWithLeaderboardView,level5,312,223,source exported; existing analogue requires comparison,no
+View - UIMiniLeaderboardView,level5,395,77,source exported; existing analogue requires comparison,no
+View - PartialMove,level5,417,13,some source coordinates bound; behavior/remaining geometry partial,no
+View - UIMiniLeaderboardView,level5,456,77,source exported; existing analogue requires comparison,no
+UIScreenLockerPopup,ce7100793c7cc464aa4590c77c7930ae,3,3,source exported; existing analogue requires comparison,no
+UIRoamingBonusPopup,bad4685abdcc84581af57dfe0e1f4a25,97,109,source exported; existing analogue requires comparison,no
+UIBoosterInfoPopup,1d7fbd0d5e34c4572b04486d97bac4fe,7,42,source exported; existing analogue requires comparison,no
+UIInstantEarningPopup,3e2b37e114a074a77bccd701058755fb,88,91,source exported; existing analogue requires comparison,no
+UIAlbumExpirationPopup,6a9cd827fc77c45cf9625134dab0ec78,38,39,source exported; existing analogue requires comparison,no
+UIRateUsPopup,9a6fd0ef1deb341dcaf7c8a8716bcc98,40,50,source exported; monetization/integration pending,no
+UIQuestCompletePopup,7af86935b34c64347a7fc6ebf4bce3e9,38,40,source exported; existing analogue requires comparison,no
+RegionRushRules - Popup,f0a4aea89e0a248a39937240b74c895c,69,73,source exported; existing analogue requires comparison,no
+UINotEnoughResourcesPopup,659d848e4ea11420d944c40b91f2444f,140,151,source exported; existing analogue requires comparison,no
+RegionRushLeaderboard - Popup,9598bc71e379c4ee29f84f99431adcc9,263,288,source exported; existing analogue requires comparison,no
+UIAdsRewardsPopup,ed832d3e9846c4713a9301cb2be88ce1,5,6,source exported; monetization/integration pending,no
+UISkipitsIntroPopup,8020119d17f3b43308116ac81aa1ef3e,57,57,source exported; existing analogue requires comparison,no
+UIStickerPreviewPopup,9c77ef3908cfd4fdc84c0a88dd0f8af1,37,39,source exported; existing analogue requires comparison,no
+UIStickerPackCollectPopup,80e794c44ecf8468b8f7e4fc2dd6df14,11,11,source exported; existing analogue requires comparison,no
+UIAdRewardedPopup,ef9b73dd250784af0a8ccb15f74a26ba,19,20,source exported; monetization/integration pending,no
+Enjoy UINoAdsOfferPopup Variant,daa879d22937f4da08a795eff9939bad,22,60,source exported; monetization/integration pending,no
+UIAlbumRulesPopup,829173126e4074f718ccdfffe847ed01,41,42,source exported; existing analogue requires comparison,no
+Forever UINoAdsOfferPopup Variant,c57bdb78a869d4bccbb76d21f20579f3,26,52,source exported; monetization/integration pending,no
+UISoftMinistorePopup,4406f0c388e854bd692b947a3ba1f3ef,211,215,source exported; existing analogue requires comparison,no
+UIStarterPackNoAdsOfferPopup,8dc02c4e84f9642be9572d6804eaddcf,28,81,source exported; monetization/integration pending,no
+View - WinView,level6,5,127,"source art/ribbon/frame positions, no invented time stars, source stage coins; dynamic reward animations partial",no
+View - Bonuses,level6,63,174,source exported; existing analogue requires comparison,no
+View - ConfirmView,level6,171,24,source exported; existing analogue requires comparison,no
+View - GameplayView,level6,190,11,army-count weights + Area UI colors + source fill speed; remaining HUD/animations partial,no
+View - PartialMove,level6,217,13,some source coordinates bound; behavior/remaining geometry partial,no
+UIGameplayPopups_Canvas,level6,417,1,source exported; existing analogue requires comparison,no
+View - AbilitiesView,level6,461,35,some source coordinates bound; behavior/remaining geometry partial,no
+View - LoseView,level6,678,59,source art/ribbon/reward geometry and 0.4 currency factor; transitions partial,no
+UIModifierInfoForDailyOperationsPopup,0de70da3df2ff496981f5b7915571e8a,14,24,source exported; existing analogue requires comparison,no

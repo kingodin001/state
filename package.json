@@ -1,13 +1,14 @@
 {
   "name": "terra-storm",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs tests/source-orders.cjs tests/source-appearance.cjs",
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs tests/source-orders.cjs tests/source-appearance.cjs tests/source-parity.cjs",
     "test:ui": "node tests/source-ui.cjs",
     "test:visual": "node tests/visual.cjs",
     "prepare:assets": "python3 scripts/prepare_reference.py",
-    "test:release-ui": "node tests/source-release-ui.cjs"
+    "test:release-ui": "node tests/source-release-ui.cjs",
+    "test:parity-ui": "node tests/source-parity-ui.cjs"
   },
   "devDependencies": {
     "playwright": "1.56.1"

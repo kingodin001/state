@@ -74,7 +74,7 @@ class Battle {
   else if(s.kind.includes('Shield'))allies[0].shieldPoints+=Math.ceil(this.playerLimit*s.Stat1);
   else if(s.kind.includes('ProductionBoost')){this.productionBoost=s.Stat2;this.sourceBoost=s.Stat1;}
   else if(s.kind.includes('Berserker')){this.berserk=s.Stat2;this.berserkDamage=s.Stat1;}
-  else if(s.kind.includes('Poison'))for(const r of enemies){r.poison=s.Stat2;r.frozen=s.Stat2;}
+  else if(s.kind.includes('Poison'))for(const r of enemies){r.poison=s.Stat2;r.poisonElapsed=0;r.poisonDamage=s.Stat1;r.frozen=s.Stat2;}
   else if(s.kind.includes('Freeze')){for(const r of enemies)r.frozen=s.Stat2;this.freezeEnemies=s.Stat2;}
   this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
  }
@@ -128,7 +128,7 @@ class Battle {
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
    if(r.active===false)continue;
-   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){r.poison=Math.max(0,r.poison-dt);r.units=Math.max(0,r.units-dt*1.5);}
+   r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){if(this.level.sourcePort){r.poisonElapsed=(r.poisonElapsed||0)+Math.min(dt,r.poison);while(r.poisonElapsed+1e-8>=1){r.poisonElapsed-=1;r.units=Math.max(0,r.units-(r.poisonDamage||1));}}else r.units=Math.max(0,r.units-dt*1.5);r.poison=Math.max(0,r.poison-dt);}
    let cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
    if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=r.owner===1?this.playerLimit:this.enemyLimit;
    if(r.owner&&r.units<cap&&r.frozen<=0){
