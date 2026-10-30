@@ -25,20 +25,24 @@ class Battle {
  drainEvents(){return this.events.splice(0);}
  reserved(id){return this.waves.filter(w=>w.from===id&&w.owner===this.regions[id].owner).reduce((n,w)=>n+w.left,0);}
  available(id){return Math.max(0,Math.floor(this.regions[id].units)-this.reserved(id));}
+ orderable(id){return this.level.sourcePort?Math.max(0,Math.floor(this.regions[id].units)):this.available(id);}
  visible(owner,id){
   if(this.regions[id].active===false)return false;if(!this.level.fog||this.regions[id].owner===owner)return true;const r=this.regions[id],range=this.level.vision||330;
   return this.regions.some(s=>s.active!==false&&s.owner===owner&&distance(s,r)<=range)||this.units.some(u=>u.owner===owner&&distance(u,r)<=range*.6);
  }
  command(sources,target,fraction=1,owner=1){
-  if(this.result||this.paused||this.stageTransition>0||!this.regions[target]||this.regions[target].active===false)return 0;
+  if(!Number.isFinite(fraction)||this.result||this.paused||this.stageTransition>0||!this.regions[target]||this.regions[target].active===false)return 0;
   let sent=0;const dest=this.regions[target];
   for(const id of [...new Set(sources)]){
    const s=this.regions[id];if(!s||s.active===false||s.id===target||s.owner!==owner)continue;
-   const count=Math.floor(this.available(id)*Math.min(1,Math.max(.05,fraction)));if(count<1)continue;
+   const count=Math.floor(this.orderable(id)*Math.min(1,Math.max(.05,fraction)));if(count<1)continue;
+   const previous=this.waves.find(w=>w.from===id&&w.owner===owner);
+   // Replace only the unlaunched source wave; preserve its departure clock.
+   if(this.level.sourcePort)this.waves=this.waves.filter(w=>w.from!==id||w.owner!==owner);
    s.pulse=.3;
-   this.waves.push({from:s.id,to:target,owner,count,left:count,sequence:0});sent+=count;
+   this.waves.push({from:s.id,to:target,owner,count,left:count,sequence:this.level.sourcePort?(previous?.sequence||0):0});sent+=count;
   }
-  if(sent&&owner===1){this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
+  if(sent&&owner===1){if(!this.level.sourcePort)this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
   return sent;
  }
  cast(type,target){
@@ -153,7 +157,7 @@ class Battle {
     for(let batch=0;batch<(this.timing.waveSize||1)&&wave;batch++){
     if(a.units<1){for(const w of this.waves)if(w.from===a.id)w.left=0;break;}
     const b=this.regions[wave.to],d=Math.max(1,distance(a,b)),nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
-    const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;
+    const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;if(this.level.sourcePort&&wave.owner===1)this.stats.sent++;
     this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:this.timing.marchSpeed*(1+(this.rng.next()-.5)*this.timing.marchVariation)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
     wave=this.waves.find(w=>w.from===a.id&&w.left>0);
     }

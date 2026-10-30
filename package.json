@@ -3,7 +3,7 @@
   "version": "0.10.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs",
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs tests/source-orders.cjs tests/source-appearance.cjs",
     "test:ui": "node tests/source-ui.cjs",
     "test:visual": "node tests/visual.cjs",
     "prepare:assets": "python3 scripts/prepare_reference.py",

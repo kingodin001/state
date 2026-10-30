@@ -42,6 +42,7 @@ const offline=Math.min(8*3600,Math.max(0,(Date.now()-data.lastSeen)/1000));
 const offlineReward=offline>180?Math.floor(offline*(100+data.upgrades[2]*75)/3600):0;
 if(offlineReward){data.coins+=offlineReward;meta.m.lastOfflineReward=offlineReward;save();}
 let mode='menu',battle=null,currentLevel=data.level,modalType=null,selected=new Set(),fraction=1,casting=null,particles=[],shotLines=[],toastTimer=0,view={s:1,x:0,y:0},drag=null,pointer={x:0,y:0},lastFrame=performance.now(),lastUi=0,scale=1,zoom=1,pan={x:0,y:0},overview=false,defaultZoom=1,cameraFocus=null,cameraTween=null,hoverTarget=null,orderPulses=[],countdownActive=false,countdownRun=0;
+const armyBar=new TerraAppearance.ArmyBar($('balance'),owner=>TerraAppearance.hex(sourcePalette(owner).Area.Color));
 const canvas=$('map'),ctx=canvas.getContext('2d',{alpha:false});let W=400,H=800,DPR=1,paths=[],dots=[];
 let soundCtx=null;const artImage=new Image();artImage.src='art/terra-collection.webp';
 const spriteCache=new Map(),spriteImages=new Map([['art/terra-collection.webp',artImage]]);
@@ -70,15 +71,15 @@ function time(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2
 function sourcePalette(owner){
  const id=owner===0?'c_n':owner===1?eco.item(eco.c.equipped.color).nativeId:battle?.botProfiles[owner]?.skins.color||['c_2','c_4','c_6','c_8','c_10'].filter(x=>x!==eco.item(eco.c.equipped.color).nativeId)[owner-2];return TerraSource.palettes[eco.c.sourceStyle||'stl_1_origin'][id]||TerraSource.palettes.stl_1_origin.c_0;
 }
-function color(owner){return TerraSourceRuntime.hex(sourcePalette(owner).Base.Color);}
-function fill(owner){return TerraSourceRuntime.hex(sourcePalette(owner).Area.Color);}
+function color(owner){return TerraAppearance.hex(sourcePalette(owner).Base.Color,true);}
+function fill(owner){return TerraAppearance.hex(sourcePalette(owner).Area.Color,true);}
 function sourceProduction(){return TerraSourceMath.upgrade(12,data.upgrades[1])*(1+eco.bonuses().production);}
 function sourceStart(){return Math.floor(TerraSourceMath.upgrade(11,data.upgrades[0])*(1+(eco.bonuses().sourcePassives[11]||0)));}
 function battleConfig(){return TerraCampaign.combat(levels[currentLevel],{start:sourceStart(),production:sourceProduction(),limit:eco.bonuses().limit});}
 function inside(x,y,poly){let v=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if(((a[1]>y)!==(b[1]>y))&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])v=!v;}return v;}
 function prepareMap(){
  const map=battle?battle.level:levels[currentLevel];paths=map.regions.map(r=>{const p=new Path2D();for(const poly of r.polys||[r.poly]){poly.forEach((a,i)=>i?p.lineTo(a[0],a[1]):p.moveTo(a[0],a[1]));p.closePath();}return p;});
- dots=map.regions.map(r=>Array.from({length:90},(_,i)=>({...TerraField.slot(r,i),phase:i*2.399963})));
+ dots=map.regions.map(r=>Array.from({length:150},(_,i)=>({...TerraField.slot(r,i),phase:i*2.399963})));
  defaultZoom=1;zoom=1;cameraFocus=null;cameraTween=null;pan={x:0,y:0};overview=false;resize();
 
 }
@@ -139,7 +140,7 @@ function startBattle(options={}){
  if(selectedBonuses.includes(0)){const start=config.regions.find(r=>r.owner===1&&r.stage===0),target=config.regions.filter(r=>r.owner===0&&r.stage===0).sort((a,b)=>Math.hypot(a.center[0]-start.center[0],a.center[1]-start.center[1])-Math.hypot(b.center[0]-start.center[0],b.center[1]-start.center[1]))[0];if(target)config={...config,regions:config.regions.map(r=>r.id===target.id?{...r,owner:1}:r)};}
  if(battleMode==='operation')config={...config,enemyRate:config.enemyRate*1.15,aiInterval:config.aiInterval*.85,fog:currentLevel>=20,zones:currentLevel>=10?[{x:config.width/2,y:config.height/2,radius:110,factor:.5}]:config.zones};
  if(battleMode==='duel'||battleMode==='rush')config=TerraCampaign.pvp(currentLevel,{rush:battleMode==='rush',start:sourceStart(),production:sourceProduction(),limit:bonuses.limit});
- battle=new TerraBattle(config,{start:0,production:0,sourceLeader:bonuses.sourceLeader,sourceSkills:bonuses.sourceSkills,playerColor:eco.item(eco.c.equipped.color).nativeId,sourceProduction:sourceProduction(),productionMultiplier:selectedBonuses.includes(10)?2:1,speed:bonuses.speed*(selectedBonuses.includes(100)?2:1),limit:bonuses.limit,leader:bonuses.leader,skipTutorial:operationMode||data.completed.includes(currentLevel)});
+ armyBar.reset();battle=new TerraBattle(config,{start:0,production:0,sourceLeader:bonuses.sourceLeader,sourceSkills:bonuses.sourceSkills,playerColor:eco.item(eco.c.equipped.color).nativeId,sourceProduction:sourceProduction(),productionMultiplier:selectedBonuses.includes(10)?2:1,speed:bonuses.speed*(selectedBonuses.includes(100)?2:1),limit:bonuses.limit,leader:bonuses.leader,skipTutorial:operationMode||data.completed.includes(currentLevel)});
 
  eco.consumeBonuses(selectedBonuses);
  for(const k of ['reinforce','shield'])if(currentLevel>=2&&options.loadout?.includes(k)&&eco.c.boosters[k]>0){eco.c.boosters[k]--;battle.skillCharges[k]++;}save();
@@ -153,13 +154,13 @@ function startBattle(options={}){
 function updateBattle(){
  if(!battle)return;
  $('battle-time').textContent=time(battle.level.timeLimit?Math.max(0,battle.level.timeLimit-battle.time):battle.time);const shares=battle.territoryShare(),tot=battle.totals(),count=battle.regions.filter(r=>r.active).length;$('stage-label').hidden=!battle.level.stages||battle.level.stages.length<2;$('stage-label').textContent='УЧАСТОК '+(battle.stage+1)+' / '+(battle.level.stages?.length||1);
- $('balance').innerHTML=shares.map((n,i)=>n?'<i style="background:'+color(i)+';width:'+n/count*100+'%"></i>':'').join('');
+ armyBar.update(tot);
  $('force-counts').innerHTML=tot.map((n,i)=>i&&n?'<span style="color:'+color(i)+'"><i style="background:'+color(i)+'"></i>'+n+'</span>':'').join('');
  $('region-status').textContent='ТЕРРИТОРИИ '+shares[1]+' / '+count+'  •  АРМИЯ '+tot[1];
  for(const type of ['reinforce','shield']){$(type).disabled=!battle.skillCharges[type];$(type).classList.toggle('selected',casting===type);$(type).querySelector('i').textContent=battle.cooldowns[type]>0?Math.ceil(battle.cooldowns[type])+'с':battle.skillCharges[type];}
  const ability=$('leader-skill');ability.hidden=battle.level.sourcePort&&!battle.sourceLeader;ability.disabled=battle.leaderCharges<=0;ability.classList.toggle('selected',casting==='leader');ability.querySelector('i').textContent=battle.leaderCooldown>0?Math.ceil(battle.leaderCooldown)+'с':battle.level.sourcePort?'✓':battle.leaderCharges;
  $('select-all').classList.toggle('selected',selected.size>0);
- const ready=[...selected].filter(id=>battle.regions[id].active&&battle.regions[id].owner===1),amount=ready.reduce((n,id)=>n+Math.floor(battle.available(id)*fraction),0);
+ const ready=[...selected].filter(id=>battle.regions[id].active&&battle.regions[id].owner===1),amount=ready.reduce((n,id)=>n+Math.floor(battle.orderable(id)*fraction),0);
  $('selection-info').hidden=!ready.length;$('selection-info').textContent=ready.length+' '+(ready.length===1?'БАЗА':'БАЗЫ')+' · '+amount+' БОЙЦОВ';
  if(currentLevel===0&&!data.completed.includes(0)&&battle.firstCommand){$('hint').textContent=battle.regions.filter(r=>r.active&&r.owner===1).length>1?'Теперь отправь бойцов к вражеской базе':'Каждая захваченная база производит бойцов';if(battle.time>25)$('hint').hidden=true;}
 }
@@ -302,6 +303,7 @@ function render(now){
   else if(ev.type==='shot')shotLines.push({...ev,life:.15});else if(ev.type==='finish')finish(ev.result);
  }}
 
+ if(mode==='battle'&&battle){armyBar.update(battle.totals());armyBar.step(dt);}
  if(cameraTween){cameraTween.elapsed+=dt;const f=Math.min(1,cameraTween.elapsed/.85),t=f*f*(3-2*f);for(const key of ['x','y','s'])view[key]=cameraTween.from[key]+(cameraTween.to[key]-cameraTween.from[key])*t;if(f===1)cameraTween=null;}
  if(now-lastUi>180){lastUi=now;if(mode==='battle')updateBattle();}
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=TerraSourceRuntime.hex(TerraSource.styles.find(x=>x.id===eco.c.sourceStyle)?.background||TerraSource.styles[0].background);ctx.fillRect(0,0,W,H);
@@ -309,7 +311,7 @@ function render(now){
  const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units,active:(r.stage||0)===0}));
  ctx.save();ctx.translate(0,4/view.s);ctx.fillStyle='#0000001a';for(const path of paths)ctx.fill(path);ctx.restore();
  for(let i=0;i<regions.length;i++){
-  const r=regions[i];const current=battle?battle.stage:0;ctx.globalAlpha=(r.stage||0)>current?.25:1;ctx.fillStyle=fill(r.owner);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
+  const r=regions[i],current=battle?battle.stage:0,sourceCurrent=(battle?battle.level:levels[currentLevel]).sourceStageIndex??current,sourceStage=r.sourceStageIndex??r.stage??0;ctx.globalAlpha=sourceStage>sourceCurrent?.25:1;ctx.fillStyle=TerraAppearance.areaColor(sourcePalette(r.owner),sourceStage,sourceCurrent,r.owner===0);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
   if(selected.has(r.id)&&mode==='battle'){ctx.globalAlpha=.22;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=3/view.s;ctx.stroke(paths[i]);}
   if(hoverTarget===r.id){ctx.globalAlpha=.2;ctx.fillStyle=r.owner===1?color(1):'#ff8c37';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(battle&&battle.level.fog&&r.active&&!battle.visible(1,r.id)){ctx.globalAlpha=.18;ctx.fillStyle='#293665';ctx.fill(paths[i]);ctx.globalAlpha=1;}
@@ -317,7 +319,7 @@ function render(now){
  }
  ctx.globalAlpha=1;for(const zone of (battle?battle.level.zones:levels[currentLevel].zones)||[]){if(zone.stage!==undefined&&zone.stage!==(battle?.stage||0))continue;ctx.save();ctx.fillStyle=zone.factor>1?'#f4c04b32':'#8b6cce32';ctx.strokeStyle=zone.factor>1?'#d3a33588':'#7b69c988';ctx.lineWidth=2/view.s;ctx.setLineDash([4/view.s,5/view.s]);ctx.beginPath();ctx.arc(zone.x,zone.y,zone.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#6558a6';ctx.font='bold '+8/view.s+'px Arial';ctx.textAlign='center';ctx.fillText('×'+zone.factor,zone.x,zone.y+zone.radius*.5);ctx.restore();}
  for(let i=0;i<regions.length;i++){
-  const r=regions[i],qty=Math.min(90,Math.floor(r.units));if(!r.owner||r.active===false)continue;
+  const r=regions[i],qty=Math.min(150,Math.floor(r.units));if(!r.owner||r.active===false)continue;
   for(let j=0;j<qty&&j<dots[i].length;j++){const d=dots[i][j],wiggle=Math.sin(now*.0017+d.phase)*1.1;drawDot(d.x+wiggle,d.y,Math.max(2.7,1.75/view.s),r.owner,r.owner===1?data.fighter:0);}
  }
  if(battle){
