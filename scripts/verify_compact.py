@@ -11,6 +11,6 @@ with ZipFile(apk) as z:
  ads=json.loads(z.read('assets/ads-config.json'));assert all(not v for v in ads['adUnits'].values())
  native=[n for n in names if n.startswith('lib/')]
 badging=subprocess.check_output([str(bt/'aapt2'),'dump','badging',str(apk)],text=True);assert "package: name='pro.vymi.terrastorm' versionCode='13' versionName='0.12.0'" in badging
-cert=subprocess.check_output(['bash',str(bt/'apksigner'),'verify','--verbose','--print-certs',str(apk)],text=True);assert 'Verified using v2 scheme (APK Signature Scheme v2): true' in cert;assert 'd4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef' in cert
+cert=subprocess.check_output(['bash',str(bt/'apksigner'),'verify','--verbose','--print-certs',str(apk)],text=True);assert 'Verified using v2 scheme (APK Signature Scheme v2): true' in cert;assert 'Verified using v3 scheme (APK Signature Scheme v3): true' in cert;assert 'd4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef' in cert
 r={'version':'0.12.0','versionCode':13,'package':'pro.vymi.terrastorm','sizeBytes':apk.stat().st_size,'sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),'signerSha256':'d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef','gameFilesMatched':count,'zipCrc':'pass','signatureV2V3':'pass','nativeLibraries':len(native),'dexFiles':dex_count,'adsProvider':'yandex','productionAdIdsConfigured':False,'physicalAndroidTested':False};print(json.dumps(r));
 if a.report:Path(a.report).write_text(json.dumps(r,indent=2)+'\n')

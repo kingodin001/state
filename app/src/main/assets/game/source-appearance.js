@@ -1,10 +1,10 @@
-/* APK: Linear world colours, raw UI palette, army counts and fill speed 5. */
+/* Source runtime palette, army counts and bar fill speed 5. */
 (function(g){'use strict';
 const srgb=x=>x<=.0031308?12.92*x:1.055*Math.pow(x,1/2.4)-.055;
 const hex=(c,linear=false)=>'#'+['r','g','b'].map(k=>Math.round(Math.max(0,Math.min(1,linear?srgb(c[k]):c[k]))*255).toString(16).padStart(2,'0')).join('');
 // The supplied runtime screenshot shows the source RGB swatches directly.
 // Do not apply Linear→sRGB a second time to the canvas colours.
-function areaColor(p,stage,current,neutral=false){let c=p.Area.Color;if(stage<current)c={...c,r:(c.r+1)*.5,g:(c.g+1)*.5,b:(c.b+1)*.5};return hex(c);}
+function areaColor(p,stage,current,neutral=false,pastTint=null){if(stage<current&&pastTint)return pastTint;let c=p.Area.Color;if(stage<current)c={...c,r:(c.r+1)*.5,g:(c.g+1)*.5,b:(c.b+1)*.5};return hex(c);}
 function armyShares(totals){const sum=totals.reduce((n,v)=>n+Math.max(0,v||0),0);return totals.map(v=>sum?Math.max(0,v||0)/sum:0);}
 class ArmyBar{
  constructor(element,getColor){this.element=element;this.getColor=getColor;this.parts=new Map();}

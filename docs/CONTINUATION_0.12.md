@@ -4,7 +4,7 @@ Base: 3a89ce9974dc1706e6af506310286d87285f9dec, compact host, package pro.vymi.t
 
 ## October 31 screenshot evidence
 
-Both attachments are 899×2048. The first is our Africa encounter; the second shows Japan in the original. Original dominant neutral RGB is 162/162/162; our image was 189/189/189. The 0.11 world gamma conversion was an incorrect inference; runtime screenshot evidence takes precedence. Original shows a grey neutral segment in the army bar, white neutral base discs and black labels below bases. Original has moving troop sprites, not decorative copies of every garrison soldier distributed around every base.
+Both attachments are 899×2048. The first is our Africa encounter; the second shows the final Korea stage in the original (verified against extracted Korea geometry; Japan islands are background). Original dominant neutral RGB is 162/162/162; our image was 189/189/189. The 0.11 world gamma conversion was an incorrect inference; runtime screenshot evidence takes precedence. Original shows a grey neutral segment in the army bar, white neutral base discs and black labels below bases. Original has moving troop sprites, not decorative copies of every garrison soldier distributed around every base.
 
 Current fixes: remove source idle garrison sprites and marching bob; direct source RGB; include neutral bar share last; white neutral discs/black below-base labels; completed previous regions belong to player and retain faint base markers. These are incremental, not a full pixel parity claim. Source map geometry and funnel files remain unchanged.
 
@@ -39,3 +39,11 @@ V5 predicts future state and evaluates groups/combinations; do not merely retune
 ## Scope still outstanding
 
 Keep docs/COMPACT_PORT_0.11.md open-difference list and 99-window CSV. All AI/skills/menu/animations remain requested. The new screenshot/ads request steers that task, does not cancel it. Persist each implemented stage to GitHub so a scratch reset cannot lose code. Old state/ checkout has unrelated staged files: leave them untouched.
+
+## Latest checkpoint before delivery
+
+See COMPACT_PORT_0.12.md and ADS_SETUP.md for final changes and honest limitations. Build is Gradle/AGP 8.9.2 + Yandex 8.6.0, R8/resource shrinking, release code13/name0.12.0, V2/V3 signing. Never use the old manual one-Java-file build; scripts/build.sh now delegates to Gradle. SDK IDs are all empty until supplied. The scratch-only SDK/Maven mirrors are tooling, not repo content. SHA/signature and final artifact identifiers belong in apk-verification-0.12.json after the last rebuild.
+
+Current source visual regression: tests/source-battlefield-ui.cjs. Advertising regressions: tests/ads.cjs and tests/ads-ui.cjs. Production passive regressions: tests/source-passives.cjs. Preserve tests/fixtures/source-level-integrity.json. The file:// reload anomaly remains unresolved and is explicitly recorded; do not turn a passing rerun into a claim that it was fixed.
+
+Final test artifact: TerraStorm-0.12.0-test.apk, 24,763,743 bytes, SHA256 e9fb35926ceda45a06a2fd7edd783983acc1e1334323966f953a01a4f41a943e. Library libfile_334fa5077cd48191a803d89648d4d6fa, file_000000003c8c81f494b9c70603cab80a. Both V2 and V3 signatures verified with the existing cert. This artifact has zero production ad IDs.

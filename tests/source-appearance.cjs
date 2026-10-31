@@ -2,3 +2,5 @@ const {test}=require('node:test'),A=require('node:assert/strict'),R=require('../
 test('Army balance includes the neutral grey share shown in the reference screenshot',()=>{A.deepEqual(R.armyShares([100,45,15]),[.625,.28125,.09375]);A.deepEqual(R.armyShares([0,0,0]),[0,0,0]);A.deepEqual(R.armyShares([0,0,20,20]),[0,0,.5,.5]);});
 test('Canvas palette uses source RGB instead of applying gamma twice',()=>{const p=S.palettes.stl_1_origin.c_0;A.equal(R.hex(p.Area.Color),'#4bb4f8');A.equal(R.hex(p.Base.Color),'#33698d');A.equal(R.areaColor(S.palettes.stl_1_origin.c_n,0,0,true),'#a2a2a2');A.equal(R.areaColor(p,0,0),'#4bb4f8');});
 test('Only previous regions receive the configured lighten treatment',()=>{const p={Area:{Color:{r:.25,g:.25,b:.25}}};A.equal(R.areaColor(p,1,1,false),'#404040');A.equal(R.areaColor(p,1,1,true),'#404040');A.equal(R.areaColor(p,0,1,false),'#9f9f9f');});
+
+test('Completed classic regions use the measured reference tint without changing current areas',()=>{const p=S.palettes.stl_1_origin.c_0;A.equal(R.areaColor(p,0,1,false,'#cedbeb'),'#cedbeb');A.equal(R.areaColor(p,1,1,false,'#cedbeb'),'#4bb4f8');});

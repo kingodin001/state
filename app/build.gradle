@@ -11,6 +11,7 @@ android {
     }
     signingConfigs {
         release {
+            enableV3Signing true
             if (System.getenv('TERRA_KEYSTORE_FILE')) {
                 storeFile file(System.getenv('TERRA_KEYSTORE_FILE'))
                 storePassword System.getenv('TERRA_KEYSTORE_PASSWORD')

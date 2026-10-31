@@ -1,0 +1,35 @@
+{
+  "version": "0.12.0",
+  "versionCode": 13,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 24763743,
+  "sha256": "e9fb35926ceda45a06a2fd7edd783983acc1e1334323966f953a01a4f41a943e",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1270,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "dexFiles": 1,
+  "adsProvider": "yandex",
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false,
+  "nodeTests": {
+    "passed": 90,
+    "failed": 0
+  },
+  "androidLintVital": "pass",
+  "browserViewports": [
+    "360x640",
+    "390x844",
+    "600x800"
+  ],
+  "battlefieldIdleRegression": "pass",
+  "adsCallbackUnitTests": "pass",
+  "adsGameTransactionsMockBridge": "pass",
+  "packagedAssetBrowserCheck": "pass",
+  "nativePredictiveAiPorted": false,
+  "fullPixelParityClaimed": false,
+  "browserFileReloadAnomaly": "One broad file:// reload reset a core upgrade. Fifteen instrumented reloads and a subsequent instrumented full workflow at three sizes passed. Root cause remains unestablished.",
+  "libraryFileId": "libfile_334fa5077cd48191a803d89648d4d6fa",
+  "libraryFileName": "TerraStorm-0.12.0-test.apk"
+}
