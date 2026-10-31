@@ -44,3 +44,5 @@ img.source-art{display:block;object-fit:contain;background:none!important;object
 .source-result>.primary{min-height:0;padding:0;font-size:calc(60 * var(--source-unit));border:0;box-shadow:none;border-radius:calc(25 * var(--source-unit))}.source-result #result-menu{position:absolute;left:25%;width:50%;bottom:calc(180 * var(--source-unit));font-size:calc(32 * var(--source-unit));color:white}
 
 .source-result.won [id$="reward-label"],.source-result.won .source-result-reward{color:#252935}.source-result-reward .cost,.source-result-multiply .cost{font-size:inherit;color:inherit;gap:calc(20 * var(--source-unit))}.source-result>.battle-ranking{position:absolute;left:7%;width:86%;top:calc(820 * var(--source-unit));z-index:2;background:#e3e9fa}
+
+#app[data-mode="battle"] #balance>i+i{border-left:calc(3 * var(--source-unit)) solid white}
