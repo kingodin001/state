@@ -46,3 +46,5 @@ img.source-art{display:block;object-fit:contain;background:none!important;object
 .source-result.won [id$="reward-label"],.source-result.won .source-result-reward{color:#252935}.source-result-reward .cost,.source-result-multiply .cost{font-size:inherit;color:inherit;gap:calc(20 * var(--source-unit))}.source-result>.battle-ranking{position:absolute;left:7%;width:86%;top:calc(820 * var(--source-unit));z-index:2;background:#e3e9fa}
 
 #app[data-mode="battle"] #balance>i+i{border-left:calc(3 * var(--source-unit)) solid white}
+
+.ad-busy #app button{pointer-events:none}.source-core-ad{font-size:inherit}.source-bonus-video{font-size:calc(22 * var(--source-unit))!important}

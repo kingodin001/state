@@ -21,7 +21,9 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (System.getenv('TERRA_KEYSTORE_FILE')) signingConfig signingConfigs.release
         }
     }
@@ -34,3 +36,5 @@ from zipTree(rootProject.file("reference-content/unit-textures.zip"))
 into "src/main/assets/game/reference/images"
 }
 tasks.named("preBuild").configure { dependsOn "prepareReferenceVisuals" }
+
+dependencies { implementation 'com.yandex.android:mobileads:8.6.0' }

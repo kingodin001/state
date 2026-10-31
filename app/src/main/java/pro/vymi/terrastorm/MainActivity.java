@@ -8,15 +8,18 @@ import android.os.Vibrator;
 import android.graphics.Color;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebResourceRequest;
 
-/** Offline Android host. No network, advertising SDKs or remote code. */
+/** Local game host with optional Yandex ads; game code is always packaged locally. */
 public final class MainActivity extends Activity {
     private WebView webView;
+    private AdController ads;
     private static final String ENTRY = "file:///android_asset/game/index.html";
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -45,12 +48,17 @@ public final class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 26) settings.setSafeBrowsingEnabled(true);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         webView.setWebViewClient(new WebViewClient() {
+            @Override public void onPageFinished(WebView view,String url) { if(ENTRY.equals(url)&&ads!=null)ads.initialize(); }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return !request.getUrl().toString().startsWith("file:///android_asset/game/");
             }
         });
         webView.addJavascriptInterface(new DeviceBridge(), "Android");
-        setContentView(webView);
+        LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);
+        root.addView(webView,new LinearLayout.LayoutParams(-1,0,1));
+        FrameLayout bannerHost=new FrameLayout(this);bannerHost.setVisibility(View.GONE);root.addView(bannerHost,new LinearLayout.LayoutParams(-1,-2));
+        ads=new AdController(this,webView,bannerHost);
+        setContentView(root);
         webView.loadUrl(ENTRY);
     }
     private void immersive() {
@@ -77,10 +85,15 @@ public final class MainActivity extends Activity {
     }
     @Override protected void onResume() { super.onResume(); if (webView != null) { webView.onResume(); webView.evaluateJavascript("document.dispatchEvent(new Event('terraResume'))", null); } immersive(); }
     @Override protected void onDestroy() {
+        if(ads!=null){ads.destroy();ads=null;}
         if (webView != null) { webView.removeJavascriptInterface("Android"); webView.destroy(); webView=null; }
         super.onDestroy();
     }
     private final class DeviceBridge {
+        @JavascriptInterface public String adCapabilities(){return ads==null?"{}":ads.capabilities();}
+        @JavascriptInterface public void showAd(final String placement,final String token){runOnUiThread(()->{if(ads!=null)ads.show(placement,token);});}
+        @JavascriptInterface public void cancelAd(final String token){runOnUiThread(()->{if(ads!=null)ads.cancel(token);});}
+        @JavascriptInterface public void bannerVisible(final boolean visible){runOnUiThread(()->{if(ads!=null)ads.bannerVisible(visible);});}
         @JavascriptInterface public void exitGame() {
             runOnUiThread(new Runnable() { @Override public void run() { finish(); }});
         }

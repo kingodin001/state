@@ -1,0 +1,20 @@
+{
+  "provider": "yandex",
+  "sdkVersion": "8.6.0",
+  "adUnits": {
+    "banner": "",
+    "interstitial": "",
+    "rewarded_result": "",
+    "rewarded_upgrade": "",
+    "rewarded_color": "",
+    "rewarded_bonus": ""
+  },
+  "placements": {
+    "result_x3": "rewarded_result",
+    "core_upgrade": "rewarded_upgrade",
+    "color_unlock": "rewarded_color",
+    "daily_refresh": "rewarded_bonus",
+    "battle_bonus": "rewarded_bonus",
+    "skill_speedup": "rewarded_bonus"
+  }
+}
