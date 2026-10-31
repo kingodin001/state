@@ -48,3 +48,17 @@ img.source-art{display:block;object-fit:contain;background:none!important;object
 #app[data-mode="battle"] #balance>i+i{border-left:calc(3 * var(--source-unit)) solid white}
 
 .ad-busy #app button{pointer-events:none}.source-core-ad{font-size:inherit}.source-bonus-video{font-size:calc(22 * var(--source-unit))!important}
+
+/* Runtime HUD matched to the supplied reference frame; older prefab anchors differ. */
+#battle-portrait{pointer-events:none}#battle-portrait img{width:100%;height:100%;object-fit:contain}
+#app[data-mode="battle"] #pause{background:none!important;border:0!important;box-shadow:none!important;padding:0}
+#app[data-mode="battle"] #pause::before{content:"";position:absolute;inset:0;background:url('reference/images/9a380f49705d53b23299.webp') center/contain no-repeat}
+#app[data-mode="battle"] #pause svg{display:none}
+#app[data-mode="battle"] #balance{box-shadow:none;border-radius:calc(24 * var(--source-unit))}
+#battle-footer{position:absolute;bottom:0;left:0;width:100%;height:calc(230 * var(--source-unit));pointer-events:none}#battle-footer svg{width:100%;height:100%}
+#leader-skill{background-image:url('reference/images/6836ba7583638fb534c4.webp')!important;background-size:contain!important;border:0!important;box-shadow:none!important;padding:calc(30 * var(--source-unit))!important;isolation:isolate}
+#leader-skill>span{inset:calc(32 * var(--source-unit))}#leader-skill i{display:none}#leader-skill::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(transparent var(--leader-ready,100%),#fff7 0);pointer-events:none}
+
+#leader-skill::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:50%;background:url('reference/images/4f6c383f1dd0e9dc875b.webp') center/contain no-repeat;mask:radial-gradient(transparent 62%,#000 63%);-webkit-mask:radial-gradient(transparent 62%,#000 63%);clip-path:inset(0)}
+
+.battle-footer-stars{position:absolute;inset:0}.battle-footer-stars img{position:absolute;bottom:calc(32 * var(--source-unit));object-fit:contain;width:calc(38 * var(--source-unit));height:calc(38 * var(--source-unit))}.battle-footer-stars img:nth-child(1){left:5%;width:calc(30 * var(--source-unit))}.battle-footer-stars img:nth-child(2){left:11%;filter:saturate(.25);opacity:.55}.battle-footer-stars img:nth-child(3){left:18.5%;width:calc(48 * var(--source-unit));height:calc(48 * var(--source-unit));filter:saturate(.25);opacity:.55}.battle-footer-stars img:nth-child(4){right:18.5%;width:calc(48 * var(--source-unit));height:calc(48 * var(--source-unit));filter:saturate(.25);opacity:.55}.battle-footer-stars img:nth-child(5){right:11%;filter:saturate(.25);opacity:.55}.battle-footer-stars img:nth-child(6){right:5%;width:calc(30 * var(--source-unit))}

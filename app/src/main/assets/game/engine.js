@@ -69,7 +69,7 @@ class Battle {
  activateSourceLeader(){
   const s=this.sourceLeader;if(!s||this.result||this.paused||this.leaderCooldown>0)return false;
   const allies=this.regions.filter(r=>r.active&&r.owner===1).sort((a,b)=>a.units-b.units),enemies=this.regions.filter(r=>r.active&&r.owner>1).sort((a,b)=>a.units-b.units);if(!allies.length)return false;
-  if(s.kind.includes('Sabotage')){if(!enemies.length)return false;const r=enemies[0];r.units-=Math.max(1,allies[0].units*s.Stat1);if(r.units<0){r.owner=1;r.units=-r.units;this.stats.captured++;this.emit('capture',{id:r.id,owner:1});}}
+  if(s.kind.includes('Sabotage')){if(!enemies.length)return false;const r=enemies[0];r.units-=Math.floor((this.options.sourceStart||10)*s.Stat1);if(r.units<0){r.owner=1;r.units=-r.units;this.stats.captured++;this.emit('capture',{id:r.id,owner:1});}}
   else if(s.kind.includes('IncreaseSpeed'))this.speedBoost=s.Stat2;
   else if(s.kind.includes('Shield'))allies[0].shieldPoints+=Math.ceil(this.playerLimit*s.Stat1);
   else if(s.kind.includes('ProductionBoost')){this.productionBoost=s.Stat2;this.sourceBoost=s.Stat1;}
@@ -77,6 +77,19 @@ class Battle {
   else if(s.kind.includes('Poison'))for(const r of enemies){r.poison=s.Stat2;r.poisonElapsed=0;r.poisonDamage=s.Stat1;r.frozen=s.Stat2;}
   else if(s.kind.includes('Freeze')){for(const r of enemies)r.frozen=s.Stat2;this.freezeEnemies=s.Stat2;}
   this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
+ }
+ sourceSkill(owner,kind){return this.level.sourcePort?(owner===1?this.options.sourceSkills||[]:[]).find(s=>s.kind===kind):null;}
+ sourceProductionImpact(region,skill){
+  if(!skill)return;region.productionImpacts=region.productionImpacts||[];
+  const previous=region.productionImpacts.find(x=>x.kind===skill.kind);
+  // Temporary skill refreshes one affected building; repeated fighters do not stack copies.
+  const impact={kind:skill.kind,value:skill.Stat1,operation:skill.operationType||40,until:this.time+skill.Stat2};
+  if(previous)Object.assign(previous,impact);else region.productionImpacts.push(impact);
+ }
+ sourceProductionRate(region,rate){
+  let sum=0,base=0,multiplier=1;
+  for(const x of region.productionImpacts||[]){if(x.until<=this.time)continue;if(x.operation===10)sum+=x.value;else if(x.operation===20)base+=x.value;else multiplier*=x.value;}
+  return (rate*(1+base)+sum)*multiplier;
  }
  ai(owner){
   const profile=this.botProfiles[owner],preset=profile?.preset,settings=preset?._baseCalculationSettings;if(settings?._maxBuildingsMove===0)return;
@@ -108,9 +121,10 @@ class Battle {
   const r=this.regions[u.to];if(r.active===false)return;if(r.owner===u.owner){r.units=Math.min(999,r.units+1);return;}
   if(r.shieldPoints>0){r.shieldPoints--;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
+  if(this.level.sourcePort){this.sourceProductionImpact(r,this.sourceSkill(r.owner,'IncreaseProductionAfterDamageSkillConfig'));this.sourceProductionImpact(r,this.sourceSkill(u.owner,'ReduceProductionAfterDamageSkillConfig'));}
   const damage=(r.kind==='fort'?.7:1)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):1);r.units-=damage;
   if(r.units<0){
-   const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;
+   const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;
    if(r.captureBonus&&!r.bonusClaimed){r.bonusClaimed=true;r.units+=r.captureBonus;this.emit('reinforce',{id:r.id});}
    this.revealTutorial(r.id);
@@ -131,12 +145,14 @@ class Battle {
    r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){if(this.level.sourcePort){r.poisonElapsed=(r.poisonElapsed||0)+Math.min(dt,r.poison);while(r.poisonElapsed+1e-8>=1){r.poisonElapsed-=1;r.units=Math.max(0,r.units-(r.poisonDamage||1));}}else r.units=Math.max(0,r.units-dt*1.5);r.poison=Math.max(0,r.poison-dt);}
    let cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
    if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=r.owner===1?this.playerLimit:this.enemyLimit;
-   if(r.owner&&r.units<cap&&r.frozen<=0){
+   const overflow=this.sourceSkill(r.owner,'UnlimitedPopulationProduceSkillConfig'),atCap=r.units>=cap;
+   if(r.owner&&(!atCap||overflow)&&r.frozen<=0&&!(r.productionLockedUntil>this.time)){
     let rate=r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
     if(r.spawnRate!==undefined)rate=r.spawnRate*(r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):1);
     if(this.level.sourcePort&&!(r.sourceSettings?.SpawnSpeed>=0))rate=r.owner===1?this.sourceProduction*this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
-    r.units=Math.min(cap,r.units+dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1));
+    if(this.level.sourcePort)rate=this.sourceProductionRate(r,rate);
+    const produced=dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1)*(atCap?overflow.Stat1:1);r.units=atCap?r.units+produced:Math.min(cap,r.units+produced);
    }
    if(r.kind==='turret'&&r.owner){
     r.shot-=dt;if(r.shot<=0){
