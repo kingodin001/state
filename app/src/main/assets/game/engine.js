@@ -10,7 +10,7 @@ class Battle {
   this.timing=level.sourcePort?field.SOURCE_TIMING:timing;this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.sourceLeader=options.sourceLeader;this.leaderCharges=level.sourcePort?(options.sourceLeader?Infinity:0):2;this.leaderCooldown=level.sourcePort&&options.sourceLeader?(options.sourceLeader.Cooldown||0)*(1-(options.sourceLeader.Preload||0)):0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0,shieldPoints:r.shieldPoints||0,bonusClaimed:false,hidden:!!level.tutorial&&!options.skipTutorial&&(level.tutorialHidden||[]).includes(r.id),active:(r.stage||0)===0}));for(const r of this.regions)r.active=r.active&&!r.hidden;this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
-  this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.map(r=>r.owner))].filter(x=>x>1);
+  this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.filter(r=>r.active).map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};this.botProfiles={};this.pendingAI=[];this.configureBots();
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=(level.tutorial||!level.reference&&level.seed===1)&&!options.skipTutorial;
   this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
@@ -154,11 +154,16 @@ class Battle {
     if(this.level.sourcePort)rate=this.sourceProductionRate(r,rate);
     const produced=dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1)*(atCap?overflow.Stat1:1);r.units=atCap?r.units+produced:Math.min(cap,r.units+produced);
    }
-   if(r.kind==='turret'&&r.owner){
-    r.shot-=dt;if(r.shot<=0){
-     const target=this.units.find(u=>u.owner!==r.owner&&!u.dead&&distance(u,r)<135);
-     if(target){target.dead=true;r.shot=.65;this.emit('shot',{x:r.x,y:r.y,tx:target.x,ty:target.y,owner:r.owner});}
-    }
+   if(r.kind==='turret'){
+    if(this.level.sourcePort&&r.sourceTurret){
+     const cfg=r.sourceTurret,working=(r.owner||cfg._workForNeutrals)&&(r.units>0||cfg._workWhenPopulationIsZero);
+     r.shot=Math.max(0,r.shot-dt);
+     if(working&&r.shot<=0){
+      if(r.turretTarget!==undefined){const target=this.units.find(u=>u.id===r.turretTarget&&!u.dead&&u.owner!==r.owner&&distance(u,r)<=cfg.radius);if(target){target.dead=true;this.emit('shot',{x:r.x,y:r.y,tx:target.x,ty:target.y,owner:r.owner});}delete r.turretTarget;r.shot=cfg._shootingRayDuration+cfg._endShootingDelay;}
+      else{const target=this.units.filter(u=>u.owner!==r.owner&&!u.dead&&distance(u,r)<=cfg.radius).sort((a,b)=>distance(a,r)-distance(b,r))[0];if(target){r.turretTarget=target.id;r.shot=cfg._startRotationDelay+cfg._rotationDuration;}}
+     }
+     if(!working)delete r.turretTarget;
+    }else if(r.owner){r.shot-=dt;if(r.shot<=0){const target=this.units.find(u=>u.owner!==r.owner&&!u.dead&&distance(u,r)<135);if(target){target.dead=true;r.shot=.65;this.emit('shot',{x:r.x,y:r.y,tx:target.x,ty:target.y,owner:r.owner});}}}
    }
   }
   // Reserved troops stay in the garrison, defend it, and leave one at a time.

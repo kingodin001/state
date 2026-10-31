@@ -1,0 +1,816 @@
+[
+  {
+    "map": "Level_EU_SVG",
+    "sourceId": "-2613935151259497739",
+    "region": "Stage1_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3772008448016043246"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_SVG",
+    "sourceId": "-243298962927217372",
+    "region": "Stage1_3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "6776541579054238559"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_Fixed_SVG",
+    "sourceId": "2555209086882539409",
+    "region": "4_12",
+    "disabled": [
+      {
+        "name": "4_12",
+        "id": "-1434789101566293035"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_Fixed_SVG",
+    "sourceId": "-8935188223963950779",
+    "region": "4_11",
+    "disabled": [
+      {
+        "name": "4_11",
+        "id": "-9183652351232305671"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM",
+    "sourceId": "4792808818021611366",
+    "region": "Stage4_8",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "2120095004862482131"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM",
+    "sourceId": "4589034309078933028",
+    "region": "Stage4_4",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3970853012281736033"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM5_Cycled",
+    "sourceId": "-6885730510862275433",
+    "region": "Stage4_4",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant_1",
+        "id": "4386727521248570070"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM5_Cycled",
+    "sourceId": "2289203380985732841",
+    "region": "Stage4_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "9172320359772452058"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM5_Linear",
+    "sourceId": "-8311336508283261443",
+    "region": "Stage4_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-9026294035983088215"
+      }
+    ]
+  },
+  {
+    "map": "Level_Africa_BM5_Linear",
+    "sourceId": "-4670696010931076627",
+    "region": "Stage4_4",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant_1",
+        "id": "7247009171690041853"
+      }
+    ]
+  },
+  {
+    "map": "Level_China_BM5",
+    "sourceId": "626949602696828592",
+    "region": "state3_12",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "582992843274661150"
+      }
+    ]
+  },
+  {
+    "map": "Level_China_BM5",
+    "sourceId": "-5461571029724167404",
+    "region": "state1_5",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3546792557680014256"
+      }
+    ]
+  },
+  {
+    "map": "Level_China_BM5",
+    "sourceId": "-5376294649780114916",
+    "region": "state3_5",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "5453548028621878651"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_BM5_Cycled",
+    "sourceId": "-6422092951310404169",
+    "region": "Stage1_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-7413014336692143993"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_BM5_Cycled",
+    "sourceId": "1621795909297885795",
+    "region": "Stage1_3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-2641479199231043589"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_BM5_Linear",
+    "sourceId": "5784876729877452856",
+    "region": "Stage1_3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-8867704416095667665"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_BM5_Linear",
+    "sourceId": "-4472320595077956591",
+    "region": "Stage1_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "4768212131506616324"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_SVG_BM",
+    "sourceId": "5314480889492061981",
+    "region": "Stage1_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-3187683482880128971"
+      }
+    ]
+  },
+  {
+    "map": "Level_EU_SVG_BM",
+    "sourceId": "-3834403003245611864",
+    "region": "Stage1_3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-150783640628948874"
+      }
+    ]
+  },
+  {
+    "map": "Level_India_BM5",
+    "sourceId": "-1041609229330089856",
+    "region": "state2_2",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-3862190633796228491"
+      }
+    ]
+  },
+  {
+    "map": "Level_India_BM5",
+    "sourceId": "2244789735264848110",
+    "region": "state2_5",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "911016686867094948"
+      }
+    ]
+  },
+  {
+    "map": "Level_India_BM5",
+    "sourceId": "3483497520919598802",
+    "region": "state4_3",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "6061658423019412602"
+      }
+    ]
+  },
+  {
+    "map": "Level_India_SVG_BM",
+    "sourceId": "-198953043334123247",
+    "region": "state4_3",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "9197285850147770670"
+      }
+    ]
+  },
+  {
+    "map": "Level_Italy_BM5",
+    "sourceId": "6136766422852843675",
+    "region": "Слой 14",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-9034264647213570045"
+      }
+    ]
+  },
+  {
+    "map": "Level_Italy_SVG_BM",
+    "sourceId": "3363818327069644180",
+    "region": "Слой 14",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-6338185045143560375"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "-2015178106368678242",
+    "region": "3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-8115905308940532011"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "-207883852384761842",
+    "region": "3",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-1834681138934476632"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "9029882579545904155",
+    "region": "4",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-1801763917767496068"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "-3176715020403722732",
+    "region": "2_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-190349602828656233"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "2151205350996549651",
+    "region": "1_3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3363459923535525116"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Cycled",
+    "sourceId": "-233350299003402781",
+    "region": "4_4",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "8030360993335093496"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "2964562190189105372",
+    "region": "4",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-8574935614276959462"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "-5897140423025680427",
+    "region": "4_4",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-3748762604777781071"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "-4588972337227116967",
+    "region": "3",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-3661713427066008343"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "-5486195691071132159",
+    "region": "3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-110096438746541975"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "8861388290764506243",
+    "region": "2_6",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "7173239667070330553"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_BM5_Linear",
+    "sourceId": "3535211721652398840",
+    "region": "1_7",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "9120070467920500683"
+      }
+    ]
+  },
+  {
+    "map": "Level_Japan_SVG_BM",
+    "sourceId": "8353395401292703879",
+    "region": "3",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-4198716465313131730"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Cycled",
+    "sourceId": "4896160690360158346",
+    "region": "4_11",
+    "disabled": [
+      {
+        "name": "4_11",
+        "id": "-8244120794835222705"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Cycled",
+    "sourceId": "-176426220488451447",
+    "region": "3_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-5975844684684683644"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Cycled",
+    "sourceId": "-6560556109631134576",
+    "region": "4_12",
+    "disabled": [
+      {
+        "name": "4_12",
+        "id": "-6456980735056832732"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Linear",
+    "sourceId": "-8019303875514720645",
+    "region": "4_12",
+    "disabled": [
+      {
+        "name": "4_12",
+        "id": "6507862689850191466"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Linear",
+    "sourceId": "-2275794256781844477",
+    "region": "4_11",
+    "disabled": [
+      {
+        "name": "4_11",
+        "id": "-4985605194233558383"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_BM5_Linear",
+    "sourceId": "6231873419738001265",
+    "region": "3_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "8639837873228473091"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_Fixed_SVG_BM",
+    "sourceId": "-496268904943026742",
+    "region": "4_12",
+    "disabled": [
+      {
+        "name": "4_12",
+        "id": "-8017892314816017153"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_Fixed_SVG_BM",
+    "sourceId": "-2232217047893669364",
+    "region": "3_8",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3847502060710091203"
+      }
+    ]
+  },
+  {
+    "map": "Level_Korea_Fixed_SVG_BM",
+    "sourceId": "5774065693648909000",
+    "region": "4_11",
+    "disabled": [
+      {
+        "name": "4_11",
+        "id": "4814872350087690155"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Cycled",
+    "sourceId": "-1490118846956215907",
+    "region": "Stage2_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-9213789677795716075"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Cycled",
+    "sourceId": "-2715588814789422945",
+    "region": "Stage1_11",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-7192419283279641962"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Cycled",
+    "sourceId": "1850738307765207183",
+    "region": "Stage2_2",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-4908614436640479141"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Cycled",
+    "sourceId": "7677320870544325530",
+    "region": "Stage3_13 (1)",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "6050731598378317941"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Cycled",
+    "sourceId": "224571141318152338",
+    "region": "Stage3_8 (3)",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "7195866508236475333"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Linear",
+    "sourceId": "-3376335120085643262",
+    "region": "Stage2_2",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-3321050175797330041"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Linear",
+    "sourceId": "2095509648469260146",
+    "region": "Stage1_9",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-1425068671305190157"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Linear",
+    "sourceId": "-1872361844184877568",
+    "region": "Stage3_13 (1)",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "396355281836895748"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Linear",
+    "sourceId": "-6423194411514097760",
+    "region": "Stage2_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "3929998313244676342"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_BM5_Linear",
+    "sourceId": "3743906391837335662",
+    "region": "Stage3_8 (3)",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "8815459779942204225"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_f1_BM",
+    "sourceId": "1680785361747893058",
+    "region": "Stage1_11",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-3867008638078605621"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_f1_BM",
+    "sourceId": "-4049556685819058657",
+    "region": "Stage2_8",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "1856114391441502671"
+      }
+    ]
+  },
+  {
+    "map": "Level_LatinAmerica_f1_BM",
+    "sourceId": "2183093478380857575",
+    "region": "Stage3_13 (1)",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "5436648966164253599"
+      }
+    ]
+  },
+  {
+    "map": "Level_Oceania_BM5",
+    "sourceId": "1971520444718704458",
+    "region": "state3_10",
+    "disabled": [
+      {
+        "name": "Turret_Building Variant",
+        "id": "-4023264957636402063"
+      }
+    ]
+  },
+  {
+    "map": "Level_Oceania_SVG_v2_BM",
+    "sourceId": "3239816396977551136",
+    "region": "state3_10",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-6446030533494616012"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_BM5",
+    "sourceId": "754776577939254253",
+    "region": "IE-WH",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-4221386168848316921"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_BM5",
+    "sourceId": "7770587695911136326",
+    "region": "Слой 19",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-3026388276432996409"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_BM5",
+    "sourceId": "4897716614838234561",
+    "region": "Слой 13",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-1903538672659170974"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_SVG_BM",
+    "sourceId": "2062648953426356551",
+    "region": "IE-WH",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-4904206455860037171"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_SVG_BM",
+    "sourceId": "-5415432265148578832",
+    "region": "Слой 13",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-3073900244247469209"
+      }
+    ]
+  },
+  {
+    "map": "Level_UK_SVG_BM",
+    "sourceId": "-7007744292238181855",
+    "region": "Слой 19",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3631600032322239812"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_BattleMechanics Variant",
+    "sourceId": "2907211658563407845",
+    "region": "MD-Maryland",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-9137045449195093593"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_BattleMechanics Variant",
+    "sourceId": "2113247687617148666",
+    "region": "PA-Pennsylvania",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-7606866644984647725"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_BattleMechanics Variant",
+    "sourceId": "-2250699402194080215",
+    "region": "NV-Nevada",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-2760799605031793068"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_BattleMechanics Variant",
+    "sourceId": "6753285808704891809",
+    "region": "MO-Missouri",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-716242675911737503"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_Propaganda Variant",
+    "sourceId": "-6257906606813095753",
+    "region": "NV-Nevada",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "3568218458287228257"
+      }
+    ]
+  },
+  {
+    "map": "Level_USA_0_SVG_With_Turrets Variant",
+    "sourceId": "-1345901417800037113",
+    "region": "NV-Nevada",
+    "disabled": [
+      {
+        "name": "2D_Building",
+        "id": "-4307047651752310763"
+      }
+    ]
+  }
+]

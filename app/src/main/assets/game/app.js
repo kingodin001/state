@@ -118,18 +118,23 @@ function updateMenu(){
 function upgradePrice(i){return i===2?Math.floor(65*Math.pow(1.48,data.upgrades[i])):TerraSourceMath.upgradeCost(({0:11,1:12,3:10})[i],data.upgrades[i]);}
 function upgradeValue(i){return i===0?sourceStart():i===1?sourceProduction().toFixed(2):i===2?100+data.upgrades[2]*75:eco.bonuses().limit;}
 function buyUpgrade(i){if(!Number.isInteger(i)||i<0||i>3||data.upgrades[i]>=300||data.coins<upgradePrice(i))return false;data.coins-=upgradePrice(i);data.upgrades[i]++;save();updateMenu();tone(750);vibrate();return true;}
-function sourceBonusesDialog(options,selected=[]){
+let pendingBonusSelection=null;
+function sourceBonusesDialog(options,selection=null){
  const names={0:['Дополнительная база','extra_base_big'],10:['Производство ×2','produce_speed_big'],100:['Скорость ×2','Movement_Speed_Icon']};
- openModal('source-bonuses',head('ВЫБЕРИ ДО 3 УСИЛЕНИЙ')+'<div class="source-bonus-choices">'+eco.bonusConfigs().map(x=>'<article><img class="source-art" src="'+TerraSourceRuntime.file(names[x._bonusType][1])+'" alt=""><b>'+names[x._bonusType][0]+'</b><small>'+(x.available?'В ЗАПАСЕ: '+x.amount:'С УРОВНЯ '+x._openFromLevel)+'</small><input type="checkbox" aria-label="'+names[x._bonusType][0]+'" data-source-bonus="'+x._bonusType+'" '+(selected.includes(x._bonusType)?'checked ':'')+(!x.available||!x.amount?'disabled':'')+'><button class="blue-button" data-source-bonus-buy="'+x._bonusType+'" '+(!x.available||data.gems<x._priceInHard?'disabled':'')+'>'+TerraUI.amount('gems',x._priceInHard)+'</button><button class="source-bonus-video blue-button" data-ad-placement="battle_bonus" data-ad-value="'+x._bonusType+'" data-ad-locked="'+!x.available+'" disabled>+1 — ВИДЕО</button></article>').join('')+'</div><button class="primary modal-primary" id="source-bonuses-play">В БОЙ</button>');
- const chosen=()=>[...document.querySelectorAll('[data-source-bonus]:checked')].map(x=>+x.dataset.sourceBonus);
- document.querySelectorAll('[data-source-bonus-buy]').forEach(b=>b.onclick=()=>{const selected=chosen();if(eco.buySourceBonus(+b.dataset.sourceBonusBuy)){save();updateMenu();sourceBonusesDialog(options,selected);}});
- $('source-bonuses-play').onclick=()=>startBattle({...options,sourceBonuses:chosen()});
- document.querySelectorAll('[data-ad-placement="battle_bonus"]').forEach(b=>b.onclick=async()=>{const selected=chosen();if(await globalThis.TerraAds?.reward('battle_bonus')){const x=eco.bonusConfigs().find(x=>x._bonusType===+b.dataset.adValue);if(x?.available){eco.c.sourceBonuses[x._bonusType]++;save();updateMenu();sourceBonusesDialog(options,selected);}}});
+ const session=selection||new TerraPrebattle.Selection(currentLevel,eco.bonusConfigs());pendingBonusSelection=session;
+ const selected=session.selected;
+ openModal('source-bonuses',head('ВЫБЕРИ ДО 3 УСИЛЕНИЙ')+'<div class="source-bonus-choices">'+eco.bonusConfigs().map(x=>{const chosen=selected.includes(x._bonusType);return '<article class="'+(chosen?'bonus-selected':'')+'"><img class="source-art" src="'+TerraSourceRuntime.file(names[x._bonusType][1])+'" alt=""><b>'+names[x._bonusType][0]+'</b><small>'+(chosen?'ПРИМЕНИТСЯ В ЭТОМ БОЮ':x.available?'ЗА ПРОСМОТР ВИДЕО':'С УРОВНЯ '+x._openFromLevel)+'</small><button class="source-bonus-video blue-button" data-ad-placement="battle_bonus" data-ad-value="'+x._bonusType+'" data-ad-locked="'+(!x.available||chosen)+'" disabled>'+(chosen?'✓ ВЫБРАНО':'ПОЛУЧИТЬ — ВИДЕО')+'</button></article>';}).join('')+'</div><button class="primary modal-primary" id="source-bonuses-play">В БОЙ</button>');
+ $('source-bonuses-play').onclick=()=>startBattle({...options,sourceBonusSelection:session});
+ document.querySelectorAll('[data-ad-placement="battle_bonus"]').forEach(button=>button.onclick=async()=>{
+  const ok=await session.watch(+button.dataset.adValue,globalThis.TerraAds);
+  if(pendingBonusSelection!==session||modalType!=='source-bonuses')return;
+  if(ok)sourceBonusesDialog(options,session);else toast('Видео сейчас недоступно');
+ });
 }
 function startBattle(options={}){
  eco.refresh();meta.refresh();const chosenMode=options.operation===true?'operation':['campaign','operation','duel','rush'].includes(options.mode)?options.mode:'campaign';
- if(levels[currentLevel].sourcePort&&['campaign','operation'].includes(chosenMode)&&currentLevel+1>=7&&options.sourceBonuses===undefined){sourceBonusesDialog(options);return;}
- const selectedBonuses=options.sourceBonuses||[];if(!eco.validBonuses(selectedBonuses)){toast('Нет выбранного усиления в запасе');return;}
+ if(levels[currentLevel].sourcePort&&['campaign','operation'].includes(chosenMode)&&currentLevel+1>=7&&options.sourceBonusSelection!==pendingBonusSelection){sourceBonusesDialog(options);return;}
+ const bonusSession=options.sourceBonusSelection;const selectedBonuses=bonusSession?.selected||[];if(bonusSession&&(bonusSession.closed||bonusSession.busy||bonusSession.level!==currentLevel||bonusSession!==pendingBonusSelection))return;
  if(!levels[currentLevel].sourcePort&&currentLevel>=2&&options.loadout===undefined&&['reinforce','shield'].some(k=>eco.c.boosters[k]>0)){
   showMenu();openModal('loadout',head('Подготовка к бою')+'<p class="detail-description">Выбери дополнительные усиления из запаса. Неиспользованные предметы останутся в арсенале.</p><div class="prebattle-loadout">'+['reinforce','shield'].filter(k=>eco.c.boosters[k]>0).map(k=>'<label><span>'+icon(k==='shield'?'shield':'plus')+'</span><div><b>'+(k==='shield'?'ЗАЩИТНЫЙ ЩИТ':'ПОДКРЕПЛЕНИЕ')+'</b><small>В запасе: '+eco.c.boosters[k]+' · +1 заряд в бою</small></div><input type="checkbox" data-loadout="'+k+'"></label>').join('')+'</div><button id="confirm-battle" class="primary modal-primary">В БОЙ</button>');
   $('confirm-battle').onclick=()=>{const loadout=[...document.querySelectorAll('[data-loadout]:checked')].map(x=>x.dataset.loadout);startBattle({mode:chosenMode,loadout});};return;
@@ -137,14 +142,14 @@ function startBattle(options={}){
  if(chosenMode==='operation'&&!eco.spend('supply',1)){toast('Для операции нужен один припас');return;}
  countdownActive=false;countdownRun++;$('countdown').hidden=true;battleMode=chosenMode;$('app').dataset.battleMode=battleMode;operationMode=battleMode!=='campaign';$('meta-shortcuts').hidden=true;if(hub)hub.home();$('meta-shortcuts').hidden=true;$('global-nav').hidden=true;$('hub-screen').hidden=true;$('main-loadout').hidden=true;
  const bonuses=eco.bonuses();
- closeModal(false);mode='battle';$('fraction-panel').hidden=true;$('app').dataset.mode='battle';selected.clear();casting=null;fraction=1;particles=[];shotLines=[];hoverTarget=null;drag=null;orderPulses=[];
+ if(bonusSession){bonusSession.take(currentLevel);pendingBonusSelection=null;}closeModal(false);mode='battle';$('fraction-panel').hidden=true;$('app').dataset.mode='battle';selected.clear();casting=null;fraction=1;particles=[];shotLines=[];hoverTarget=null;drag=null;orderPulses=[];
  let config=battleConfig();
  if(selectedBonuses.includes(0)){const start=config.regions.find(r=>r.owner===1&&r.stage===0),target=config.regions.filter(r=>r.owner===0&&r.stage===0).sort((a,b)=>Math.hypot(a.center[0]-start.center[0],a.center[1]-start.center[1])-Math.hypot(b.center[0]-start.center[0],b.center[1]-start.center[1]))[0];if(target)config={...config,regions:config.regions.map(r=>r.id===target.id?{...r,owner:1}:r)};}
  if(battleMode==='operation')config={...config,enemyRate:config.enemyRate*1.15,aiInterval:config.aiInterval*.85,fog:currentLevel>=20,zones:currentLevel>=10?[{x:config.width/2,y:config.height/2,radius:110,factor:.5}]:config.zones};
  if(battleMode==='duel'||battleMode==='rush')config=TerraCampaign.pvp(currentLevel,{rush:battleMode==='rush',start:sourceStart(),production:sourceProduction(),limit:bonuses.limit});
  armyBar.reset();battle=new TerraBattle(config,{start:0,production:0,sourceStart:sourceStart(),sourceLeader:bonuses.sourceLeader,sourceSkills:bonuses.sourceSkills,playerColor:eco.item(eco.c.equipped.color).nativeId,sourceProduction:sourceProduction(),productionMultiplier:selectedBonuses.includes(10)?2:1,speed:bonuses.speed*(selectedBonuses.includes(100)?2:1),limit:bonuses.limit,leader:bonuses.leader,skipTutorial:operationMode||data.completed.includes(currentLevel)});
 
- eco.consumeBonuses(selectedBonuses);
+ pendingBonusSelection=null;
  for(const k of ['reinforce','shield'])if(currentLevel>=2&&options.loadout?.includes(k)&&eco.c.boosters[k]>0){eco.c.boosters[k]--;battle.skillCharges[k]++;}save();
  $('header').hidden=true;$('menu-top').hidden=true;$('menu-bottom').hidden=true;$('side-menu').hidden=true;$('map-caption').hidden=true;
  $('battle-top').hidden=false;$('battle-bottom').hidden=false;$('battle-label').textContent=({campaign:'УРОВЕНЬ ',operation:'ОПЕРАЦИЯ • ',duel:'ДУЭЛЬ С БОТОМ • ',rush:'ГОНКА • '}[battleMode])+(currentLevel+1);$('fraction').querySelector('b').textContent='100%';
@@ -189,7 +194,7 @@ function finish(result){
  $('result-menu').onclick=()=>afterResultAd(b,showMenu);
 }
 function openModal(type,html){modalType=type;$('modal').dataset.kind=type;drag=null;hoverTarget=null;$('fraction-panel').hidden=true;$('panel-content').innerHTML=html;globalThis.TerraAds?.refreshButtons();$('modal').hidden=false;if(battle&&!battle.result)battle.paused=true;const close=$('close-modal');if(close)close.onclick=()=>closeModal();}
-function closeModal(resume=true){$('modal').hidden=true;modalType=null;if(resume&&battle&&!battle.result)battle.paused=countdownActive;}
+function closeModal(resume=true){if(modalType==='source-bonuses'&&pendingBonusSelection){pendingBonusSelection.cancel();pendingBonusSelection=null;}$('modal').hidden=true;modalType=null;if(resume&&battle&&!battle.result)battle.paused=countdownActive;}
 function head(title){return '<div class="modal-head"><h2>'+title+'</h2><button class="close" id="close-modal" aria-label="Закрыть">×</button></div>';}
 function sameDay(a,b){return a&&new Date(a).toDateString()===new Date(b).toDateString();}
 function showWorld(page){
@@ -327,9 +332,9 @@ function render(now){
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=TerraSourceRuntime.hex(TerraSource.styles.find(x=>x.id===eco.c.sourceStyle)?.background||TerraSource.styles[0].background);ctx.fillRect(0,0,W,H);
  ctx.save();ctx.beginPath();ctx.rect(view.rect.x,view.rect.y,view.rect.width,view.rect.height);ctx.clip();ctx.translate(view.x,view.y);ctx.scale(view.s,view.s);
  const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units,active:(r.stage||0)===0}));
- ctx.save();ctx.translate(0,4/view.s);ctx.fillStyle='#0000001a';for(const path of paths)ctx.fill(path);ctx.restore();
+ ctx.save();ctx.translate(0,4/view.s);ctx.fillStyle='#0000001a';for(let i=0;i<paths.length;i++)if(!regions[i].sourceHidden)ctx.fill(paths[i]);ctx.restore();
  for(let i=0;i<regions.length;i++){
-  const r=regions[i],current=battle?battle.stage:0,sourceCurrent=(battle?battle.level:levels[currentLevel]).sourceStageIndex??current,sourceStage=r.sourceStageIndex??r.stage??0;ctx.globalAlpha=sourceStage>sourceCurrent?.25:1;ctx.fillStyle=TerraAppearance.areaColor(sourcePalette(r.owner),sourceStage,sourceCurrent,r.owner===0,eco.c.sourceStyle==='stl_1_origin'?'#cedbeb':null);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
+  const r=regions[i];if(r.sourceHidden)continue;const current=battle?battle.stage:0,sourceCurrent=(battle?battle.level:levels[currentLevel]).sourceStageIndex??current,sourceStage=r.sourceStageIndex??r.stage??0;ctx.globalAlpha=sourceStage>sourceCurrent?.25:1;ctx.fillStyle=TerraAppearance.areaColor(sourcePalette(r.owner),sourceStage,sourceCurrent,r.owner===0,eco.c.sourceStyle==='stl_1_origin'?'#cedbeb':null);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
   if(selected.has(r.id)&&mode==='battle'){ctx.globalAlpha=.22;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=3/view.s;ctx.stroke(paths[i]);}
   if(hoverTarget===r.id){ctx.globalAlpha=.2;ctx.fillStyle=r.owner===1?color(1):'#ff8c37';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(battle&&battle.level.fog&&r.active&&!battle.visible(1,r.id)){ctx.globalAlpha=.18;ctx.fillStyle='#293665';ctx.fill(paths[i]);ctx.globalAlpha=1;}
@@ -352,7 +357,7 @@ function render(now){
  for(const order of orderPulses){commandArrow(regions[order.from],regions[order.to],Math.max(0,order.life/.3)*.55);order.life-=dt;}orderPulses=orderPulses.filter(o=>o.life>0);
  if(hoverTarget!==null){const r=regions[hoverTarget];ctx.strokeStyle=r.owner===1?color(1):'#ff9c3c';ctx.lineWidth=3/view.s;ctx.beginPath();ctx.arc(r.x,r.y,25/view.s,0,Math.PI*2);ctx.stroke();}
  for(const r of regions){
-  if(r.active===false){const map=battle?battle.level:levels[currentLevel];if(map.sourcePort&&r.sourceStageIndex<map.sourceStageIndex){const base=eco.item(eco.c.equipped.base),size=34*(W/390)/view.s;const classic=eco.c.sourceStyle==='stl_1_origin';ctx.globalAlpha=classic?1:.14;paintSprite(base.art,r.x-size/2,r.y-size/2,size,size,base.hue,classic?'#b5c6d6':color(1));ctx.globalAlpha=1;}continue;}
+  if(r.active===false){if(r.sourceEnabled===false)continue;const map=battle?battle.level:levels[currentLevel];if(map.sourcePort&&r.sourceStageIndex<map.sourceStageIndex){const base=eco.item(eco.c.equipped.base),size=34*(W/390)/view.s;const classic=eco.c.sourceStyle==='stl_1_origin';ctx.globalAlpha=classic?1:.14;paintSprite(base.art,r.x-size/2,r.y-size/2,size,size,base.hue,classic?'#b5c6d6':color(1));ctx.globalAlpha=1;}continue;}
   const source=(battle?battle.level:levels[currentLevel]).sourcePort;
   if(source){
    const ui=W/390,baseArt=r.owner===1?eco.item(eco.c.equipped.base):TerraCollection.CATALOG.find(x=>x.nativeId===battle?.botProfiles[r.owner]?.skins.base)||{art:4,hue:0},size=34*ui/view.s;
