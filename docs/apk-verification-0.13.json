@@ -1,0 +1,40 @@
+{
+  "version": "0.13.0",
+  "versionCode": 14,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 24690085,
+  "sha256": "00ce26facc538f8cedc51a9ed4f60a54445dae3ee9f0ea937145ac437d67fda4",
+  "baseApkSha256": "e9fb35926ceda45a06a2fd7edd783983acc1e1334323966f953a01a4f41a943e",
+  "nativeHostUnchanged": true,
+  "signatureV2": true,
+  "signatureV3": true,
+  "certificateSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "packagedAssetsVerified": 1212,
+  "productionAdIds": 0,
+  "unitTestsPassed": 103,
+  "physicalAndroidRun": false,
+  "sourceLevelsSha256": "2e5fbf9cd7985854bf8c81c1ccdbca3880f32ce97348492c8e37ab3cfcb1d067",
+  "sourceConfigSha256": "d87da8d65f5d85cfd9df2ea22ce92ff3a491f7fb3ce6feb0acab38e545e82dee",
+  "level11Replay": {
+    "seed": 87109,
+    "startingUnitUpgradePurchases": 10,
+    "productionUpgradePurchases": 5,
+    "fps": [
+      20,
+      40,
+      60,
+      120
+    ],
+    "noAds": true,
+    "noLeader": true
+  },
+  "libraryFileId": "libfile_b4628cbf3f7881919d17fba58c4eebf1",
+  "fileId": "file_000000004c34824691a27e172ee95da0",
+  "browserSuites": [
+    "ads-ui",
+    "source-ui:3-viewports",
+    "source-release-ui",
+    "source-battlefield-ui:3-viewports",
+    "source-parity-ui:3-viewports"
+  ]
+}
