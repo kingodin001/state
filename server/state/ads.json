@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "packageName": "pro.vymi.terrastorm",
+  "enabled": true,
+  "adUnits": {
+    "banner": "",
+    "interstitial": "",
+    "rewarded_result": "",
+    "rewarded_upgrade": "",
+    "rewarded_color": "",
+    "rewarded_bonus": ""
+  }
+}

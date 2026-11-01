@@ -16,5 +16,9 @@
     "daily_refresh": "rewarded_bonus",
     "battle_bonus": "rewarded_bonus",
     "skill_speedup": "rewarded_bonus"
-  }
+  },
+  "schemaVersion": 1,
+  "packageName": "pro.vymi.terrastorm",
+  "enabled": true,
+  "remoteConfigUrl": "https://games-api.vymi.pro/state/ads.json"
 }

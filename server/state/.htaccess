@@ -1,0 +1,7 @@
+AddType application/json .json
+<IfModule mod_headers.c>
+ Header always set X-Content-Type-Options "nosniff"
+ <Files "ads.json">
+  Header set Cache-Control "public, max-age=60, must-revalidate"
+ </Files>
+</IfModule>

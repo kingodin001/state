@@ -83,7 +83,7 @@ public final class MainActivity extends Activity {
         }
         super.onPause();
     }
-    @Override protected void onResume() { super.onResume(); if (webView != null) { webView.onResume(); webView.evaluateJavascript("document.dispatchEvent(new Event('terraResume'))", null); } immersive(); }
+    @Override protected void onResume() { super.onResume(); if (webView != null) { webView.onResume();if(ads!=null)ads.refreshConfig(); webView.evaluateJavascript("document.dispatchEvent(new Event('terraResume'))", null); } immersive(); }
     @Override protected void onDestroy() {
         if(ads!=null){ads.destroy();ads=null;}
         if (webView != null) { webView.removeJavascriptInterface("Android"); webView.destroy(); webView=null; }
