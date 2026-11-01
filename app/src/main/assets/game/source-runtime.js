@@ -32,7 +32,7 @@ class SourceEconomy extends Base{
  dailyOffers(){
   this.refresh();const stamp='source-v2:'+this.c.dailyDay+':'+(this.c.dailyRefresh||0),bonuses=R.data.BonusConfig.filter(x=>Math.max(this.state.level||0,this.state.unlocked||0)+1>=x._openFromLevel);
   if(this.c.sourceOfferStamp!==stamp){this.c.sourceOfferStamp=stamp;this.c.sourceOffers=R.data.DailySlotsStoreGroupConfig[0]._slots.map((slot,i)=>{const row=R.weighted(slot._rewards.filter(r=>r._rewardType===50?bonuses.length:r._rewardType===31&&this.dropPool(r._target).length),()=>this.random());const common={slot:i,shards:row?._amount||0,cost:slot._price,currency:'gems'};if(row?._rewardType===50)return {...common,type:'consumable',bonus:bonuses[Math.floor(this.random()*bonuses.length)]._bonusType};const pool=row?this.dropPool(row._target):[],it=pool[Math.floor(this.random()*pool.length)];return {...common,type:'fragments',itemId:it?.id};});}
-  const names={0:['Дополнительная база','extra_base_big'],10:['Производство ×2','produce_speed_big'],100:['Скорость ×2','Movement_Speed_Icon']};
+  const names={0:['Дополнительная база','extra_base_big'],10:['Производство ×2','produce_speed_big'],100:['Скорость ×2','move_speed_big']};
   return this.c.sourceOffers.map(o=>({...o,item:o.type==='consumable'?{id:'bonus'+o.bonus,name:names[o.bonus][0],bonusIcon:names[o.bonus][1],rarity:2}:this.item(o.itemId),bought:this.c.dailyBought.includes(o.slot)})).filter(o=>o.item);
  }
  buyOffer(slot){const o=this.dailyOffers().find(o=>o.slot===slot);if(!o||o.bought||!this.spend(o.currency,o.cost))return false;if(o.type==='consumable')this.c.sourceBonuses[o.bonus]=(this.c.sourceBonuses[o.bonus]||0)+o.shards;else this.grantShards(o.item.id,o.shards);this.c.dailyBought.push(slot);return true;}

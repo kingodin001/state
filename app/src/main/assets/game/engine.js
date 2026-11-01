@@ -17,7 +17,7 @@ class Battle {
   this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
  }
  configureBots(){
-  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
+  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);profile.debut=(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).createDebut(profile.preset,()=>this.rng.next());this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
  }
  aiOrder(owner,sources,target,fraction){const b=this.botProfiles[owner];if(b)this.pendingAI.push({owner,sources,target,fraction,delay:rules.range(b.behavior._sendingDelay,()=>this.rng.next())});else this.command(sources,target,fraction,owner);}
  stageRegions(){return this.regions.filter(r=>(r.stage||0)===this.stage);}
@@ -43,7 +43,7 @@ class Battle {
    s.pulse=.3;
    this.waves.push({from:s.id,to:target,owner,count,left:count,sequence:this.level.sourcePort?(previous?.sequence||0):0});sent+=count;
   }
-  if(sent&&owner===1){if(!this.level.sourcePort)this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
+  if(sent&&owner===1){if(this.level.sourcePort)(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).react(this,sources,target);if(!this.level.sourcePort)this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
   return sent;
  }
  cast(type,target){
@@ -208,7 +208,7 @@ class Battle {
   }
   this.units=this.units.filter(u=>!u.dead);
   if(!this.tutorial||this.firstCommand&&this.time>13){
-   for(const owner of this.factions){this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){const profile=this.botProfiles[owner];this.aiTimers[owner]=profile?rules.range(profile.preset._baseCalculationSettings._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
+   for(const owner of this.factions){const policy=root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null);if(this.level.sourcePort&&this.botProfiles[owner]&&policy.debut(this,owner))continue;this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){const profile=this.botProfiles[owner];this.aiTimers[owner]=profile?rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
   }
   for(const order of this.pendingAI){order.delay-=dt;if(order.delay<=0)this.command(order.sources,order.target,order.fraction,order.owner);}this.pendingAI=this.pendingAI.filter(x=>x.delay>0);
   const current=this.stageRegions(),owners=new Set(current.map(r=>r.owner).filter(Boolean));
