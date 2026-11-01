@@ -39,7 +39,7 @@ TerraCampaign.normalize(data);const eco=new TerraCollection.Economy(data),meta=n
 data.version=3;
 function save(){try{data.lastSeen=Date.now();localStorage.setItem('terra-storm-v1',JSON.stringify(data));}catch(e){}}
 const offline=Math.min(8*3600,Math.max(0,(Date.now()-data.lastSeen)/1000));
-const offlineReward=offline>180?Math.floor(offline*(100+data.upgrades[2]*75)/3600):0;
+const offlineReward=!eco.source&&offline>180?Math.floor(offline*(100+data.upgrades[2]*75)/3600):0;
 if(offlineReward){data.coins+=offlineReward;meta.m.lastOfflineReward=offlineReward;save();}
 let mode='menu',battle=null,currentLevel=data.level,modalType=null,selected=new Set(),fraction=1,casting=null,particles=[],shotLines=[],toastTimer=0,view={s:1,x:0,y:0},drag=null,pointer={x:0,y:0},lastFrame=performance.now(),lastUi=0,scale=1,zoom=1,pan={x:0,y:0},overview=false,defaultZoom=1,cameraFocus=null,cameraTween=null,hoverTarget=null,orderPulses=[],countdownActive=false,countdownRun=0;
 const armyBar=new TerraAppearance.ArmyBar($('balance'),owner=>TerraAppearance.hex(sourcePalette(owner).Area.Color));
@@ -94,7 +94,7 @@ function resize(){
 
  }else{
   const top=map.sourcePort?0:$('map-caption').getBoundingClientRect().bottom-box.top+10,loadout=$('main-loadout'),bottom=map.sourcePort?H:(getComputedStyle(loadout).display!=='none'?loadout:$('menu-bottom')).getBoundingClientRect().top-box.top-12;
-  rect={x:map.sourcePort?0:12,y:top,width:map.sourcePort?W:W-24,height:Math.max(120,bottom-top)};view=TerraField.camera(map,rect,{overview:!map.sourcePort});
+  const u=W/590,navTop=$('global-nav').getBoundingClientRect().top-box.top,previewTop=Math.min(214*u,H*.22),previewBottom=Math.min(previewTop+440*u,navTop-290*u);rect=map.sourcePort?{x:90*u,y:previewTop,width:440*u,height:Math.max(100*u,previewBottom-previewTop)}:{x:12,y:top,width:W-24,height:Math.max(120,bottom-top)};view=TerraField.camera(map,rect,{overview:true});if(map.sourcePort){const points=map.regions.flatMap(r=>r.poly),xs=points.map(p=>p[0]),ys=points.map(p=>p[1]),left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys),s=Math.min(rect.width/(right-left),rect.height/(bottom-top));view={...view,s,baseScale:s,x:rect.x+rect.width/2-(left+right)/2*s,y:rect.y+rect.height/2-(top+bottom)/2*s};}
  }
  $('zoom-reset').hidden=true;
 }
@@ -107,7 +107,7 @@ function showMenu(){
 }
 function updateMenu(){
  document.querySelectorAll('[data-feature]').forEach(el=>{const kind=el.dataset.feature,level=TerraSourceRules.featureLevel(kind);if(level){el.disabled=!TerraSourceRules.featureAvailable(kind,data);el.title=el.disabled?'С уровня '+level:'';}});
- $('coins').textContent=fmt(data.coins);$('level-label').textContent='УРОВЕНЬ '+(currentLevel+1);$('map-name').textContent=levels[currentLevel].name;$('map-subtitle').textContent=levels[currentLevel].subtitle;const modifiers=levels[currentLevel];$('map-modifiers').innerHTML=(modifiers.fog?'<button data-feature="fog">ТУМАН РАЗВЕДКИ ?</button>':'')+((modifiers.zones||[]).length?'<button data-feature="slow">ЗОНА ЗАМЕДЛЕНИЯ ?</button>':'');
+ TerraPresentation.wallet('coins',data.coins);$('level-label').textContent='УРОВЕНЬ '+(currentLevel+1);$('map-name').textContent=levels[currentLevel].name;$('map-subtitle').textContent=levels[currentLevel].subtitle;const modifiers=levels[currentLevel];$('map-modifiers').innerHTML=(modifiers.fog?'<button data-feature="fog">ТУМАН РАЗВЕДКИ ?</button>':'')+((modifiers.zones||[]).length?'<button data-feature="slow">ЗОНА ЗАМЕДЛЕНИЯ ?</button>':'');
  const current=levels[currentLevel],start=currentLevel-current.sourceStageIndex,stageCount=TerraCampaign.get(currentLevel).sourceStageCount;$('campaign-dots').innerHTML=Array.from({length:stageCount},(_,j)=>'<i class="'+(data.completed.includes(start+j)?'done':j===current.sourceStageIndex?'current':'')+'"></i>').join('');document.querySelector('.campaign-progress>span').textContent=current.name+' • '+(current.sourceStageIndex+1)+' / '+stageCount;
  $('play-label').innerHTML='ИГРАТЬ<small>УРОВЕНЬ '+(currentLevel+1)+'</small>';
  if(hub)hub.wallet();
@@ -119,13 +119,13 @@ function updateMenu(){
 }
 function upgradePrice(i){return i===2?Math.floor(65*Math.pow(1.48,data.upgrades[i])):TerraSourceMath.upgradeCost(({0:11,1:12,3:10})[i],data.upgrades[i]);}
 function upgradeValue(i){return i===0?sourceStart():i===1?sourceProduction().toFixed(2):i===2?100+data.upgrades[2]*75:eco.bonuses().limit;}
-function buyUpgrade(i){if(!Number.isInteger(i)||i<0||i>3||data.upgrades[i]>=300||data.coins<upgradePrice(i))return false;data.coins-=upgradePrice(i);data.upgrades[i]++;save();updateMenu();tone(750);vibrate();return true;}
+function buyUpgrade(i){if(!Number.isInteger(i)||i<0||i>3||TerraProgression.core(data,i).max||data.coins<upgradePrice(i))return false;data.coins-=upgradePrice(i);data.upgrades[i]++;save();updateMenu();tone(750);vibrate();return true;}
 let pendingBonusSelection=null;
 function sourceBonusesDialog(options,selection=null){
- const names={0:['Дополнительная база','extra_base_big'],10:['Производство ×2','produce_speed_big'],100:['Скорость ×2','Movement_Speed_Icon']};
+ const names={0:['ДОПОЛНИТЕЛЬНАЯ БАЗА','extra_base_big'],10:['СКОРОСТЬ ПРОИЗВОДСТВА +100%','produce_speed_big'],100:['СКОРОСТЬ ПЕРЕМЕЩЕНИЯ +100%','Movement_Speed_Icon']};
  const session=selection||new TerraPrebattle.Selection(currentLevel,eco.bonusConfigs());pendingBonusSelection=session;
  const selected=session.selected;
- openModal('source-bonuses',head('ВЫБЕРИ ДО 3 УСИЛЕНИЙ')+'<div class="source-bonus-choices">'+eco.bonusConfigs().map(x=>{const chosen=selected.includes(x._bonusType);return '<article class="'+(chosen?'bonus-selected':'')+'"><img class="source-art" src="'+TerraSourceRuntime.file(names[x._bonusType][1])+'" alt=""><b>'+names[x._bonusType][0]+'</b><small>'+(chosen?'ПРИМЕНИТСЯ В ЭТОМ БОЮ':x.available?'ЗА ПРОСМОТР ВИДЕО':'С УРОВНЯ '+x._openFromLevel)+'</small><button class="source-bonus-video blue-button" data-ad-placement="battle_bonus" data-ad-value="'+x._bonusType+'" data-ad-locked="'+(!x.available||chosen)+'" disabled>'+(chosen?'✓ ВЫБРАНО':'ПОЛУЧИТЬ — ВИДЕО')+'</button></article>';}).join('')+'</div><button class="primary modal-primary" id="source-bonuses-play">В БОЙ</button>');
+ $('header').hidden=true;openModal('source-bonuses',head('ВЫБЕРИ ДО 3 УСИЛЕНИЙ')+'<div class="source-bonus-choices">'+eco.bonusConfigs().sort((a,b)=>[0,10,100].indexOf(a._bonusType)-[0,10,100].indexOf(b._bonusType)).map(x=>{const chosen=selected.includes(x._bonusType);return '<article class="'+(chosen?'bonus-selected':'')+'"><img class="source-art" src="'+TerraSourceRuntime.file(names[x._bonusType][1])+'" alt=""><b>'+names[x._bonusType][0]+'</b><small>'+(chosen?'✓':x.available?'':'С УРОВНЯ '+x._openFromLevel)+'</small><button class="source-bonus-video blue-button" data-ad-placement="battle_bonus" data-ad-value="'+x._bonusType+'" data-ad-locked="'+(!x.available||chosen)+'" disabled>'+(chosen?'✓ ВЫБРАНО':'ПОЛУЧИТЬ — ВИДЕО')+'</button></article>';}).join('')+'</div><img class="bonus-tutorial-hand" src="'+TerraSourceRuntime.file('tutorial_finger')+'" alt=""><button class="primary modal-primary" id="source-bonuses-play">В БОЙ</button>');
  $('source-bonuses-play').onclick=()=>startBattle({...options,sourceBonusSelection:session});
  document.querySelectorAll('[data-ad-placement="battle_bonus"]').forEach(button=>button.onclick=async()=>{
   const ok=await session.watch(+button.dataset.adValue,globalThis.TerraAds);
@@ -197,7 +197,7 @@ function finish(result){
  $('result-menu').onclick=()=>afterResultAd(b,showMenu);
 }
 function openModal(type,html){modalType=type;$('modal').dataset.kind=type;drag=null;hoverTarget=null;$('fraction-panel').hidden=true;$('panel-content').innerHTML=html;globalThis.TerraAds?.refreshButtons();$('modal').hidden=false;if(battle&&!battle.result)battle.paused=true;const close=$('close-modal');if(close)close.onclick=()=>closeModal();}
-function closeModal(resume=true){if(modalType==='source-bonuses'&&pendingBonusSelection){pendingBonusSelection.cancel();pendingBonusSelection=null;}$('modal').hidden=true;modalType=null;if(resume&&battle&&!battle.result)battle.paused=countdownActive;}
+function closeModal(resume=true){if(modalType==='source-bonuses'&&pendingBonusSelection){pendingBonusSelection.cancel();pendingBonusSelection=null;}$('modal').hidden=true;modalType=null;if(mode==='battle')$('header').hidden=true;$('app').dataset.result='false';if(resume&&battle&&!battle.result)battle.paused=countdownActive;}
 function head(title){return '<div class="modal-head"><h2>'+title+'</h2><button class="close" id="close-modal" aria-label="Закрыть">×</button></div>';}
 function sameDay(a,b){return a&&new Date(a).toDateString()===new Date(b).toDateString();}
 function showWorld(page){
@@ -332,18 +332,18 @@ function render(now){
  if(mode==='battle'&&battle){armyBar.update(battle.totals());armyBar.step(dt);}
  if(cameraTween){cameraTween.elapsed+=dt;const f=Math.min(1,cameraTween.elapsed/.85),t=f*f*(3-2*f);for(const key of ['x','y','s'])view[key]=cameraTween.from[key]+(cameraTween.to[key]-cameraTween.from[key])*t;if(f===1)cameraTween=null;}
  if(now-lastUi>180){lastUi=now;if(mode==='battle')updateBattle();}
- ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=TerraSourceRuntime.hex(TerraSource.styles.find(x=>x.id===eco.c.sourceStyle)?.background||TerraSource.styles[0].background);ctx.fillRect(0,0,W,H);
+ ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle=mode==='menu'?'#d2d2d2':TerraSourceRuntime.hex(TerraSource.styles.find(x=>x.id===eco.c.sourceStyle)?.background||TerraSource.styles[0].background);ctx.fillRect(0,0,W,H);
  ctx.save();ctx.beginPath();ctx.rect(view.rect.x,view.rect.y,view.rect.width,view.rect.height);ctx.clip();ctx.translate(view.x,view.y);ctx.scale(view.s,view.s);
  const regions=battle?battle.regions:battleConfig().regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units,active:(r.stage||0)===0}));
  ctx.save();ctx.translate(0,4/view.s);ctx.fillStyle='#0000001a';for(let i=0;i<paths.length;i++)if(!regions[i].sourceHidden)ctx.fill(paths[i]);ctx.restore();
  for(let i=0;i<regions.length;i++){
-  const r=regions[i];if(r.sourceHidden)continue;const current=battle?battle.stage:0,sourceCurrent=(battle?battle.level:levels[currentLevel]).sourceStageIndex??current,sourceStage=r.sourceStageIndex??r.stage??0;ctx.globalAlpha=sourceStage>sourceCurrent?.25:1;ctx.fillStyle=TerraAppearance.areaColor(sourcePalette(r.owner),sourceStage,sourceCurrent,r.owner===0,eco.c.sourceStyle==='stl_1_origin'?'#cedbeb':null);ctx.strokeStyle='#ffffff';ctx.lineWidth=2/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
+  const r=regions[i];if(r.sourceHidden)continue;const current=battle?battle.stage:0,sourceCurrent=(battle?battle.level:levels[currentLevel]).sourceStageIndex??current,sourceStage=r.sourceStageIndex??r.stage??0;ctx.globalAlpha=sourceStage>sourceCurrent?.25:1;ctx.fillStyle=TerraAppearance.areaColor(sourcePalette(r.owner),sourceStage,sourceCurrent,r.owner===0,eco.c.sourceStyle==='stl_1_origin'?'#cedbeb':null);if(mode==='menu'){ctx.globalAlpha=1;if(sourceStage>sourceCurrent)ctx.fillStyle='#8f8f8f';}ctx.strokeStyle='#ffffff';ctx.lineWidth=(mode==='menu'?.65:2)/view.s;ctx.lineJoin='round';ctx.fill(paths[i]);ctx.stroke(paths[i]);
   if(selected.has(r.id)&&mode==='battle'){ctx.globalAlpha=.22;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=3/view.s;ctx.stroke(paths[i]);}
   if(hoverTarget===r.id){ctx.globalAlpha=.2;ctx.fillStyle=r.owner===1?color(1):'#ff8c37';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(battle&&battle.level.fog&&r.active&&!battle.visible(1,r.id)){ctx.globalAlpha=.18;ctx.fillStyle='#293665';ctx.fill(paths[i]);ctx.globalAlpha=1;}
   if(r.pulse>0&&!((battle?battle.level:levels[currentLevel]).sourcePort)){ctx.globalAlpha=r.pulse*.35;ctx.fillStyle='#fff';ctx.fill(paths[i]);ctx.globalAlpha=1;}
  }
- ctx.globalAlpha=1;for(const zone of (battle?battle.level.zones:levels[currentLevel].zones)||[]){const map=battle?battle.level:levels[currentLevel];if(map.sourcePort){if(zone.sourceStageIndex>map.sourceStageIndex)continue;drawSourceZone(zone);continue;}if(zone.stage!==undefined&&zone.stage!==(battle?.stage||0))continue;ctx.save();ctx.fillStyle=zone.factor>1?'#f4c04b32':'#8b6cce32';ctx.strokeStyle=zone.factor>1?'#d3a33588':'#7b69c988';ctx.lineWidth=2/view.s;ctx.setLineDash([4/view.s,5/view.s]);ctx.beginPath();ctx.arc(zone.x,zone.y,zone.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#6558a6';ctx.font='bold '+8/view.s+'px SourceRoboto';ctx.textAlign='center';ctx.fillText('×'+zone.factor,zone.x,zone.y+zone.radius*.5);ctx.restore();}
+ ctx.globalAlpha=1;for(const zone of (battle?battle.level.zones:[])||[]){const map=battle?battle.level:levels[currentLevel];if(map.sourcePort){if(zone.sourceStageIndex>map.sourceStageIndex)continue;drawSourceZone(zone);continue;}if(zone.stage!==undefined&&zone.stage!==(battle?.stage||0))continue;ctx.save();ctx.fillStyle=zone.factor>1?'#f4c04b32':'#8b6cce32';ctx.strokeStyle=zone.factor>1?'#d3a33588':'#7b69c988';ctx.lineWidth=2/view.s;ctx.setLineDash([4/view.s,5/view.s]);ctx.beginPath();ctx.arc(zone.x,zone.y,zone.radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#6558a6';ctx.font='bold '+8/view.s+'px SourceRoboto';ctx.textAlign='center';ctx.fillText('×'+zone.factor,zone.x,zone.y+zone.radius*.5);ctx.restore();}
  if(!((battle?battle.level:levels[currentLevel]).sourcePort))for(let i=0;i<regions.length;i++){
   const r=regions[i],qty=Math.min(150,Math.floor(r.units));if(!r.owner||r.active===false)continue;
   for(let j=0;j<qty&&j<dots[i].length;j++){const d=dots[i][j],wiggle=Math.sin(now*.0017+d.phase)*1.1;drawDot(d.x+wiggle,d.y,Math.max(2.7,1.75/view.s),r.owner,r.owner===1?data.fighter:0);}
@@ -360,6 +360,7 @@ function render(now){
  for(const order of orderPulses){commandArrow(regions[order.from],regions[order.to],Math.max(0,order.life/.3)*.55);order.life-=dt;}orderPulses=orderPulses.filter(o=>o.life>0);
  if(hoverTarget!==null){const r=regions[hoverTarget];ctx.strokeStyle=r.owner===1?color(1):'#ff9c3c';ctx.lineWidth=3/view.s;ctx.beginPath();ctx.arc(r.x,r.y,25/view.s,0,Math.PI*2);ctx.stroke();}
  for(const r of regions){
+  if(mode==='menu')continue;
   if(r.active===false){if(r.sourceEnabled===false)continue;const map=battle?battle.level:levels[currentLevel];if(map.sourcePort&&r.sourceStageIndex<map.sourceStageIndex){const base=eco.item(eco.c.equipped.base),size=34*(W/390)/view.s;const classic=eco.c.sourceStyle==='stl_1_origin';ctx.globalAlpha=classic?1:.14;paintSprite(base.art,r.x-size/2,r.y-size/2,size,size,base.hue,classic?'#b5c6d6':color(1));ctx.globalAlpha=1;}continue;}
   const source=(battle?battle.level:levels[currentLevel]).sourcePort;
   if(source){
@@ -384,10 +385,10 @@ function render(now){
   if(r.frozen>0){ctx.strokeStyle='#83eeff';ctx.lineWidth=3/view.s;ctx.globalAlpha=.8;ctx.beginPath();ctx.arc(r.x,r.y,22/view.s,0,6.3);ctx.stroke();ctx.globalAlpha=1;}
   if(r.shield>0){ctx.strokeStyle='#a98cdc';ctx.lineWidth=2.4/view.s;ctx.globalAlpha=.7+.2*Math.sin(now/100);ctx.beginPath();ctx.arc(r.x,r.y,23/view.s,0,6.3);ctx.stroke();ctx.globalAlpha=1;}
  }
- // Tutorial hand/route is a hint only; never sends an order for the player.
- if(battle&&currentLevel===0&&!battle.firstCommand&&!data.completed.includes(0)&&regions.some(r=>r.active&&!r.owner)){
-  const a=regions.find(r=>r.active&&r.owner===1),b=regions.find(r=>r.active&&!r.owner),t=(now%2000)/2000;
-  ctx.globalAlpha=.45;ctx.strokeStyle=color(1);ctx.lineWidth=3/view.s;ctx.setLineDash([5/view.s,6/view.s]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=.8;ctx.fillStyle='#fff';ctx.strokeStyle='#77a4c6';ctx.lineWidth=2/view.s;ctx.beginPath();ctx.arc(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t,8/view.s,0,6.3);ctx.fill();ctx.stroke();ctx.globalAlpha=1;
+ // Repeat the gesture until the player actually sends an order.
+ if(battle&&!battle.firstCommand&&!battle.result&&!battle.paused){
+  const a=regions.find(r=>r.active&&r.owner===1),targets=a?regions.filter(r=>r.active&&r.owner!==1).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y)):[],b=targets[0];
+  if(a&&b){const t=(now%2400)/2400,f=Math.max(0,Math.min(1,(t-.18)/.6)),p={x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f};let im=spriteImages.get('tutorial-hand');if(!im){im=new Image();im.src=TerraSourceRuntime.file('tutorial_finger');spriteImages.set('tutorial-hand',im);}ctx.globalAlpha=t>.87?(1-t)/.13:Math.min(1,t/.12);if(f>0&&t<.88)commandArrow(a,p,.5);const size=76*(W/590)/view.s;if(im.complete&&im.naturalWidth)ctx.drawImage(im,p.x-size*.22,p.y-size*.12,size,size);ctx.globalAlpha=1;}
  }
  for(const p of particles.filter(p=>!p.screen)){ctx.globalAlpha=Math.min(1,p.life*2);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,3/view.s,0,6.3);ctx.fill();}ctx.globalAlpha=1;ctx.restore();
  for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.screen){p.vy+=170*dt;ctx.globalAlpha=Math.min(1,p.life);ctx.fillStyle=p.color;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(now/300+p.vx);ctx.fillRect(-3,-2,6,4);ctx.restore();}}ctx.globalAlpha=1;particles=particles.filter(p=>p.life>0);
@@ -401,14 +402,14 @@ async function afterResultAd(target,action){if(target.resultTransition)return;ta
 document.addEventListener('click',async ev=>{
  const button=ev.target.closest('[data-ad-placement]');if(!button||button.disabled)return;
  const placement=button.dataset.adPlacement,value=button.dataset.adValue;
- if(['battle_bonus','skill_speedup','idle_instant'].includes(placement))return;
+ if(['battle_bonus','skill_speedup','idle_instant','idle_double','resource_gift'].includes(placement))return;
  const target=battle;
  if(!await globalThis.TerraAds?.reward(placement))return;
  if(placement==='result_x3'){
   if(battle!==target||target.result!=='win'||target.multiplied||!target.resultCoinReward)return;
   target.multiplied=true;data.coins+=target.resultCoinReward*2;button.dataset.adLocked='true';button.disabled=true;button.textContent='ПОЛУЧЕНО';
  }else if(placement==='core_upgrade'){
-  const i=+value;if(![0,1,3].includes(i)||data.upgrades[i]>=300)return;data.upgrades[i]++;
+  const i=+value;if(![0,1,3].includes(i)||TerraProgression.core(data,i).max)return;data.upgrades[i]++;
  }else if(placement==='color_unlock'){
   const it=eco.item(value);if(it?.category!=='color'||!eco.visible(value)||eco.inventory(value).owned)return;
   eco.c.cards[value]={...eco.inventory(value),owned:true,level:1};eco.c.equipped.color=value;save();hub.details(value);
@@ -439,7 +440,7 @@ for(const key of ['reinforce','shield'])$(key).onclick=()=>{if(battle&&battle.co
 $('scrim').onclick=()=>{if(modalType!=='result')closeModal();};$('zoom-reset').onclick=()=>{};
 let awaySince=0;
 function pauseApp(){if(!awaySince)awaySince=Date.now();save();if(mode==='battle'&&battle&&!battle.result&&$('modal').hidden&&!globalThis.TerraAds?.isBusy())showPause();}
-function resumeApp(){if(awaySince){const elapsed=Math.min(8*3600,Math.max(0,(Date.now()-awaySince)/1000));awaySince=0;if(elapsed>180){const reward=Math.floor(elapsed*(100+data.upgrades[2]*75)/3600);if(reward){data.coins+=reward;meta.m.lastOfflineReward=reward;save();updateMenu();toast('Доход вне игры: +'+reward+' монет');}}}lastFrame=performance.now();}
+function resumeApp(){if(awaySince){const elapsed=Math.min(8*3600,Math.max(0,(Date.now()-awaySince)/1000));awaySince=0;if(!eco.source&&elapsed>180){const reward=Math.floor(elapsed*(100+data.upgrades[2]*75)/3600);if(reward){data.coins+=reward;meta.m.lastOfflineReward=reward;save();updateMenu();toast('Доход вне игры: +'+reward+' монет');}}}lastFrame=performance.now();}
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>document.hidden?pauseApp():resumeApp());
 if(document.fonts)document.fonts.ready.then(resize);
 document.addEventListener('terraPause',pauseApp);document.addEventListener('terraResume',resumeApp);

@@ -6,7 +6,7 @@ class AdsClient{
  refresh(){try{this.capabilities=JSON.parse(this.bridge?.adCapabilities()||'{}');}catch(_){this.capabilities={};}this.refreshButtons();this.emit('terra-ad-state');}
  available(placement){return !!this.capabilities[placement];}
  isBusy(){return !!this.active;}
- refreshButtons(root=g.document){root?.querySelectorAll('[data-ad-placement]').forEach(b=>{b.disabled=!this.available(b.dataset.adPlacement)||b.dataset.adLocked==='true';});}
+ refreshButtons(root=g.document){root?.querySelectorAll('[data-ad-placement]').forEach(b=>{b.disabled=!this.available(b.dataset.adPlacement)||b.dataset.adLocked==='true';});g.TerraPresentation?.decorate(root);}
  reward(placement){return this.request(placement,'reward');}
  interstitial(){return this.request('level_end','interstitial');}
  request(placement,kind){

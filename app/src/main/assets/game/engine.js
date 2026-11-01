@@ -214,7 +214,7 @@ class Battle {
   const current=this.stageRegions(),owners=new Set(current.map(r=>r.owner).filter(Boolean));
   for(const u of this.units)owners.add(u.owner);for(const w of this.waves)owners.add(w.owner);
   if(!owners.has(1)){this.result='lose';this.emit('finish',{result:'lose'});}
-  else if(owners.size===1&&current.every(r=>r.owner===1)){if(this.level.stages&&this.stage<this.level.stages.length-1)this.nextStage();else{this.result='win';this.emit('finish',{result:'win'});}}
+  else if(owners.size===1&&(this.level.sourcePort||current.every(r=>r.owner===1))){if(this.level.stages&&this.stage<this.level.stages.length-1)this.nextStage();else{this.result='win';this.emit('finish',{result:'win'});}}
   if(!this.result&&this.level.timeLimit&&this.time>=this.level.timeLimit){const share=this.territoryShare(),totals=this.totals(),score=f=>share[f]*10000+totals[f];this.result=this.factions.every(f=>score(1)>score(f))?'win':'lose';this.emit('finish',{result:this.result});}
  }
   revealTutorial(id){

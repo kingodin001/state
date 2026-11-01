@@ -17,12 +17,13 @@ function layout(w,h){
 }
 function update({data,level,meta}){
  const available=kind=>g.TerraSourceRules.featureAvailable(kind,data),progress=$('source-region-progress'),n=level.sourceStageIndex||0,total=level.sourceStageCount||1;
- progress.querySelector('b').textContent=n+' / '+total;progress.querySelector('span').style.setProperty('--progress',n/total*100+'%');
+ progress.querySelector('b').innerHTML=Array.from({length:4},(_,i)=>{const value=Math.max(1,data.level+i),current=i===1;return '<i class="progress-node '+(i===0?'done':current?'current':i===3?'next':'')+'">'+value+'</i>';}).join('');progress.querySelector('span').style.setProperty('--progress',n/total*100+'%');
  const difficulty=$('source-difficulty');difficulty.hidden=level.difficulty===10;difficulty.textContent=level.difficulty===30?'ОЧЕНЬ СЛОЖНЫЙ':'СЛОЖНЫЙ';difficulty.classList.toggle('extra',level.difficulty===30);
  $('menu-league').disabled=!available('duel');$('menu-league').querySelector('small').textContent=available('duel')?'ЛИГА':'С УР. '+g.TerraSourceRules.featureLevel('duel');
  document.querySelectorAll('#side-menu [data-feature],#meta-shortcuts [data-feature]').forEach(button=>{
   const kind=button.dataset.feature,level=g.TerraSourceRules.featureLevel(kind);if(level){button.disabled=!available(kind);button.title=button.disabled?'Откроется с уровня '+level:'';}
  });
+ document.querySelector('#meta-shortcuts [data-feature="idle"] small').textContent=meta.idleInfo?.().ready?'ЗАБРАТЬ':'ДОХОД';
  $('quests').querySelector('i').hidden=!meta.eco.operations().some(q=>!q.claimed&&q.value>=q.goal);
 }
 function init(){
