@@ -15,7 +15,8 @@
     "color_unlock": "rewarded_color",
     "daily_refresh": "rewarded_bonus",
     "battle_bonus": "rewarded_bonus",
-    "skill_speedup": "rewarded_bonus"
+    "skill_speedup": "rewarded_bonus",
+    "idle_instant": "rewarded_bonus"
   },
   "schemaVersion": 1,
   "packageName": "pro.vymi.terrastorm",

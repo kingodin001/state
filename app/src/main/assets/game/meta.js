@@ -35,7 +35,13 @@ class Meta{
  }
  weekly(){this.refresh();const w=this.m.weekly;return [{id:'wins',title:'Выиграй 12 сражений',goal:12,value:Math.max(0,(this.state.wins||0)-w.wins),reward:{gems:60,tickets:2}},{id:'capture',title:'Захвати 90 территорий',goal:90,value:Math.max(0,(this.state.captures||0)-w.captures),reward:{coins:900,supply:5}},{id:'sent',title:'Отправь 1500 бойцов',goal:1500,value:Math.max(0,(this.state.sent||0)-w.sent),reward:{gems:45,tickets:3}}].map(q=>({...q,key:w.key+':'+q.id,claimed:this.m.weeklyClaims.includes(w.key+':'+q.id)}));}
  claimWeekly(id){const q=this.weekly().find(q=>q.id===id);if(!q||q.claimed||q.value<q.goal)return false;this.reward(q.reward);this.m.weeklyClaims.push(q.key);return true;}
- instantIncome(now=Date.now()){
+ instantStatus(now=Date.now()){
+  this.refresh(now);const cfg=TerraSourceRules.data.IdleEarningRewardsConfigs[0]._instantRewardConfig;
+  if(this.m.instantDay!==day(now)){this.m.instantDay=day(now);this.m.instantClaims=0;}
+  return {remaining:Math.max(0,cfg._dailyLimit-this.m.instantClaims),minutes:cfg._rewardTime};
+ }
+ instantIncome(now=Date.now(),videoCompleted=false){
+  if(this.eco.source){const status=this.instantStatus(now);if(!videoCompleted||!TerraSourceRules.featureAvailable('idle',this.state)||!status.remaining)return false;const coins=Math.floor((100+(this.state.upgrades[2]||0)*75)*status.minutes/60);this.m.instantClaims++;this.reward({coins});return coins;}
   if(now-this.m.instantAt<4*HOUR||!this.spend('gems',10))return false;const coins=(100+(this.state.upgrades[2]||0)*75)*2;this.reward({coins});this.m.instantAt=now;return coins;
  }
  addChest(level){if((level+1)%5!==0)return false;const i=this.m.slots.findIndex(s=>s===null);if(i<0)return false;this.m.slots[i]={type:(level+1)%20===0?'royal':'basic',duration:Math.min(600,60+level*2),ends:0};return true;}
