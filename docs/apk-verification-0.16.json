@@ -1,0 +1,33 @@
+{
+  "version": "0.16.0",
+  "versionCode": 17,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 24955739,
+  "sha256": "e433a2a744c952ad6f0bab254e16f025659ac93920dd37a485ad02f00c1a3d63",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1253,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "dexFiles": 1,
+  "adsProvider": "yandex",
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false,
+  "nodeTests": 125,
+  "nativeProgressionOracleCases": 140,
+  "nativeGroupArrivalOracleCases": 8,
+  "originalUiIcons": 27,
+  "sourceLayoutsUnchanged": true,
+  "nativeHostUnchanged": true,
+  "baseApkSha256": "89dc280fa956a1708b2a7b4c5c5fea92260093e768c1f988594322c90bd87264",
+  "level11Replay": {
+    "commands": 33,
+    "winTimeSeconds": 69,
+    "frameRates": [
+      20,
+      40,
+      60,
+      120
+    ]
+  }
+}

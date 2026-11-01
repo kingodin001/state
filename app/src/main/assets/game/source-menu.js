@@ -24,11 +24,12 @@ function update({data,level,meta}){
   const kind=button.dataset.feature,level=g.TerraSourceRules.featureLevel(kind);if(level){button.disabled=!available(kind);button.title=button.disabled?'Откроется с уровня '+level:'';}
  });
  document.querySelector('#meta-shortcuts [data-feature="idle"] small').textContent=meta.idleInfo?.().ready?'ЗАБРАТЬ':'ДОХОД';
+ $('menu-duel').querySelector('small').textContent=available('duel')?'PVP':'С УР. '+g.TerraSourceRules.featureLevel('duel');$('menu-operations').querySelector('small').textContent=available('operation')?'ЕЖЕДНЕВНЫЕ ОПЕРАЦИИ':'ОПЕРАЦИИ · УР. '+g.TerraSourceRules.featureLevel('operation');$('quests').querySelector('small').textContent='ЗАДАНИЯ';
  $('quests').querySelector('i').hidden=!meta.eco.operations().some(q=>!q.claimed&&q.value>=q.goal);
 }
 function init(){
- for(const [id,key]of [['menu-duel','duel'],['menu-league','league'],['menu-operations','operations'],['quests','quests']])$(id).querySelector('span').innerHTML=image(source.images[key]);
- for(const kind of source.rightGrid.order){const span=document.querySelector('#meta-shortcuts [data-feature="'+kind+'"] span');span.innerHTML=image(source.images[kind]);if(kind==='wheel')span.innerHTML+=image(source.images.wheelPin);}
+ for(const [id,key]of [['menu-duel','duel'],['menu-league','league'],['menu-operations','operations'],['quests','quests']])$(id).querySelector('span').innerHTML=g.TerraIdentity.image(key);
+ for(const kind of source.rightGrid.order){const span=document.querySelector('#meta-shortcuts [data-feature="'+kind+'"] span');span.innerHTML=g.TerraIdentity.image(kind);}
 }
 g.TerraMainMenu={init,layout,update};init();
 })(globalThis);

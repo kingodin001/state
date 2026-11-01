@@ -4,6 +4,7 @@
 const field=root.TerraField||(typeof require!=='undefined'?require('./field.js'):null),timing=field.TIMING;
 class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math.imul(this.state,1664525)+1013904223)>>>0;return this.state/4294967296;} }
 const rules=root.TerraSourceRules||(typeof require!=='undefined'?require('./source-rules.js'):null);
+const botLoadout=root.TerraBotLoadout||(typeof require!=='undefined'?require('./bot-loadout.js'):null);
 const sourceAI=root.TerraSourceAI||(typeof require!=='undefined'?require('./source-ai.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
@@ -12,12 +13,12 @@ class Battle {
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0,shieldPoints:r.shieldPoints||0,bonusClaimed:false,hidden:!!level.tutorial&&!options.skipTutorial&&(level.tutorialHidden||[]).includes(r.id),active:(r.stage||0)===0}));for(const r of this.regions)r.active=r.active&&!r.hidden;this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
   this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.filter(r=>r.active).map(r=>r.owner))].filter(x=>x>1);
-  this.aiTimers={};this.botProfiles={};this.pendingAI=[];this.configureBots();
+  this.aiTimers={};this.botProfiles={};this.pendingAI=[];this.configureBots();if(level.sourcePort)botLoadout.setup(this);
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=(level.tutorial||!level.reference&&level.seed===1)&&!options.skipTutorial;
   this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};
  }
  configureBots(){
-  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);profile.debut=(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).createDebut(profile.preset,()=>this.rng.next());this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
+  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);profile.debut=(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).createDebut(profile.preset,()=>this.rng.next());profile.awaitingDebutEnd=!!profile.debut?.steps.length;this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
  }
  aiOrder(owner,sources,target,fraction){const b=this.botProfiles[owner];if(b)this.pendingAI.push({owner,sources,target,fraction,delay:rules.range(b.behavior._sendingDelay,()=>this.rng.next())});else this.command(sources,target,fraction,owner);}
  stageRegions(){return this.regions.filter(r=>(r.stage||0)===this.stage);}
@@ -43,6 +44,7 @@ class Battle {
    s.pulse=.3;
    this.waves.push({from:s.id,to:target,owner,count,left:count,sequence:this.level.sourcePort?(previous?.sequence||0):0});sent+=count;
   }
+  if(sent&&owner>1&&this.level.sourcePort)botLoadout.request(this,owner);
   if(sent&&owner===1){if(this.level.sourcePort)(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).react(this,sources,target);if(!this.level.sourcePort)this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
   return sent;
  }
@@ -79,7 +81,7 @@ class Battle {
   else if(s.kind.includes('Freeze')){for(const r of enemies)r.frozen=s.Stat2;this.freezeEnemies=s.Stat2;}
   this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
  }
- sourceSkill(owner,kind){return this.level.sourcePort?(owner===1?this.options.sourceSkills||[]:[]).find(s=>s.kind===kind):null;}
+ sourceSkill(owner,kind){return this.level.sourcePort?(owner===1?this.options.sourceSkills||[]:this.botProfiles[owner]?.loadout?.skills||[]).find(s=>s.kind===kind):null;}
  sourceProductionImpact(region,skill){
   if(!skill)return;region.productionImpacts=region.productionImpacts||[];
   const previous=region.productionImpacts.find(x=>x.kind===skill.kind);
@@ -124,7 +126,7 @@ class Battle {
   if(r.shieldPoints>0){r.shieldPoints--;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   if(this.level.sourcePort){this.sourceProductionImpact(r,this.sourceSkill(r.owner,'IncreaseProductionAfterDamageSkillConfig'));this.sourceProductionImpact(r,this.sourceSkill(u.owner,'ReduceProductionAfterDamageSkillConfig'));}
-  const damage=(r.kind==='fort'?.7:1)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):1);r.units-=damage;
+  const damage=(r.kind==='fort'?.7:1)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):botLoadout.effect(this,u.owner,'damage')?.until>this.time?botLoadout.effect(this,u.owner,'damage').value:1);r.units-=damage;
   if(r.units<0){
    const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;
@@ -143,17 +145,18 @@ class Battle {
  tick(dt){
   if(this.stageTransition>0){this.stageTransition=Math.max(0,this.stageTransition-dt);return;}
   this.berserk=Math.max(0,(this.berserk||0)-dt);this.freezeEnemies=Math.max(0,(this.freezeEnemies||0)-dt);this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);this.speedBoost=Math.max(0,this.speedBoost-dt);
+  if(this.level.sourcePort)botLoadout.tick(this,dt);
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
    if(r.active===false)continue;
    r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){if(this.level.sourcePort){r.poisonElapsed=(r.poisonElapsed||0)+Math.min(dt,r.poison);while(r.poisonElapsed+1e-8>=1){r.poisonElapsed-=1;r.units=Math.max(0,r.units-(r.poisonDamage||1));}}else r.units=Math.max(0,r.units-dt*1.5);r.poison=Math.max(0,r.poison-dt);}
    let cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
-   if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=r.owner===1?this.playerLimit:this.enemyLimit;
+   if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=botLoadout.limit(this,r.owner);
    const overflow=this.sourceSkill(r.owner,'UnlimitedPopulationProduceSkillConfig'),atCap=r.units>=cap;
    if(r.owner&&(!atCap||overflow)&&r.frozen<=0&&!(r.productionLockedUntil>this.time)){
     let rate=r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
     if(r.spawnRate!==undefined)rate=r.spawnRate*(r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):1);
-    if(this.level.sourcePort&&!(r.sourceSettings?.SpawnSpeed>=0))rate=r.owner===1?this.sourceProduction*this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
+    if(this.level.sourcePort&&!(r.sourceSettings?.SpawnSpeed>=0))rate=botLoadout.production(this,r.owner);
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
     if(this.level.sourcePort)rate=this.sourceProductionRate(r,rate);
     const produced=dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1)*(atCap?overflow.Stat1:1);r.units=atCap?r.units+produced:Math.min(cap,r.units+produced);
@@ -177,13 +180,13 @@ class Battle {
    let wave=this.waves.find(w=>w.from===a.id&&w.left>0);
    if(!wave){this.departureClocks[a.id]=0;continue;}
    this.departureClocks[a.id]=(this.departureClocks[a.id]||0)+dt;
-   while(wave&&this.departureClocks[a.id]+1e-9>=(this.timing.departureInterval/(this.level.sourcePort&&a.owner===1?this.playerSpeed:1))){
-    this.departureClocks[a.id]-=this.timing.departureInterval/(this.level.sourcePort&&a.owner===1?this.playerSpeed:1);
+   while(wave&&this.departureClocks[a.id]+1e-9>=(this.timing.departureInterval/(this.level.sourcePort?botLoadout.speed(this,a.owner):1))){
+    this.departureClocks[a.id]-=this.timing.departureInterval/(this.level.sourcePort?botLoadout.speed(this,a.owner):1);
     for(let batch=0;batch<(this.timing.waveSize||1)&&wave;batch++){
     if(a.units<1){for(const w of this.waves)if(w.from===a.id)w.left=0;break;}
     const b=this.regions[wave.to],d=Math.max(1,distance(a,b)),nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
     const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;if(this.level.sourcePort&&wave.owner===1)this.stats.sent++;
-    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:this.timing.marchSpeed*(1+(this.rng.next()-.5)*this.timing.marchVariation)*(wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
+    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:this.timing.marchSpeed*(1+(this.rng.next()-.5)*this.timing.marchVariation)*(this.level.sourcePort?botLoadout.speed(this,wave.owner):wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
     wave=this.waves.find(w=>w.from===a.id&&w.left>0);
     }
    }
@@ -191,7 +194,7 @@ class Battle {
   this.waves=this.waves.filter(w=>w.left>0);
   for(const u of this.units){
    if(u.dead)continue;
-   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=u.owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1;
+   const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=(u.owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1)*botLoadout.movementFactor(this,u.owner);
    for(const zone of this.level.zones||[])if((zone.stage===undefined||zone.stage===this.stage)&&Math.hypot(u.x-zone.x,u.y-zone.y)<=zone.radius)factor*=zone.factor;
    const travel=u.speed*dt*factor*(u.owner===1&&this.speedBoost>0?(this.level.sourcePort?1+(this.sourceLeader?.Stat1||0):1.4):1);
    if(d<=travel+5){u.dead=true;this.arrive(u);}else{u.x+=dx/d*travel;u.y+=dy/d*travel;}
@@ -208,7 +211,7 @@ class Battle {
   }
   this.units=this.units.filter(u=>!u.dead);
   if(!this.tutorial||this.firstCommand&&this.time>13){
-   for(const owner of this.factions){const policy=root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null);if(this.level.sourcePort&&this.botProfiles[owner]&&policy.debut(this,owner))continue;this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){const profile=this.botProfiles[owner];this.aiTimers[owner]=profile?rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
+   for(const owner of this.factions){const policy=root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null),profile=this.botProfiles[owner];if(this.level.sourcePort&&profile){const wasDebut=profile.debut&&!profile.debut.aborted&&profile.debut.index<profile.debut.steps.length;if(policy.debut(this,owner))continue;if(wasDebut||profile.awaitingDebutEnd){this.aiTimers[owner]=rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next());profile.awaitingDebutEnd=false;}}this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){this.aiTimers[owner]=profile?rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
   }
   for(const order of this.pendingAI){order.delay-=dt;if(order.delay<=0)this.command(order.sources,order.target,order.fraction,order.owner);}this.pendingAI=this.pendingAI.filter(x=>x.delay>0);
   const current=this.stageRegions(),owners=new Set(current.map(r=>r.owner).filter(Boolean));
@@ -225,7 +228,7 @@ class Battle {
   nextStage(){
    this.stage++;this.stageTransition=.85;this.units=[];this.waves=[];this.departureClocks={};this.firstCommand=true;
    for(const r of this.regions){r.pulse=0;r.active=(r.stage||0)===this.stage;r.hidden=false;if(r.active){const source=this.level.regions[r.id];r.owner=source.owner;r.units=source.units+(r.owner===1?(this.options.start||0):0);r.shieldPoints=source.shieldPoints||0;}}
-   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);this.pendingAI=[];this.configureBots();
+   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);this.pendingAI=[];this.configureBots();if(level.sourcePort)botLoadout.setup(this);
    this.emit('stage',{stage:this.stage,total:this.level.stages.length});
   }
   totals(){const a=Array(Math.max(4,...this.regions.map(r=>r.owner))+1).fill(0);for(const r of this.regions)if(r.active!==false)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}

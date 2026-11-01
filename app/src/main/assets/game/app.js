@@ -424,7 +424,7 @@ function speedupSkill(type){
  const target=battle;document.querySelector('[data-ad-placement="skill_speedup"]').onclick=async()=>{if(await globalThis.TerraAds?.reward('skill_speedup')){if(battle===target&&!target.result){if(type==='leader')target.leaderCooldown=0;else target.cooldowns[type]=0;save();closeModal();updateBattle();}}};
  $('speedup-skill').onclick=()=>{if(!eco.spend('tickets',1))return;if(type==='leader')battle.leaderCooldown=0;else battle.cooldowns[type]=0;save();closeModal();updateBattle();};
 }
-const bindIcon=(id,name)=>$(id).innerHTML=icon(name);
+const bindIcon=(id,name)=>$(id).innerHTML=id==='settings'?TerraIdentity.image('settings'):icon(name);
 bindIcon('settings','gear');bindIcon('coin-icon','coin');bindIcon('level-open','chevron');bindIcon('play-arrow','arrow');bindIcon('pause','pause');bindIcon('help','help');
 for(const [id,name] of [['gift','gift'],['leader','leader'],['nav-army','army'],['nav-world','world'],['nav-events','tasks'],['select-all','select'],['reinforce','plus'],['shield','shield']])$(id).querySelector('span').innerHTML=icon(name);
 $('settings').onclick=showSettings;$('level-open').onclick=showWorld;$('nav-world').onclick=showWorld;$('nav-army').onclick=()=>showArmy();$('quests').onclick=showTasks;$('gift').onclick=showGift;$('leader').onclick=showLeaders;

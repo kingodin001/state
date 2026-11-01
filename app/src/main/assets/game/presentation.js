@@ -1,7 +1,7 @@
 /* Visual effects never delay or mutate the underlying wallet transaction. */
 (function(g){'use strict';
 const $=id=>document.getElementById(id),values=new Map();let origin=null;
-const film='<svg class="video-glyph" viewBox="0 0 40 34" aria-hidden="true"><rect x="2" y="2" width="36" height="30" rx="3" fill="#e9f1ff" stroke="#6b7ea4" stroke-width="2"/><path d="M5 6h4v4H5zm0 9h4v4H5zm0 9h4v4H5zM31 6h4v4h-4zm0 9h4v4h-4zm0 9h4v4h-4z" fill="#8296bc"/><path d="m15 9 12 8-12 8z" fill="#95b8ed" stroke="#6b7ea4" stroke-width="1.5"/></svg>';
+const film='<svg class="video-glyph" viewBox="0 0 40 34" aria-hidden="true"><path d="M5 5h30v24H5l4-6-4-6 4-6Z" fill="#f5fbff" stroke="#203c57" stroke-width="2"/><path d="m17 10 12 7-12 7Z" fill="#ff826a" stroke="#203c57" stroke-width="1.5"/></svg>';
 function decorate(root=document){root.querySelectorAll('[data-ad-placement]').forEach(b=>{const selected=b.closest('.bonus-selected'),only=b.dataset.adPlacement==='battle_bonus';b.setAttribute('aria-label',selected?'Усиление выбрано':'Получить за просмотр видео');const label=({idle_double:'БЕСПЛАТНО ×2',idle_instant:'МГНОВЕННЫЙ ДОХОД',daily_refresh:'ОБНОВИТЬ',skill_speedup:'УСКОРИТЬ'})[b.dataset.adPlacement]||'БЕСПЛАТНО';const html=selected?'<span class="reward-selected">✓</span>':film+(only?'':'<span>'+label+'</span>');if(b.innerHTML!==html)b.innerHTML=html;b.classList.add('video-button');});}
 function particle(kind,from,to,index){const app=$('app'),base=app.getBoundingClientRect(),el=document.createElement('span');el.className='resource-icon resource-'+kind+' wallet-particle';app.append(el);const x=from.x-base.x,y=from.y-base.y,dx=to.x-from.x,dy=to.y-from.y;el.style.left=x+'px';el.style.top=y+'px';el.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:0},{transform:'translate('+(-12+index*5)+'px,-25px) scale(1)',opacity:1,offset:.22},{transform:'translate('+dx+'px,'+dy+'px) scale(.6)',opacity:0}],{duration:650,index,delay:index*40,easing:'cubic-bezier(.2,.6,.4,1)'}).finished.finally(()=>el.remove());}
 function wallet(kind,target){const el=$(kind);if(!el)return;target=Math.floor(target||0);let v=values.get(kind);if(!v){values.set(kind,{target,display:target,run:0});el.textContent=target.toLocaleString('ru-RU');return;}if(v.target===target)return;const delta=target-v.target,start=v.display,run=++v.run;v.target=target;const t=performance.now();
@@ -29,5 +29,5 @@ $('hub-screen').style.top=(headerY+72*u)+'px';$('hub-screen').style.bottom=h-nav
  }
  decorate();
 }
-g.TerraLayout.apply=layout;window.addEventListener('resize',layout);document.documentElement.style.setProperty('--source-coins','url("art/currency-dollar.svg")');g.TerraPresentation={wallet,decorate,layout,film};
+g.TerraLayout.apply=layout;window.addEventListener('resize',layout);for(const k of ['coins','gems','supply','tickets','stars'])document.documentElement.style.setProperty('--source-'+k,'url("'+TerraIdentity.file(k)+'")');document.getElementById('settings').innerHTML=TerraIdentity.image('settings');g.TerraPresentation={wallet,decorate,layout,film};
 })(globalThis);

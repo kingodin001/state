@@ -1,0 +1,846 @@
+{
+  "sourceSha256": "e1ebe8dd23b9219b8e6ae9d646a361c049f6034492bbeda9ebb86ebdeb6edfd4",
+  "scope": "Native gain curves only; no gameplay decisions",
+  "cases": [
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 1,
+      "expected": 10.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 19,
+      "expected": 28.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 50,
+      "expected": 59.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 100,
+      "expected": 109.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 159,
+      "expected": 168.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 160,
+      "expected": 169.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 200,
+      "expected": 209.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 500,
+      "expected": 509.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 629,
+      "expected": 638.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 11,
+      "level": 1000,
+      "expected": 1009.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 19,
+      "expected": 1.899999976158142
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 50,
+      "expected": 3.450000047683716
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 100,
+      "expected": 5.949999809265137
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 159,
+      "expected": 8.899999618530273
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 160,
+      "expected": 8.949999809265137
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 200,
+      "expected": 10.949999809265137
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 500,
+      "expected": 25.950021743774414
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 629,
+      "expected": 32.400028228759766
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 12,
+      "level": 1000,
+      "expected": 50.949745178222656
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 1,
+      "expected": 50.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 19,
+      "expected": 68.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 50,
+      "expected": 99.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 100,
+      "expected": 149.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 159,
+      "expected": 208.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 160,
+      "expected": 209.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 200,
+      "expected": 249.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 500,
+      "expected": 549.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 629,
+      "expected": 678.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 10,
+      "level": 1000,
+      "expected": 1049.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 1,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 19,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 50,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 100,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 159,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 160,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 200,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 500,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 629,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 14,
+      "level": 1000,
+      "expected": 3.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 1,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 19,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 50,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 100,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 159,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 160,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 200,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 500,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 629,
+      "expected": 0.0
+    },
+    {
+      "kind": "playerUpgrades",
+      "type": 15,
+      "level": 1000,
+      "expected": 0.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 19,
+      "expected": 41.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 50,
+      "expected": 90.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 100,
+      "expected": 145.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 159,
+      "expected": 196.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 160,
+      "expected": 197.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 200,
+      "expected": 257.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 500,
+      "expected": 707.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 629,
+      "expected": 901.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 10,
+      "level": 1000,
+      "expected": 1457.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 19,
+      "expected": 41.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 50,
+      "expected": 90.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 100,
+      "expected": 145.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 159,
+      "expected": 196.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 160,
+      "expected": 197.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 200,
+      "expected": 257.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 500,
+      "expected": 707.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 629,
+      "expected": 901.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 11,
+      "level": 1000,
+      "expected": 1457.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 19,
+      "expected": 41.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 50,
+      "expected": 90.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 100,
+      "expected": 145.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 159,
+      "expected": 196.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 160,
+      "expected": 197.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 200,
+      "expected": 257.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 500,
+      "expected": 707.5
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 629,
+      "expected": 901.0
+    },
+    {
+      "kind": "botUpgrades",
+      "type": 12,
+      "level": 1000,
+      "expected": 1457.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 19,
+      "expected": 1.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 50,
+      "expected": 1.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 100,
+      "expected": 16.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 159,
+      "expected": 36.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 160,
+      "expected": 37.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 200,
+      "expected": 97.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 500,
+      "expected": 547.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 629,
+      "expected": 741.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 10,
+      "level": 1000,
+      "expected": 1297.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 19,
+      "expected": 16.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 50,
+      "expected": 36.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 100,
+      "expected": 56.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 159,
+      "expected": 76.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 160,
+      "expected": 77.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 200,
+      "expected": 137.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 500,
+      "expected": 587.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 629,
+      "expected": 781.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 11,
+      "level": 1000,
+      "expected": 1337.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 19,
+      "expected": 16.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 50,
+      "expected": 36.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 100,
+      "expected": 58.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 159,
+      "expected": 78.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 160,
+      "expected": 79.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 200,
+      "expected": 139.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 500,
+      "expected": 589.5
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 629,
+      "expected": 783.0
+    },
+    {
+      "kind": "neutralUpgrades",
+      "type": 12,
+      "level": 1000,
+      "expected": 1339.5
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 19,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 50,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 100,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 159,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 160,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 200,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 500,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 629,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 0,
+      "level": 1000,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 19,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 50,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 100,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 159,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 160,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 200,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 500,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 629,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 1,
+      "level": 1000,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 1,
+      "expected": 1.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 19,
+      "expected": 2.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 50,
+      "expected": 11.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 100,
+      "expected": 14.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 159,
+      "expected": 17.0
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 160,
+      "expected": 41.503658294677734
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 200,
+      "expected": 42.7229118347168
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 500,
+      "expected": 47.8426513671875
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 629,
+      "expected": 49.14375305175781
+    },
+    {
+      "kind": "skin",
+      "type": 4,
+      "level": 1000,
+      "expected": 51.78526306152344
+    }
+  ]
+}
