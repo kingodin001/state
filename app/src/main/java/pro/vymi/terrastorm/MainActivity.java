@@ -50,7 +50,14 @@ public final class MainActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView view,String url) { if(ENTRY.equals(url)&&ads!=null)ads.initialize(); }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return !request.getUrl().toString().startsWith("file:///android_asset/game/");
+                android.net.Uri uri=request.getUrl();
+                if(uri.toString().startsWith("file:///android_asset/game/"))return false;
+                if(request.isForMainFrame()&&request.hasGesture()&&"https".equals(uri.getScheme())&&
+                    ("yandex.ru".equals(uri.getHost())||"games-api.vymi.pro".equals(uri.getHost()))) {
+                    try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,uri));}
+                    catch(android.content.ActivityNotFoundException unavailable){ }
+                }
+                return true;
             }
         });
         webView.addJavascriptInterface(new DeviceBridge(), "Android");

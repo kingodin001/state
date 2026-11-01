@@ -103,7 +103,7 @@ function showMenu(){
  try{window.Android?.bannerVisible?.(true);}catch(_){}
  countdownActive=false;countdownRun++;$('countdown').hidden=true;mode='menu';$('meta-shortcuts').hidden=false;$('selection-info').hidden=true;$('fraction-panel').hidden=true;$('app').dataset.mode='menu';battle=null;selected.clear();casting=null;particles=[];shotLines=[];hoverTarget=null;drag=null;orderPulses=[];
  $('header').hidden=false;$('menu-top').hidden=false;$('menu-bottom').hidden=false;$('side-menu').hidden=false;$('map-caption').hidden=false;
- $('battle-top').hidden=true;$('battle-bottom').hidden=true;$('hint').hidden=true;closeModal(false);if(hub)hub.home();prepareMap();updateMenu();
+ $('battle-top').hidden=true;$('battle-bottom').hidden=true;$('hint').hidden=true;closeModal(false);if(hub)hub.home();prepareMap();updateMenu();TerraLayout.apply();
 }
 function updateMenu(){
  document.querySelectorAll('[data-feature]').forEach(el=>{const kind=el.dataset.feature,level=TerraSourceRules.featureLevel(kind);if(level){el.disabled=!TerraSourceRules.featureAvailable(kind,data);el.title=el.disabled?'С уровня '+level:'';}});
@@ -401,7 +401,7 @@ async function afterResultAd(target,action){if(target.resultTransition)return;ta
 document.addEventListener('click',async ev=>{
  const button=ev.target.closest('[data-ad-placement]');if(!button||button.disabled)return;
  const placement=button.dataset.adPlacement,value=button.dataset.adValue;
- if(['battle_bonus','skill_speedup'].includes(placement))return;
+ if(['battle_bonus','skill_speedup','idle_instant'].includes(placement))return;
  const target=battle;
  if(!await globalThis.TerraAds?.reward(placement))return;
  if(placement==='result_x3'){
@@ -443,7 +443,7 @@ function resumeApp(){if(awaySince){const elapsed=Math.min(8*3600,Math.max(0,(Dat
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>document.hidden?pauseApp():resumeApp());
 if(document.fonts)document.fonts.ready.then(resize);
 document.addEventListener('terraPause',pauseApp);document.addEventListener('terraResume',resumeApp);
-window.terraBack=()=>{if(globalThis.TerraAds?.isBusy())return true;if(!$('modal').hidden&&modalType!=='result'){closeModal();return true;}if(mode==='battle'){showPause();return true;}if(modalType==='result'){showMenu();return true;}if(hub&&hub.back())return true;openModal('exit',head('Выйти из игры?')+'<p class="detail-description">Твой прогресс сохранён. Вернуться к завоеваниям можно в любой момент.</p><button id="exit-confirm" class="primary modal-primary">ВЫЙТИ</button><button id="exit-cancel" class="secondary">ОСТАТЬСЯ</button>');$('exit-confirm').onclick=()=>{save();if(window.Android&&Android.exitGame)Android.exitGame();else closeModal();};$('exit-cancel').onclick=()=>closeModal();return true;};
+window.terraBack=()=>{if(globalThis.TerraAds?.isBusy())return true;if(!$('modal').hidden&&modalType!=='result'){closeModal();return true;}if(modalType==='result'){if(battle)afterResultAd(battle,showMenu);else showMenu();return true;}if(mode==='battle'){showPause();return true;}if(hub&&hub.back())return true;openModal('exit',head('Выйти из игры?')+'<p class="detail-description">Твой прогресс сохранён. Вернуться к завоеваниям можно в любой момент.</p><button id="exit-confirm" class="primary modal-primary">ВЫЙТИ</button><button id="exit-cancel" class="secondary">ОСТАТЬСЯ</button>');$('exit-confirm').onclick=()=>{save();if(window.Android&&Android.exitGame)Android.exitGame();else closeModal();};$('exit-cancel').onclick=()=>closeModal();return true;};
 window.addEventListener('pagehide',save);setInterval(()=>{if(mode==='menu')save();},30000);
 // Read-only diagnostic snapshot, useful for regression tests and support.
 window.terraSnapshot=()=>({mode,battleMode,totalLevels:levels.length,camera:{...view,zoom,overview},selection:{sources:[...selected],target:hoverTarget,dragging:!!drag},screen:hub?hub.tab:'play',level:currentLevel,battle:battle?{source:battle.level.source,sourceLevelId:battle.level.sourceLevelId,stage:battle.stage,stageCount:battle.level.stages?.length||1,stageTransition:battle.stageTransition,fog:!!battle.level.fog,zones:battle.level.zones||[],timeLimit:battle.level.timeLimit||null,time:battle.time,result:battle.result,paused:battle.paused,stats:{...battle.stats},regions:battle.regions.map(r=>({id:r.id,active:r.active,stage:r.stage||0,kind:r.kind,owner:r.owner,units:r.units,available:battle.available(r.id),reserved:battle.reserved(r.id),screenX:r.x*view.s+view.x,screenY:r.y*view.s+view.y,visible:battle.visible(1,r.id)})),waves:battle.waves.map(w=>({...w})),troops:battle.units.map(u=>({id:u.id,owner:u.owner,x:u.x,y:u.y,speed:u.speed,from:u.from,to:u.to})),units:battle.units.length,skillCharges:{...battle.skillCharges},leaderCharges:battle.leaderCharges,leaderCooldown:battle.leaderCooldown,leaderType:battle.leaderType}:null,progress:JSON.parse(JSON.stringify(data))});

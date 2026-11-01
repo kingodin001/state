@@ -23,6 +23,6 @@ Reference evidence: State.io 4.4.2 serialized MenuView (265 nodes), UINavigation
 | Menu banner | User's explicit release requirement | Banner visibility bridge unused | Visible in menu, hidden in battle; separate Android view, no overlay on controls |
 | Remote IDs | User's explicit release requirement | Bundled IDs required rebuild | HTTPS JSON, app/schema/ID validation, last-good cache, session-safe reconfiguration |
 
-Main-menu layout checks cover 360×640, 390×844 and 600×800. Narrow-height right grids shrink to avoid covering operations/quests. Six source-style navigation items remain available with their existing behaviors.
+Main-menu layout checks cover 360×640, 390×844 and 600×800. Narrow-height right grids shrink or use a compact row on short tablets to avoid covering operations/quests. Additional banner-reduced heights360×590,390×794,600×710 are checked. Six source-style navigation items remain available with their existing behaviors.
 
 Still not identical: complete dynamic commercial offers/payment flows, the onboarding color-picker state, exact passive-income currency rates/claim presentation, native wheel prize/pacing rules, native quest collection rewards, source operation objective/modifier system and full online leaderboards. These are existing gameplay gaps surfaced by this comparison; the release does not claim they were copied or verified. Prior native AI/ability/animation limitations remain in COMPACT_PORT_0.13.md. They must not be described as complete parity or advertised as available online functionality.

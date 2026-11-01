@@ -3,11 +3,14 @@
 const source=g.TerraSourceMenu,$=id=>document.getElementById(id);
 function image(id){return '<img class="source-art" src="'+g.TerraAssets.sprites[id].file+'" alt="" draggable="false">';}
 function layout(w,h){
- const u=w/1080,grid=source.rightGrid,host=$('meta-shortcuts'),top=host.getBoundingClientRect().top,limit=$('quests').getBoundingClientRect().top-12*u,ideal=grid.order.length*grid.height+(grid.order.length-1)*grid.spacing,fit=Math.min(1,Math.max(.35,(limit-top)/(ideal*u)));const cell=grid.height*u*fit,gap=grid.spacing*u*fit;
- host.style.setProperty('--menu-cell',cell+'px');host.style.setProperty('--menu-gap',gap+'px');
+ const grid=source.rightGrid,host=$('meta-shortcuts');if(host.hidden||$('side-menu').hidden)return;
+ const u=w/1080,top=host.getBoundingClientRect().top,limit=$('quests').getBoundingClientRect().top-12*u,ideal=grid.order.length*grid.height+(grid.order.length-1)*grid.spacing,fit=Math.min(1,Math.max(.1,(limit-top)/(ideal*u)));
+ let cell=grid.height*u*fit,gap=grid.spacing*u*fit,bw=grid.width*u,row=fit<.55,hw=host.getBoundingClientRect().width;
+ if(row){const headerBottom=Math.max(...['settings','wallet-coins','wallet-gems','wallet-supply','wallet-tickets'].map(id=>$(id).getBoundingClientRect().bottom)),rowTop=Math.max(top,headerBottom+12*u);cell=Math.max(24,Math.min(grid.height*u,limit-rowTop));hw=w-100*u;gap=(hw-3*bw)/2;Object.assign(host.style,{left:50*u+'px',top:rowTop+'px',width:hw+'px',height:cell+'px'});}
  for(const [index,kind]of grid.order.entries()){
   const button=host.querySelector('[data-feature="'+kind+'"]');
-  button.style.width=grid.width*u+'px';button.style.height=cell+'px';button.style.top=index*(cell+gap)+'px';
+  Object.assign(button.style,{width:bw+'px',height:cell+'px',left:(row?index*(bw+gap):(hw-bw)/2)+'px',top:(row?0:index*(cell+gap))+'px',gap:Math.min(6*u,cell*.04)+'px'});
+  button.querySelector('span').style.height=Math.max(16,cell-34*u)+'px';button.querySelector('small').style.fontSize=Math.min(24*u,cell*.24)+'px';
  }
  const play=$('play').getBoundingClientRect(),app=$('app').getBoundingClientRect();
  Object.assign($('source-difficulty').style,{left:play.left-app.left+'px',top:play.top-app.top-24*u+'px',width:play.width+'px'});

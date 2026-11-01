@@ -1,0 +1,41 @@
+{
+  "version": "0.14.0",
+  "versionCode": 15,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 24859189,
+  "sha256": "5006cc2535d6d0b5403a511cd7ddc44957ae321487cf2651775b64e3c288cba6",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1280,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "dexFiles": 1,
+  "adsProvider": "yandex",
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false,
+  "buildType": "Gradle release; R8 and resource shrinking",
+  "nodeTestsPassed": 107,
+  "nativeUnitTestsPassed": 4,
+  "remoteConfigUrl": "https://games-api.vymi.pro/state/ads.json",
+  "remoteConfigDeployed": false,
+  "ruStoreSubmitted": false,
+  "storeTitle": "Стейт Шторм: Захват территорий",
+  "launcherIconSize": [
+    512,
+    512
+  ],
+  "browserSuites": [
+    "source-menu-ui:6 viewports including banner heights",
+    "ad-policy-ui:levels 1,4,5,6,7,9 including hardware back",
+    "ads-ui",
+    "instant-income-ui",
+    "source-ui:3 viewports",
+    "source-release-ui",
+    "source-parity-ui:3 viewports"
+  ],
+  "sourceLevelHash": "2e5fbf9cd7985854bf8c81c1ccdbca3880f32ce97348492c8e37ab3cfcb1d067",
+  "sourceConfigHash": "d87da8d65f5d85cfd9df2ea22ce92ff3a491f7fb3ce6feb0acab38e545e82dee",
+  "libraryFileId": "libfile_61b1978430b08191b5dba6b64a49327e",
+  "fileId": "file_00000000dc8c81f584363b5e23267f53",
+  "publishPackLibraryFileId": "libfile_7dc478a8fbb88191bf6945eb3529a031"
+}
