@@ -4,6 +4,7 @@
 const field=root.TerraField||(typeof require!=='undefined'?require('./field.js'):null),timing=field.TIMING;
 class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math.imul(this.state,1664525)+1013904223)>>>0;return this.state/4294967296;} }
 const rules=root.TerraSourceRules||(typeof require!=='undefined'?require('./source-rules.js'):null);
+const sourceAI=root.TerraSourceAI||(typeof require!=='undefined'?require('./source-ai.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
@@ -92,6 +93,7 @@ class Battle {
   return (rate*(1+base)+sum)*multiplier;
  }
  ai(owner){
+  if(this.level.sourcePort&&this.botProfiles[owner]){const decision=sourceAI.choose(this,owner),c=decision?.command;this.lastAIDecision=decision;if(c&&c.target!==null)this.aiOrder(owner,c.sources,c.target,c.partial?.5:1);return;}
   const profile=this.botProfiles[owner],preset=profile?.preset,settings=preset?._baseCalculationSettings;if(settings?._maxBuildingsMove===0)return;
   const own=this.regions.filter(r=>r.active!==false&&r.owner===owner);if(!own.length)return;
   const enemies=this.regions.filter(r=>r.active!==false&&r.owner!==owner);if(!enemies.length)return;
@@ -133,7 +135,9 @@ class Battle {
  }
  step(dt){
   if(this.result||this.paused)return;
-  // Fixed substeps keep collisions and production independent of rendering rate.
+  // Carry the remainder between frames: 60/120 Hz must not change AI RNG,
+  // collisions or the result of a command replay relative to 40 Hz.
+  if(this.level.sourcePort){this.fixedRemainder=(this.fixedRemainder||0)+Math.min(Math.max(dt,0),.5);while(this.fixedRemainder+1e-9>=1/40){this.fixedRemainder-=1/40;this.tick(1/40);if(this.result){this.fixedRemainder=0;break;}}return;}
   let left=Math.min(Math.max(dt,0),.5);while(left>1e-7){const d=Math.min(left,1/40);this.tick(d);left-=d;if(this.result)break;}
  }
  tick(dt){
