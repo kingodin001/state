@@ -9,8 +9,8 @@ Yandex Mobile Ads SDK 8.6.0 встроен в Android-хост. Production ID п
 | rewarded_result | С вознаграждением | Монеты ×3 |
 | rewarded_upgrade | С вознаграждением | Улучшение |
 | rewarded_color | С вознаграждением | Расцветка |
-| rewarded_bonus | С вознаграждением | Усиление, доход, подарки, предложения, способность |
+| rewarded_bonus | С вознаграждением | Усиление, доход, подарки, предложения, способность, колесо |
 
 Достаточно трёх блоков: один rewarded ID можно вписать во все четыре rewarded_* поля. Позже их можно разделить. Сервер передаёт только публичные ID и enabled, не исполняемый код. Награда — после SDK onRewarded и закрытия рекламы; раннее закрытие, ошибка и отсутствие сети/ID ничего не начисляют. Видео ×3 подавляет межстраничную рекламу для того же результата. Поражения, дополнительные режимы и активный бой не включают межстраничную рекламу.
 
-Автопроверки: tests/ads.cjs, tests/ads-ui.cjs, tests/ad-policy.cjs, tests/ad-policy-ui.cjs, tests/instant-income-ui.cjs. Реальные показы отдельно проверяются на Android после настройки РСЯ.
+Автопроверки: tests/ads.cjs, tests/ads-ui.cjs, tests/ad-policy.cjs, tests/ad-policy-ui.cjs, tests/instant-income-ui.cjs, tests/source-wheel-ui.cjs. Реальные показы отдельно проверяются на Android после настройки РСЯ.

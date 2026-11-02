@@ -19,3 +19,6 @@ __pycache__/
 app/src/main/assets/game/reference/images/
 
 dist/*.bin
+
+# Generated packages, extracted assets and release previews
+dist/

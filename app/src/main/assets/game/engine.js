@@ -177,8 +177,8 @@ class Battle {
     }else if(r.owner){r.shot-=dt;if(r.shot<=0){const target=this.units.find(u=>u.owner!==r.owner&&!u.dead&&distance(u,r)<135);if(target){target.dead=true;r.shot=.65;this.emit('shot',{x:r.x,y:r.y,tx:target.x,ty:target.y,owner:r.owner});}}}
    }
   }
-  // Reserved troops stay in the garrison, defend it, and leave one at a time.
-  // A single departure clock per base prevents repeated orders multiplying its throughput.
+  // Unlaunched reserved fighters still defend the source. Source coroutines
+  // release five-fighter bursts; replacement orders start their own first burst.
   this.waves=this.waves.filter(w=>w.left>0&&this.regions[w.from].owner===w.owner);
   for(const a of this.regions){
    let wave=this.waves.find(w=>w.from===a.id&&w.left>0);

@@ -1,0 +1,103 @@
+{
+  "version": "0.18.0",
+  "versionCode": 19,
+  "date": "2026-11-02T08:50:50.765961+00:00",
+  "nodeTests": {
+    "total": 142,
+    "passed": 142,
+    "failed": 0
+  },
+  "uiSuites": [
+    {
+      "suite": "source-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "source-wheel-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "identity-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "source-menu-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "source-parity-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "source-polish-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "source-release-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "ads-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "ad-policy-ui",
+      "exitCode": 0
+    },
+    {
+      "suite": "instant-income-ui",
+      "exitCode": 0
+    }
+  ],
+  "afterFighterRenderingChange": {
+    "source-ui": "pass, 3 viewports and 8 rapid reloads per viewport",
+    "source-parity-ui": "pass, 3 viewports",
+    "finalApkAssets": "source-release-ui pass",
+    "screenshots": "6 captures, 720x1280, no script/asset failures"
+  },
+  "nativeMovement": {
+    "paths": 60,
+    "steps": 18,
+    "tolerance": 1e-05,
+    "fixture": "tests/fixtures/native-movement.json"
+  },
+  "originalBuildingPathSettings": 2213,
+  "originalLayoutsIncludingPvp": 57,
+  "fighterSpriteWorldSizes": 31,
+  "level11": {
+    "commands": 45,
+    "winTimeSeconds": 137.425,
+    "fps": [
+      20,
+      40,
+      60,
+      120
+    ],
+    "ads": false,
+    "hero": false,
+    "editedMap": false,
+    "forcedWin": false
+  },
+  "originalLevelFilesUnchanged": true,
+  "apk": {
+    "version": "0.18.0",
+    "versionCode": 19,
+    "package": "pro.vymi.terrastorm",
+    "sizeBytes": 25863651,
+    "sha256": "851f1d736a4d473a5b24ffe50cb35c35ab19016f6cae6e997bf81c6747b769a9",
+    "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+    "gameFilesMatched": 1286,
+    "zipCrc": "pass",
+    "signatureV2V3": "pass",
+    "nativeLibraries": 0,
+    "dexFiles": 1,
+    "adsProvider": "yandex",
+    "productionAdIdsConfigured": false,
+    "physicalAndroidTested": false
+  },
+  "physicalAndroidTested": false,
+  "everyNativeAiDecisionReproduced": false,
+  "productionAdIdsConfigured": false,
+  "regRuUploaded": false,
+  "ruStoreSubmitted": false
+}

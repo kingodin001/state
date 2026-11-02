@@ -1,0 +1,20 @@
+{
+  "version": "0.18.0",
+  "branch": "work/gameplay-control-018",
+  "artifacts": [
+    {
+      "name": "StateStorm-0.18.0.apk",
+      "sizeBytes": 25863651,
+      "sha256": "851f1d736a4d473a5b24ffe50cb35c35ab19016f6cae6e997bf81c6747b769a9",
+      "libraryFileId": "libfile_372e1a9f86f08191bd0f6df10409f117",
+      "fileId": "file_00000000f9fc81f59b1a4698993ad5c3"
+    },
+    {
+      "name": "StateStorm-0.18.0-Publish-Pack.zip",
+      "sizeBytes": 27310789,
+      "sha256": "c931a762686d787dc6fb049bf41c46d39281a0e4d11f3af3c9750585da70426a",
+      "libraryFileId": "libfile_7689fb718f388191b48591b0ae2b72c1",
+      "fileId": "file_00000000636481f58fc88e3969847448"
+    }
+  ]
+}

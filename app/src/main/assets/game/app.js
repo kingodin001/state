@@ -34,10 +34,13 @@ const palette=['#969696','#438df5','#ed5e65','#a75fdf','#efbe39'];
 const fills=['#d6e3f8','#6fa9fa','#f58f94','#bd8feb','#f5d167'];
 let data;
 function defaults(){return {version:1,coins:0,unlocked:0,completed:[],stars:{},level:0,upgrades:[0,0,0],color:0,base:0,fighter:0,leader:0,owned:{color:[0],base:[0],fighter:[0]},sound:true,vibration:true,wins:0,captures:0,sent:0,commands:0,daily:0,streak:0,claimed:[],lastSeen:Date.now(),seenHelp:false};}
-try{data={...defaults(),...JSON.parse(localStorage.getItem('terra-storm-v1')||'{}')};}catch(e){data=defaults();}
+const saveStores=[];for(const name of ['localStorage','sessionStorage']){try{saveStores.push(window[name]);}catch(_){}}
+data={...defaults(),...TerraSaveStore.load(saveStores)};
 TerraCampaign.normalize(data);const eco=new TerraCollection.Economy(data),meta=new TerraMeta.Meta(eco);let hub=null,features=null,operationMode=false,battleMode='campaign';
 data.version=3;
-function save(){try{data.lastSeen=Date.now();localStorage.setItem('terra-storm-v1',JSON.stringify(data));}catch(e){}}
+function save(){data.lastSeen=Date.now();TerraSaveStore.save(data,saveStores);}
+// Repair an older disk copy immediately after restoring the newer checkpoint.
+TerraSaveStore.save(data,saveStores);
 const offline=Math.min(8*3600,Math.max(0,(Date.now()-data.lastSeen)/1000));
 const offlineReward=!eco.source&&offline>180?Math.floor(offline*(100+data.upgrades[2]*75)/3600):0;
 if(offlineReward){data.coins+=offlineReward;meta.m.lastOfflineReward=offlineReward;save();}
@@ -299,8 +302,8 @@ function commandArrow(a,b,alpha=1){
  ctx.save();ctx.translate(a.x,a.y);ctx.rotate(Math.atan2(dy,dx));ctx.globalAlpha=alpha;ctx.fillStyle=color(1);ctx.strokeStyle='#ffffffdb';ctx.lineWidth=1.4/view.s;ctx.lineJoin='round';
  ctx.beginPath();ctx.moveTo(inset,-half);ctx.lineTo(length-head,-half);ctx.lineTo(length-head,-wing);ctx.lineTo(length,0);ctx.lineTo(length-head,wing);ctx.lineTo(length-head,half);ctx.lineTo(inset,half);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
 }
-function drawDot(x,y,r,owner,shape){
- if(owner&&artImage.complete&&artImage.naturalWidth){const it=owner===1?eco.item(eco.c.equipped.fighter):TerraCollection.CATALOG.find(x=>x.nativeId===battle?.botProfiles[owner]?.skins.fighter)||{art:8,hue:0};const size=Math.min(14,10.5*Math.sqrt(zoom))/view.s;if(paintSprite(it.art,x-size*.5,y-size*.65,size,size,it.hue,color(owner)))return;}
+function drawDot(x,y,r,owner,shape,unit=null){
+ if(owner&&artImage.complete&&artImage.naturalWidth){const it=owner===1?eco.item(eco.c.equipped.fighter):TerraCollection.CATALOG.find(x=>x.nativeId===battle?.botProfiles[owner]?.skins.fighter)||{art:8,hue:0};const source=battle?.level.sourcePort&&unit?.path,size=source?TerraSourceMovement.visualSize(battle.level,battle.regions[unit.from],it.nativeId):Math.min(14,10.5*Math.sqrt(zoom))/view.s;if(source){const p=unit.path[Math.min(unit.pathIndex,unit.path.length-1)];ctx.save();ctx.translate(x,y);ctx.rotate(Math.atan2(p.y-unit.y,p.x-unit.x)+Math.PI/2);const drawn=paintSprite(it.art,-size*.5,-size*.5,size,size,it.hue,color(owner));ctx.restore();if(drawn)return;}else if(paintSprite(it.art,x-size*.5,y-size*.65,size,size,it.hue,color(owner)))return;}
  ctx.fillStyle=color(owner);if(!shape){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();return;}
  if(shape===1){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x-r,y-r);ctx.lineTo(x-r*.5,y);ctx.lineTo(x-r,y+r);ctx.closePath();ctx.fill();}
  else if(shape===2){ctx.beginPath();ctx.ellipse(x,y,r*1.6,r*.65,-.6,0,6.3);ctx.fill();}
@@ -350,7 +353,7 @@ function render(now){
  }
  if(battle){
   for(const line of shotLines){ctx.strokeStyle=color(line.owner);ctx.lineWidth=2/view.s;ctx.globalAlpha=Math.min(1,line.life*7);ctx.beginPath();ctx.moveTo(line.x,line.y);ctx.lineTo(line.tx,line.ty);ctx.stroke();line.life-=dt;}shotLines=shotLines.filter(l=>l.life>0);ctx.globalAlpha=1;
-  for(const u of battle.units)drawDot(u.x,u.y+(battle.level.sourcePort?0:Math.sin(now*.013+u.id)*1.2/view.s),Math.max(3,2.1/view.s),u.owner,u.owner===1?data.fighter:0);
+  for(const u of battle.units)drawDot(u.x,u.y+(battle.level.sourcePort?0:Math.sin(now*.013+u.id)*1.2/view.s),Math.max(3,2.1/view.s),u.owner,u.owner===1?data.fighter:0,u);
  }
  if(selected.size&&mode==='battle'){
   for(const id of selected){const r=regions[id];if(r.owner!==1)continue;ctx.strokeStyle='#fff';ctx.lineWidth=3/view.s;ctx.beginPath();ctx.arc(r.x,r.y,23/view.s,0,Math.PI*2);ctx.stroke();ctx.strokeStyle=color(1);ctx.lineWidth=1.6/view.s;ctx.beginPath();ctx.arc(r.x,r.y,27/view.s,0,Math.PI*2);ctx.stroke();
