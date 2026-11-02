@@ -6,10 +6,12 @@ class Random { constructor(seed=1){this.state=seed>>>0;} next(){this.state=(Math
 const rules=root.TerraSourceRules||(typeof require!=='undefined'?require('./source-rules.js'):null);
 const botLoadout=root.TerraBotLoadout||(typeof require!=='undefined'?require('./bot-loadout.js'):null);
 const sourceAI=root.TerraSourceAI||(typeof require!=='undefined'?require('./source-ai.js'):null);
+const sourceMath=root.TerraSourceMath||(typeof require!=='undefined'?require('./source-math.js'):null);
+const sourceMovement=root.TerraSourceMovement||(typeof require!=='undefined'?require('./source-movement.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
-  this.timing=level.sourcePort?field.SOURCE_TIMING:timing;this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.sourceLeader=options.sourceLeader;this.leaderCharges=level.sourcePort?(options.sourceLeader?Infinity:0):2;this.leaderCooldown=level.sourcePort&&options.sourceLeader?(options.sourceLeader.Cooldown||0)*(1-(options.sourceLeader.Preload||0)):0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
+  this.timing=level.sourcePort?{...field.SOURCE_TIMING,marchSpeed:sourceMath.upgrade(14)*(level.unit||40)}:timing;this.level=level;this.options={...options};this.stage=0;this.stageTransition=0;this.tutorialStep=0;this.enemyLimit=level.enemyCap||level.cap;this.playerLimit=options.limit||level.cap;this.playerSpeed=options.speed||1;this.leaderType=options.leader||0;this.sourceLeader=options.sourceLeader;this.leaderCharges=level.sourcePort?(options.sourceLeader?Infinity:0):2;this.leaderCooldown=level.sourcePort&&options.sourceLeader?(options.sourceLeader.Cooldown||0)*(1-(options.sourceLeader.Preload||0)):0;this.productionBoost=0;this.rng=new Random(options.seed||level.seed*7919);this.time=0;this.result=null;this.paused=false;
   this.regions=level.regions.map(r=>({...r,x:r.center[0],y:r.center[1],units:r.units+(r.owner===1?(options.start||0):0),pulse:0,shield:0,shot:0,frozen:0,poison:0,shieldPoints:r.shieldPoints||0,bonusClaimed:false,hidden:!!level.tutorial&&!options.skipTutorial&&(level.tutorialHidden||[]).includes(r.id),active:(r.stage||0)===0}));for(const r of this.regions)r.active=r.active&&!r.hidden;this.speedBoost=0;
   this.units=[];this.waves=[];this.events=[];this.cooldowns={reinforce:0,shield:0};this.skillCharges={reinforce:1,shield:1};
   this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.filter(r=>r.active).map(r=>r.owner))].filter(x=>x>1);
@@ -185,8 +187,8 @@ class Battle {
     for(let batch=0;batch<(this.timing.waveSize||1)&&wave;batch++){
     if(a.units<1){for(const w of this.waves)if(w.from===a.id)w.left=0;break;}
     const b=this.regions[wave.to],d=Math.max(1,distance(a,b)),nx=-(b.y-a.y)/d,ny=(b.x-a.x)/d;
-    const offset=Math.sin(wave.sequence*2.399963)*18,pos=field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;if(this.level.sourcePort&&wave.owner===1)this.stats.sent++;
-    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:b.x+nx*offset*.35,ty:b.y+ny*offset*.35,speed:this.timing.marchSpeed*(1+(this.rng.next()-.5)*this.timing.marchVariation)*(this.level.sourcePort?botLoadout.speed(this,wave.owner):wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
+    const offset=Math.sin(wave.sequence*2.399963)*18,path=this.level.sourcePort?sourceMovement.nodes(this.level,a,b,sourceMovement.lane(batch,Math.min(this.timing.waveSize,wave.left+batch))):null,pos=path?path[0]:field.slot(a,Math.max(0,Math.floor(a.units)-1));wave.sequence++;a.units-=1;if(this.level.sourcePort&&wave.owner===1)this.stats.sent++;
+    this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,x:pos.x,y:pos.y,tx:path?b.x:b.x+nx*offset*.35,ty:path?b.y:b.y+ny*offset*.35,path,pathIndex:path?1:0,speed:this.timing.marchSpeed*(this.timing.marchVariation?1+(this.rng.next()-.5)*this.timing.marchVariation:1)*(this.level.sourcePort?botLoadout.speed(this,wave.owner):wave.owner===1?this.playerSpeed:1),dead:false});wave.left--;
     wave=this.waves.find(w=>w.from===a.id&&w.left>0);
     }
    }
@@ -197,7 +199,7 @@ class Battle {
    const dx=u.tx-u.x,dy=u.ty-u.y,d=Math.hypot(dx,dy);let factor=(u.owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1)*botLoadout.movementFactor(this,u.owner);
    for(const zone of this.level.zones||[])if((zone.stage===undefined||zone.stage===this.stage)&&Math.hypot(u.x-zone.x,u.y-zone.y)<=zone.radius)factor*=zone.factor;
    const travel=u.speed*dt*factor*(u.owner===1&&this.speedBoost>0?(this.level.sourcePort?1+(this.sourceLeader?.Stat1||0):1.4):1);
-   if(d<=travel+5){u.dead=true;this.arrive(u);}else{u.x+=dx/d*travel;u.y+=dy/d*travel;}
+   if(u.path){if(sourceMovement.move(u,travel)){u.dead=true;this.arrive(u);}}else if(d<=travel+5){u.dead=true;this.arrive(u);}else{u.x+=dx/d*travel;u.y+=dy/d*travel;}
   }
   // Spatial hash: opposing dots annihilate on contact, including crossing attacks.
   const grid=new Map(),size=12;

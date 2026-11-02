@@ -18,7 +18,8 @@
     "skill_speedup": "rewarded_bonus",
     "idle_instant": "rewarded_bonus",
     "resource_gift": "rewarded_bonus",
-    "idle_double": "rewarded_bonus"
+    "idle_double": "rewarded_bonus",
+    "wheel_spin": "rewarded_bonus"
   },
   "schemaVersion": 1,
   "packageName": "pro.vymi.terrastorm",
