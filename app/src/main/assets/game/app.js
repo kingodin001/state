@@ -29,7 +29,7 @@ const icons={
  lock:'<rect x="6" y="13" width="20" height="16" rx="4" fill="currentColor"/><path d="M10 13V9a6 6 0 0 1 12 0v4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="21" r="2" fill="white"/>',
  sound:'<path d="M3 12h6l8-7v22l-8-7H3z" fill="currentColor"/><path d="M22 10q7 6 0 12m4-16q11 10 0 20" fill="none" stroke="currentColor" stroke-width="2"/>'
 };
-function icon(name,color){if(name==='coin')return TerraUI.resource('coins');return '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"'+(color?' style="color:'+color+'"':'')+'>'+icons[name]+'</svg>';}
+function icon(name,color){if(name==='coin')return TerraUI.resource('coins');const key={gear:'settings',world:'play',army:'army',tasks:'quests',gift:'chest_basic',leader:'army',units:'production',speed:'move_boost',income:'idle',shield:'upgrades',trophy:'league',castle:'extra_base',diamond:'gems',star:'stars',rocket:'move_boost',flag:'garrison'}[name];if(key)return '<svg viewBox="0 0 32 32" aria-hidden="true"><image href="'+TerraIdentity.file(key)+'" width="32" height="32" preserveAspectRatio="xMidYMid meet"/></svg>';return '<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"'+(color?' style="color:'+color+'"':'')+'>'+icons[name]+'</svg>';}
 const palette=['#969696','#438df5','#ed5e65','#a75fdf','#efbe39'];
 const fills=['#d6e3f8','#6fa9fa','#f58f94','#bd8feb','#f5d167'];
 let data;

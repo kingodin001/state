@@ -10,7 +10,8 @@
       "sourceImage": "Солдатик с золотой стрелкой роста.png",
       "sourceSha256": "0b7a56f65077ebaa6b27b8d094c3c7dbcb06fecbedae9750842fa28599550010",
       "assetSha256": "0069e376086963b25dfb4794291b097f00dc7a26a5ff81cacccc63db8565fded",
-      "bytes": 28126
+      "bytes": 28126,
+      "sourceLibraryFileId": "libfile_49eefd5dbb648191a4f566a87a82ddee"
     },
     {
       "key": "chest_legend",
@@ -18,7 +19,8 @@
       "sourceImage": "Волшебный сундук с бирюзовым самоцветом.png",
       "sourceSha256": "f318b2e685ac3e3391488bfc387ce504b9a36372deb1e6887ae9786b8343e1ec",
       "assetSha256": "7c344bb58a5daa0f8ed804556d449d479edf8b26f73d1122da0a05819c8886d0",
-      "bytes": 36978
+      "bytes": 36978,
+      "sourceLibraryFileId": "libfile_00ef3d31de508191a327c7529f960970"
     },
     {
       "key": "move_boost",
@@ -26,7 +28,8 @@
       "sourceImage": "Синий солдат с лазурной стрелой.png",
       "sourceSha256": "fb1566c97763403b7beb900623dd642659feccf696ce1fd62324831347c25560",
       "assetSha256": "541ddd0af3c22e6c63e68860e19bdd361fcac01e9c04a5bb4bb1d53722e0d1ea",
-      "bytes": 33600
+      "bytes": 33600,
+      "sourceLibraryFileId": "libfile_c0a81c4befe88191af39d400b7da2949"
     },
     {
       "key": "production",
@@ -34,7 +37,8 @@
       "sourceImage": "Казармы рекрутов с зелёным плюсом.png",
       "sourceSha256": "edfdfbce28e02a55aeb4aee3fdee17b53bc0eefe054eba2885eb8f52151c11d4",
       "assetSha256": "7110e247920c6f37d3741033765accaaff368dd41827f097079a39b0f0c3cc1d",
-      "bytes": 32066
+      "bytes": 32066,
+      "sourceLibraryFileId": "libfile_e6d2f59b80e88191b277d7a5fbbd8dc4"
     },
     {
       "key": "chest_basic",
@@ -42,7 +46,8 @@
       "sourceImage": "Синий сундук с золотой отделкой.png",
       "sourceSha256": "60b2aac502fdecb03f38d77cfe1773d9dc97a1323f86f9aa4934da1ceb7aa23a",
       "assetSha256": "6503576b5403a826d76ab9c022f934647d777eb65111be5415b4c4bf0fe53b28",
-      "bytes": 27336
+      "bytes": 27336,
+      "sourceLibraryFileId": "libfile_ac90d2b304ec819186b502dc4ffb098d"
     },
     {
       "key": "albums",
@@ -50,7 +55,8 @@
       "sourceImage": "Три коллекционные карты с золотой звездой.png",
       "sourceSha256": "331c7eac3f4afb4b7409749e3ad77b304d0da96bc6cb543ab17285b97e482108",
       "assetSha256": "7c71c1962711b9922ae8c3b63313f65b9b0281542918b0a104fc4a8c57fb2db9",
-      "bytes": 28062
+      "bytes": 28062,
+      "sourceLibraryFileId": "libfile_4d13ab166c8c819185e593d3cd4e81e0"
     },
     {
       "key": "chest_royal",
@@ -58,7 +64,8 @@
       "sourceImage": "Королевский сундук с алым самоцветом.png",
       "sourceSha256": "c79e1fad69d9ca145e1b235f79cfee83f3224998fa183ae2e696578f31c99c43",
       "assetSha256": "23062ef112444592d6664c9ccfcb886427c6d514f317c18750454e481abc425b",
-      "bytes": 35562
+      "bytes": 35562,
+      "sourceLibraryFileId": "libfile_228762528a908191ba16e7f7d380f434"
     },
     {
       "key": "garrison",
@@ -66,7 +73,8 @@
       "sourceImage": "Солдатик у кораллового флага.png",
       "sourceSha256": "ddca6d5d49b42396d1095af3810c7e3a8d592efddd9ccfb12ba7359dbd119272",
       "assetSha256": "9d2b8516ab5a9c7286fa9b76cabcc6a15eb35c8d96fd0a7d8f71caf2e668ce64",
-      "bytes": 30936
+      "bytes": 30936,
+      "sourceLibraryFileId": "libfile_0a372017c3708191a632cc5cebe284cf"
     },
     {
       "key": "extra_base",
@@ -74,7 +82,8 @@
       "sourceImage": "Кобальтовый замок с зелёным плюсом.png",
       "sourceSha256": "798c6b04ff61ba176523e52bd80217df8ff89bab4a18f3ece6085eba34aa5b92",
       "assetSha256": "057468b2ebdb130a814ae48da419419a3824b2c45bf422b4dc94fb80913c7713",
-      "bytes": 31210
+      "bytes": 31210,
+      "sourceLibraryFileId": "libfile_fed4de0856e08191a35f9bd39a0eade8"
     },
     {
       "key": "settings",
@@ -82,7 +91,8 @@
       "sourceImage": "Серебряная шестерёнка с сапфировым сердцем.png",
       "sourceSha256": "62a3027ecae55e018f5412361a9a641a425cf0087508990de66a970a218aaec2",
       "assetSha256": "3b71134ce9ef44a6c18d31e5ad75d23478b980978ac561dbeed13d8ec2a55835",
-      "bytes": 32198
+      "bytes": 32198,
+      "sourceLibraryFileId": "libfile_37915dfa4c888191974501b3cae78019"
     },
     {
       "key": "quests",
@@ -90,7 +100,8 @@
       "sourceImage": "Календарь достижений с золотой звездой.png",
       "sourceSha256": "107a2e3cdc330fa4cb8c78fc69f36732cfb1323a0c2626854c198fd9ccecc841",
       "assetSha256": "340a18015a72ecc4daa230b3e2872d3188d6d930cb152f2b60c42e1bc842cccc",
-      "bytes": 28830
+      "bytes": 28830,
+      "sourceLibraryFileId": "libfile_724a0a3652508191ab098ee686bb4b26"
     },
     {
       "key": "upgrades",
@@ -98,7 +109,8 @@
       "sourceImage": "Кобальтовый щит с крыльями и золотой стрелой.png",
       "sourceSha256": "c4f2f78a1b520f5cd15867915431cc98100c0776cdd99d625d961e7d5a6985cc",
       "assetSha256": "a9acc7d5e1ba4ca0247f60c21d688161658db85b9dba05bf821844e50e6defb3",
-      "bytes": 28836
+      "bytes": 28836,
+      "sourceLibraryFileId": "libfile_fddfb75ddb5881919ea99977896d8339"
     },
     {
       "key": "capacity",
@@ -106,7 +118,8 @@
       "sourceImage": "Кобальтовая крепость с золотыми зубцами.png",
       "sourceSha256": "25be83568c8f677666efcc3505f47fd7c75f596bf3371a301696c207a1e0e8e3",
       "assetSha256": "74ac53ac968155dacbb635bc89eb47ecf792d1c6bb69fb887fe93270a377a85e",
-      "bytes": 29618
+      "bytes": 29618,
+      "sourceLibraryFileId": "libfile_d004d134f8388191aff4998c99d68635"
     },
     {
       "key": "duel",
@@ -114,7 +127,8 @@
       "sourceImage": "Скрещённые мечи на синем щите.png",
       "sourceSha256": "39eacef472284f77d57fdd70109f6ec381e2536df28fe962db8f097ebb1bc0a5",
       "assetSha256": "bc8400b00ebfa7274402a172bb177f77f13e8ab011ecec2eecf0e07ad55ab314",
-      "bytes": 31022
+      "bytes": 31022,
+      "sourceLibraryFileId": "libfile_a0a9a1d2e5f881919b9e95a5d8da4236"
     },
     {
       "key": "army",
@@ -122,7 +136,8 @@
       "sourceImage": "Игрушечный командир с двумя бойцами.png",
       "sourceSha256": "7ad9f8190b6016ab89c03dff57ba6f491911917bc7f147f85041abc081ac886c",
       "assetSha256": "07a2ad2dca64ae311f2454136032bcab207c86a310490aa3e98da0dc5bf3b898",
-      "bytes": 31044
+      "bytes": 31044,
+      "sourceLibraryFileId": "libfile_2544272ac7b881919a57d5724f43b68e"
     },
     {
       "key": "play",
@@ -130,7 +145,8 @@
       "sourceImage": "Золотая стрелка компаса на синем медальоне.png",
       "sourceSha256": "5a4c4de48d94d2a659c85558d2a7e398c230603fed7630fa701c5f65f67e1d69",
       "assetSha256": "0727aa8782141f009ee62a1f1097edcdeb66b20815f34113ed1d1153d117fe8f",
-      "bytes": 31248
+      "bytes": 31248,
+      "sourceLibraryFileId": "libfile_12163369a1348191945e1b55e9238e51"
     },
     {
       "key": "supply",
@@ -138,7 +154,8 @@
       "sourceImage": "Золотая молния в энергокапсуле.png",
       "sourceSha256": "20513bb24f3f61f615aa75b95750eb2124813763d85cb3d120902dd1a5b7657d",
       "assetSha256": "a63a6c75175c8c2b3c616b46f49e7860a86b2d00b0b6db6bdb8845d75921e2d9",
-      "bytes": 25114
+      "bytes": 25114,
+      "sourceLibraryFileId": "libfile_ff1598af3d3481919eadc68a39aa5c38"
     },
     {
       "key": "store",
@@ -146,7 +163,8 @@
       "sourceImage": "Синяя корзина с монетами и самоцветом.png",
       "sourceSha256": "43271b92644941eaa9458c88e85f2f0c8923ece41504675d412d704a8b6363f9",
       "assetSha256": "4c2432eee4e9b093f5fe913652a5cd3de5b4f5128c2485f6e5dd884b29988f5e",
-      "bytes": 30800
+      "bytes": 30800,
+      "sourceLibraryFileId": "libfile_e072a98617f88191b5b55d1125503f81"
     },
     {
       "key": "operations",
@@ -154,7 +172,8 @@
       "sourceImage": "Золотая стрела в яблочко.png",
       "sourceSha256": "184cb330e9aadb78aa7cb15bf5c7055598ef52816c9d66ee04fd4fc1a06f05ad",
       "assetSha256": "963fe00045459e460729a5e0a4474bec08cbf19eeb6dba587bd565074c3683df",
-      "bytes": 28806
+      "bytes": 28806,
+      "sourceLibraryFileId": "libfile_c8b8662ca97c81918136ad3cc308a6e2"
     },
     {
       "key": "stars",
@@ -162,7 +181,8 @@
       "sourceImage": "Золотая звезда с сапфировым сердцем.png",
       "sourceSha256": "584e57639e621e4f6cafe59b2378d8a70f50c3f07e98d63a12b53a224471f4b3",
       "assetSha256": "6c76f24ec5b8c96612031968e9fdafb56e114aa06c5f634b685d718968d05688",
-      "bytes": 22596
+      "bytes": 22596,
+      "sourceLibraryFileId": "libfile_7fb878f3106c8191b3a278625cf545e8"
     },
     {
       "key": "league",
@@ -170,7 +190,8 @@
       "sourceImage": "Золотой кубок с щитом и флажком.png",
       "sourceSha256": "b7b363fe98046c41432bf768aa73cb422c611bcc7b9310a593ba8d018c03e5f1",
       "assetSha256": "4768d2ed8e1169c3a2bc523a5743e953913fe6156dd94bf7a7bf1318e9119ad3",
-      "bytes": 34922
+      "bytes": 34922,
+      "sourceLibraryFileId": "libfile_b6768911f8f081919c9f0f67ddda36aa"
     },
     {
       "key": "tickets",
@@ -178,7 +199,8 @@
       "sourceImage": "Синий билет с золотой окантовкой.png",
       "sourceSha256": "62a6ff5fdea6bbf65d1e0890c591dd168a6a31a098cf9c70e47bda1f4b4c38c4",
       "assetSha256": "fab7ee4c08f89df17ce74ee4f7168419cb93b0233011e072cb3162ba25ab3e05",
-      "bytes": 22418
+      "bytes": 22418,
+      "sourceLibraryFileId": "libfile_6d711376e68881919023f5a28420f49d"
     },
     {
       "key": "gems",
@@ -186,7 +208,8 @@
       "sourceImage": "Три сияющих малиновых кристалла.png",
       "sourceSha256": "d83b14e00dfcfa39ad6cd7027e5121373f9c7cdee926f5b24cd9e54c3f87d3e4",
       "assetSha256": "fb91fee6baf84edc8d14d66a016a268e68ac0c9d51d6dd43ed712493e2660469",
-      "bytes": 27014
+      "bytes": 27014,
+      "sourceLibraryFileId": "libfile_de2794265b308191b89b5a7adc66d764"
     },
     {
       "key": "wheel",
@@ -194,7 +217,8 @@
       "sourceImage": "Роскошное разноцветное колесо призов.png",
       "sourceSha256": "4fda1774a0a20eb5d6400f8c68d71699081263b2f7807aba51b168719c7897b8",
       "assetSha256": "0b21e3397b82611f668c1acb790795214cc0a3ec121343491737d929ced54839",
-      "bytes": 31096
+      "bytes": 31096,
+      "sourceLibraryFileId": "libfile_d5077af7bb1c8191bb0937011266a77a"
     },
     {
       "key": "coins",
@@ -202,7 +226,8 @@
       "sourceImage": "Сияющая золотая монета с долларом.png",
       "sourceSha256": "7661342477ad8691c04079763b648242e2b19100d3ff27501c068b17117593da",
       "assetSha256": "1be940a8339163791079bb7ee838bc038a577870f8ac5443225b6333bf4dc6e6",
-      "bytes": 22554
+      "bytes": 22554,
+      "sourceLibraryFileId": "libfile_3d70c56d088c81918b02fde9d2899cdc"
     },
     {
       "key": "idle",
@@ -210,7 +235,8 @@
       "sourceImage": "Синяя сокровищница с золотыми часами.png",
       "sourceSha256": "2bdaa6b780ae95208ff522dec3d33f8adf25ec94298e9ec91a8f57af5dd60adf",
       "assetSha256": "fb37e23a403b4ab56384804591be6af8031832fd3bf134a5333bf210a15699bb",
-      "bytes": 34430
+      "bytes": 34430,
+      "sourceLibraryFileId": "libfile_97e71bc670d88191bfc6d3f271140963"
     },
     {
       "key": "rush",
@@ -218,7 +244,8 @@
       "sourceImage": "Храбрый командир на синем ровере.png",
       "sourceSha256": "3aee6b51115e0f15d0cfdc53dac64a66b58e87fbda743d4367ff0c983ecebc7e",
       "assetSha256": "210d9a5d435d429853fb3dee0aefacc3a25b9688b66baa6254f5d46aa68d8ac5",
-      "bytes": 31998
+      "bytes": 31998,
+      "sourceLibraryFileId": "libfile_926a6f9117d88191bf596edeb7021573"
     }
   ]
 }
