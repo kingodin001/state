@@ -1,4 +1,4 @@
-# StateStorm 0.17 — РСЯ
+# StateStorm 0.18 — РСЯ
 
 Yandex Mobile Ads SDK 8.6.0 встроен в Android-хост. Production ID пустые. Настройки: https://games-api.vymi.pro/state/ads.json . Смена ID не требует новой APK. Инструкция: [REG_RU_SETUP.md](../release/REG_RU_SETUP.md).
 

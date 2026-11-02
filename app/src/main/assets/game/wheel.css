@@ -1,6 +1,6 @@
 /* Painted frame and actual reward icons; sector geometry stays aligned to payouts. */
 .source-wheel-shell{display:flex;flex-direction:column;align-items:center;width:100%;background:radial-gradient(ellipse at 50% 35%,#f4db8b55,transparent 65%);padding:0 4px 5px}
-.source-wheel-shell .wheel-wrap{--wheel-size:min(330px,calc(100vw -100px),42vh);width:var(--wheel-size);height:var(--wheel-size);max-width:100%;position:relative;margin:14px auto 9px;isolation:isolate;flex-shrink:0}
+.source-wheel-shell .wheel-wrap{--wheel-size:min(330px,calc(100vw - 100px),42vh);width:var(--wheel-size);height:var(--wheel-size);max-width:100%;position:relative;margin:14px auto 9px;isolation:isolate;flex-shrink:0}
 .source-wheel-shell .wheel-disc{position:absolute;inset:5%;width:90%;height:90%;border:0;box-shadow:0 8px 18px #132c5540;border-radius:50%;background:conic-gradient(from -22.5deg,#82d6ec 0deg 45deg,#b4a0ec 45deg 90deg,#88ccae 90deg 135deg,#edb575 135deg 180deg,#8cbaf0 180deg 225deg,#e7a8c5 225deg 270deg,#b5d982 270deg 315deg,#f6d16b 315deg 360deg);transition:none;z-index:1}
 .source-wheel-shell .wheel-disc:after{content:none}
 .wheel-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:3;pointer-events:none;filter:drop-shadow(0 3px 2px #61421844)}
@@ -14,4 +14,4 @@
 .wheel-actions{display:flex;gap:8px;width:100%;align-items:stretch}.wheel-actions>button{flex:1;min-width:0;min-height:46px;font-size:14px;line-height:1.1}.wheel-actions .resource-icon{width:25px;height:25px}.wheel-skip{margin:8px auto 0;font-size:12px;padding:6px 12px;color:#476c95;font-weight:800}
 .wheel-special-reward{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px auto;color:#315571}.wheel-special-reward>.identity-icon{width:90px;height:90px;object-fit:contain}.wheel-special-reward b{font-size:17px;max-width:55%}
 .source-wheel-shell.spinning .wheel-pointer{animation:wheel-pointer-tick .16s ease-in-out infinite alternate}@keyframes wheel-pointer-tick{from{transform:translateX(-50%) rotate(-14deg)}to{transform:translateX(-50%) rotate(5deg)}}
-@media(max-height:650px){.source-wheel-shell .wheel-wrap{--wheel-size:min(260px,calc(100vw -100px),36vh);margin-top:6px}.source-wheel-shell .wheel-caption{margin:6px 0}.wheel-spin-track{margin-top:5px}.wheel-spin-track>span{width:22px;height:22px;font-size:12px}.wheel-actions>button{min-height:40px;font-size:12px}}
+@media(max-height:650px){.source-wheel-shell .wheel-wrap{--wheel-size:min(260px,calc(100vw - 100px),36vh);margin-top:6px}.source-wheel-shell .wheel-caption{margin:6px 0}.wheel-spin-track{margin-top:5px}.wheel-spin-track>span{width:22px;height:22px;font-size:12px}.wheel-actions>button{min-height:40px;font-size:12px}}
