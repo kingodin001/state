@@ -1,7 +1,7 @@
 /* Original interface artwork. Currency amounts and gameplay are independent. */
 (function(g){'use strict';
 const keys=['coins','gems','tickets','supply','stars','idle','rush','wheel','operations','league','duel','quests','store','army','play','upgrades','albums','settings','garrison','production','capacity','extra_base','produce_boost','move_boost','chest_basic','chest_royal','chest_legend'];
-function file(key){return keys.includes(key)?'art/identity/'+key+'.svg':null;}
+function file(key){return keys.includes(key)?'art/identity/'+key+'.webp':null;}
 function image(key,extra=''){return '<img class="identity-icon source-art '+extra+'" src="'+file(key)+'" alt="" draggable="false">';}
 const byName={icon_coin:'coins',icon_hard_crystal:'gems',supply:'supply',skipit_icon:'tickets',extra_base_big:'extra_base',produce_speed_big:'produce_boost',move_speed_big:'move_boost'},runtime=g.TerraSourceRuntime,oldFile=runtime.file,oldImage=runtime.image,art=g.TerraCollection.art;
 runtime.file=name=>byName[name]?file(byName[name]):oldFile(name);
