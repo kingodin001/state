@@ -1,0 +1,7 @@
+/* FighterStacksDistributor and five-second production base-stack arithmetic. */
+(function(g){'use strict';const F=Math.fround,C=g.TerraModeConfig||(typeof require!=='undefined'?require('./reference/modes-config.js'):null),cfg=C.VisualStackingConfig;
+function base(production,cap=cfg._visualCap,seconds=cfg._windowSeconds){const projected=Math.ceil(F(F(production)*F(seconds)));return projected<=cap?1:2**Math.ceil(Math.log2(Math.max(2,Math.ceil(projected/cap))));}
+function distribute(amount,cap=cfg._visualCap,unit=1){amount=Math.floor(amount);if(amount<=0)return [];if(amount<unit)return [amount];const a=Array(Math.min(cap,Math.floor(amount/unit))).fill(unit);let left=amount-a.length*unit;if(a.length<cap&&left>0){a.push(left);left=0;}while(left>0&&a.length){const powers=a.filter(x=>x>0&&(x&(x-1))===0),small=powers.length?Math.min(...powers):Math.min(...a),ids=a.map((n,i)=>n===small?i:-1).filter(i=>i>=0),cost=ids.length*small;if(cost>0&&left>=cost){for(const i of ids)a[i]=small*2;left-=cost;continue;}const count=small>=1&&small<=left?Math.floor(left/small):0;for(let i=0;i<count;i++)a[ids[i]]=small*2;left-=count*small;if(left>0){const i=count<ids.length?ids[count]:a.indexOf(Math.min(...a));a[i]+=left;left=0;}}return a.sort((a,b)=>b-a);}
+function setup(b){const rates=[1,...b.factions].map(owner=>b.ownerProduction(owner)).filter(x=>Number.isFinite(x)&&x>0);return rates.length?base(Math.min(...rates)):1;}
+const api={base,distribute,setup};g.TerraSourceStacks=api;if(typeof module!=='undefined')module.exports=api;
+})(globalThis);

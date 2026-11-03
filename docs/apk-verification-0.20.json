@@ -1,0 +1,16 @@
+{
+  "version": "0.20.0",
+  "versionCode": 21,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 25884592,
+  "sha256": "182345deb6a93538d3a782805c22bf3e8c0d7fb2ebe5bd7798d61dd570046bb5",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1292,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "dexFiles": 1,
+  "adsProvider": "yandex",
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false
+}

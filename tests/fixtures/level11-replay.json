@@ -14,7 +14,7 @@
       "fraction": 1
     },
     {
-      "time": 7.4,
+      "time": 6.6,
       "sources": [
         50,
         62
@@ -23,7 +23,7 @@
       "fraction": 1
     },
     {
-      "time": 9.8,
+      "time": 9,
       "sources": [
         50,
         62
@@ -32,12 +32,21 @@
       "fraction": 1
     },
     {
-      "time": 13,
+      "time": 11.4,
       "sources": [
         50,
         62
       ],
-      "target": 52,
+      "target": 61,
+      "fraction": 1
+    },
+    {
+      "time": 13.8,
+      "sources": [
+        50,
+        62
+      ],
+      "target": 61,
       "fraction": 1
     },
     {
@@ -46,11 +55,11 @@
         50,
         62
       ],
-      "target": 51,
+      "target": 54,
       "fraction": 1
     },
     {
-      "time": 28.2,
+      "time": 27.4,
       "sources": [
         50,
         62
@@ -59,424 +68,279 @@
       "fraction": 1
     },
     {
-      "time": 30.6,
-      "sources": [
-        50,
-        62
-      ],
-      "target": 53,
-      "fraction": 1
-    },
-    {
-      "time": 33,
+      "time": 31.4,
       "sources": [
         50,
         53,
-        62
-      ],
-      "target": 61,
-      "fraction": 1
-    },
-    {
-      "time": 35.4,
-      "sources": [
-        50,
-        53,
-        61,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 40.2,
-      "sources": [
-        50,
-        53,
-        57,
-        62
-      ],
-      "target": 58,
-      "fraction": 1
-    },
-    {
-      "time": 45,
-      "sources": [
-        50,
-        53,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 45.8,
-      "sources": [
-        58
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 47.4,
-      "sources": [
-        50,
-        53,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 49.8,
-      "sources": [
-        50,
-        53,
-        58,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 52.2,
-      "sources": [
-        50,
-        53,
-        58,
         62
       ],
       "target": 51,
       "fraction": 1
     },
     {
-      "time": 54.6,
+      "time": 38.6,
       "sources": [
         50,
-        53,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 57,
-      "sources": [
-        50,
-        53,
-        58,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 59.4,
-      "sources": [
-        50,
-        53,
-        58,
-        62
-      ],
-      "target": 57,
-      "fraction": 1
-    },
-    {
-      "time": 61.8,
-      "sources": [
-        50,
-        53,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 64.2,
-      "sources": [
-        50,
-        53,
-        58,
-        62
-      ],
-      "target": 54,
-      "fraction": 1
-    },
-    {
-      "time": 66.6,
-      "sources": [
-        50,
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 69,
-      "sources": [
-        50,
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 71.4,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 73.8,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 76.2,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 80.2,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 56,
-      "fraction": 1
-    },
-    {
-      "time": 82.6,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 56,
-      "fraction": 1
-    },
-    {
-      "time": 85,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 56,
-      "fraction": 1
-    },
-    {
-      "time": 88.2,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 90.6,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 56,
-      "fraction": 1
-    },
-    {
-      "time": 93,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 56,
-      "fraction": 1
-    },
-    {
-      "time": 95.4,
-      "sources": [
-        53,
-        56,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 97.8,
-      "sources": [
-        53,
-        56,
-        57,
-        58,
-        62
-      ],
-      "target": 54,
-      "fraction": 1
-    },
-    {
-      "time": 100.2,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 50,
-      "fraction": 1
-    },
-    {
-      "time": 103.4,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 54,
-      "fraction": 1
-    },
-    {
-      "time": 105.8,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 108.2,
-      "sources": [
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 51,
-      "fraction": 1
-    },
-    {
-      "time": 110.6,
-      "sources": [
-        53,
-        57,
-        58,
         62
       ],
       "target": 52,
       "fraction": 1
     },
     {
-      "time": 113,
+      "time": 41,
       "sources": [
+        50,
+        62
+      ],
+      "target": 56,
+      "fraction": 1
+    },
+    {
+      "time": 43.4,
+      "sources": [
+        50,
+        52,
+        62
+      ],
+      "target": 59,
+      "fraction": 1
+    },
+    {
+      "time": 45.8,
+      "sources": [
+        50,
+        52,
+        62
+      ],
+      "target": 59,
+      "fraction": 1
+    },
+    {
+      "time": 48.2,
+      "sources": [
+        50,
+        52,
+        62
+      ],
+      "target": 59,
+      "fraction": 1
+    },
+    {
+      "time": 51.4,
+      "sources": [
+        50,
+        52,
+        62
+      ],
+      "target": 59,
+      "fraction": 1
+    },
+    {
+      "time": 53.8,
+      "sources": [
+        50,
+        52,
+        59,
+        62
+      ],
+      "target": 53,
+      "fraction": 1
+    },
+    {
+      "time": 55.4,
+      "sources": [
+        59
+      ],
+      "target": 56,
+      "fraction": 1
+    },
+    {
+      "time": 56.2,
+      "sources": [
+        52,
+        59,
+        62
+      ],
+      "target": 53,
+      "fraction": 1
+    },
+    {
+      "time": 59.4,
+      "sources": [
+        52,
         53,
-        57,
-        58,
+        59,
+        62
+      ],
+      "target": 58,
+      "fraction": 1
+    },
+    {
+      "time": 62.6,
+      "sources": [
+        52,
+        53,
+        59,
         62
       ],
       "target": 51,
       "fraction": 1
     },
     {
-      "time": 116.2,
+      "time": 65,
       "sources": [
         52,
         53,
-        57,
-        58,
+        59,
         62
       ],
-      "target": 54,
+      "target": 50,
       "fraction": 1
     },
     {
-      "time": 117.8,
+      "time": 67.4,
+      "sources": [
+        52,
+        53,
+        59,
+        62
+      ],
+      "target": 50,
+      "fraction": 1
+    },
+    {
+      "time": 69.8,
+      "sources": [
+        52,
+        53,
+        59,
+        62
+      ],
+      "target": 58,
+      "fraction": 1
+    },
+    {
+      "time": 71.4,
       "sources": [
         51
       ],
-      "target": 54,
+      "target": 58,
       "fraction": 1
     },
     {
-      "time": 119.4,
+      "time": 72.2,
       "sources": [
         52,
         53,
-        57,
-        58,
+        59,
         62
       ],
-      "target": 59,
+      "target": 50,
       "fraction": 1
     },
     {
-      "time": 121.8,
-      "sources": [
-        51,
-        52,
-        53,
-        57,
-        58,
-        62
-      ],
-      "target": 54,
-      "fraction": 1
-    },
-    {
-      "time": 124.2,
+      "time": 74.6,
       "sources": [
         51,
         52,
         53,
-        57,
-        58,
+        59,
         62
       ],
-      "target": 59,
+      "target": 58,
       "fraction": 1
     },
     {
-      "time": 126.6,
+      "time": 77,
+      "sources": [
+        51,
+        52,
+        53,
+        59,
+        62
+      ],
+      "target": 50,
+      "fraction": 1
+    },
+    {
+      "time": 81,
+      "sources": [
+        51,
+        52,
+        53,
+        59,
+        62
+      ],
+      "target": 54,
+      "fraction": 1
+    },
+    {
+      "time": 83.4,
+      "sources": [
+        50,
+        51,
+        52,
+        53,
+        59,
+        62
+      ],
+      "target": 54,
+      "fraction": 1
+    },
+    {
+      "time": 93,
+      "sources": [
+        50,
+        51,
+        52,
+        53,
+        54,
+        59,
+        62
+      ],
+      "target": 58,
+      "fraction": 1
+    },
+    {
+      "time": 97.8,
+      "sources": [
+        50,
+        51,
+        52,
+        53,
+        54,
+        59,
+        62
+      ],
+      "target": 58,
+      "fraction": 1
+    },
+    {
+      "time": 100.2,
+      "sources": [
+        50,
+        51,
+        52,
+        53,
+        54,
+        58,
+        59,
+        62
+      ],
+      "target": 57,
+      "fraction": 1
+    },
+    {
+      "time": 101.8,
+      "sources": [
+        57,
+        58
+      ],
+      "target": 50,
+      "fraction": 1
+    },
+    {
+      "time": 102.6,
       "sources": [
         51,
         52,
@@ -484,6 +348,22 @@
         54,
         57,
         58,
+        59,
+        62
+      ],
+      "target": 50,
+      "fraction": 1
+    },
+    {
+      "time": 105,
+      "sources": [
+        51,
+        52,
+        53,
+        54,
+        57,
+        58,
+        59,
         62
       ],
       "target": 50,

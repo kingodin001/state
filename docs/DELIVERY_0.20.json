@@ -1,0 +1,20 @@
+{
+  "version": "0.20.0",
+  "branch": "work/modes-parity-020",
+  "artifacts": [
+    {
+      "name": "StateStorm-0.20.0.apk",
+      "sizeBytes": 25884592,
+      "sha256": "182345deb6a93538d3a782805c22bf3e8c0d7fb2ebe5bd7798d61dd570046bb5",
+      "libraryFileId": "libfile_e4c41eedd59081919eeb750f19d1c2e9",
+      "fileId": "file_00000000722481fd898577b94a1666c7"
+    },
+    {
+      "name": "StateStorm-0.20.0-Publish-Pack.zip",
+      "sizeBytes": 28881200,
+      "sha256": "92d2eb631ac7654cab4a1db16d22150111b13d7695c60f7b4e68be41bb5896f8",
+      "libraryFileId": "libfile_f406fc0371948191a1c79196f4a15f5e",
+      "fileId": "file_000000005b0881fd8daa420d37fd4813"
+    }
+  ]
+}

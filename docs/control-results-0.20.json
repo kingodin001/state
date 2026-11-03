@@ -1,0 +1,196 @@
+{
+  "version": "0.20.0",
+  "versionCode": 21,
+  "date": "2026-11-03T23:21:32.540371+00:00",
+  "nodeTests": {
+    "total": 168,
+    "passed": 168,
+    "failed": 0
+  },
+  "uiSuites": [
+    {
+      "suite": "source-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-parity-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-polish-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-release-ui",
+      "exit": 0
+    },
+    {
+      "suite": "identity-ui",
+      "exit": 0
+    },
+    {
+      "suite": "ads-ui",
+      "exit": 0
+    },
+    {
+      "suite": "ad-policy-ui",
+      "exit": 0
+    },
+    {
+      "suite": "instant-income-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-wheel-ui",
+      "exit": 0
+    },
+    {
+      "suite": "operation-reroll-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-effects-ui",
+      "exit": 0,
+      "verifiedLog": "state020-source-effects-ui-fixed.log"
+    },
+    {
+      "suite": "source-menu-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-modes-ui",
+      "exit": 0,
+      "verifiedLog": "state020-apk-modes-ui-fixed.log"
+    }
+  ],
+  "finalApkAssets": {
+    "source-release-ui": "pass",
+    "source-effects-ui": "pass, 3 sizes",
+    "source-modes-ui": "pass, 3 sizes, 5 objectives + campaign race + arena, live simulation"
+  },
+  "nativeOracles": {
+    "collisionSnapshots": 27,
+    "stackDistributions": 72,
+    "sourceArm64Sha256": "e1ebe8dd23b9219b8e6ae9d646a361c049f6034492bbeda9ebb86ebdeb6edfd4",
+    "collisionFixtureSha256": "882a42f4b23bd80058c44bc1acbd877b8ba0d7d638a445d15889059b87e30df2",
+    "stackFixtureSha256": "1e3bcf3e01ec284755ee49a136fdac3967c60401e75e68d577fad24455d8fcf8"
+  },
+  "levels": {
+    "initialVisibleWindow": 200,
+    "extendsAfter200": true,
+    "initialSourceEncounters": 43,
+    "repeatingSourceEncounters": 43,
+    "sourceLayouts": 51,
+    "sourcePvpLayouts": 6,
+    "operationMapStageRecords": 49,
+    "dailyMissions": 5,
+    "testedIndices": [
+      0,
+      42,
+      43,
+      199,
+      200,
+      628,
+      1000,
+      10000
+    ]
+  },
+  "originalLevelFiles": [
+    {
+      "path": "app/src/main/assets/game/maps.js",
+      "sha256": "cd2e44c6c5397d198b21791d4b1e3e368f312dcea338f1a7db00fd6864a71743",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference-levels.js",
+      "sha256": "2e5fbf9cd7985854bf8c81c1ccdbca3880f32ce97348492c8e37ab3cfcb1d067",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/config.js",
+      "sha256": "d87da8d65f5d85cfd9df2ea22ce92ff3a491f7fb3ce6feb0acab38e545e82dee",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/meta-config.js",
+      "sha256": "076804e8118be16380c471ccfde0479b44b286c820724575ded36f934c9c609f",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/extra-config.js",
+      "sha256": "6670d334d46fc936fdf531ad4b90f734f81803f370d7f29dc261504876fb0710",
+      "unchanged": true
+    }
+  ],
+  "level11": {
+    "commands": 34,
+    "winTimeSeconds": 107.725,
+    "fps": [
+      20,
+      40,
+      60,
+      120
+    ],
+    "forcedWin": false,
+    "editedMap": false,
+    "hero": false,
+    "ads": false
+  },
+  "race": {
+    "stageWins": [
+      6,
+      8,
+      10
+    ],
+    "opponents": 4,
+    "resetHours": 24,
+    "usesCampaign": true,
+    "ninetySecondArenaRemoved": true
+  },
+  "stacking": {
+    "visualCap": 150,
+    "productionWindowSeconds": 5,
+    "weightedPopulationConserved": true,
+    "nativeAllVisualScales": 1
+  },
+  "releaseMovementPacing": 0.5,
+  "pacingIsRecoveredNativeConstant": false,
+  "allNativeAiDecisionsConfirmed": false,
+  "virtualAiSegmentationFullyPorted": false,
+  "allMenuPixelsIdentical": false,
+  "allLeaderDetailsPorted": false,
+  "apk": {
+    "version": "0.20.0",
+    "versionCode": 21,
+    "package": "pro.vymi.terrastorm",
+    "sizeBytes": 25884592,
+    "sha256": "182345deb6a93538d3a782805c22bf3e8c0d7fb2ebe5bd7798d61dd570046bb5",
+    "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+    "gameFilesMatched": 1292,
+    "zipCrc": "pass",
+    "signatureV2V3": "pass",
+    "nativeLibraries": 0,
+    "dexFiles": 1,
+    "adsProvider": "yandex",
+    "productionAdIdsConfigured": false,
+    "physicalAndroidTested": false
+  },
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false,
+  "regRuUploaded": false,
+  "ruStoreSubmitted": false,
+  "signedFinalApkUi": [
+    {
+      "suite": "source-release-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-effects-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-modes-ui",
+      "exit": 0
+    }
+  ]
+}

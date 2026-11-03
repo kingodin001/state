@@ -1,9 +1,9 @@
 {
   "name": "terra-storm",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs tests/source-orders.cjs tests/source-appearance.cjs tests/source-parity.cjs tests/ads.cjs tests/source-passives.cjs tests/source-ai.cjs tests/source-buildings.cjs tests/prebattle.cjs tests/ad-policy.cjs tests/source-menu.cjs tests/source-polish.cjs tests/bot-progression.cjs tests/source-movement.cjs tests/source-wheel.cjs tests/save-store.cjs tests/source-effects.cjs tests/source-modes.cjs",
+    "test": "node --test tests/engine.cjs tests/march.cjs tests/collection.cjs tests/source-port.cjs tests/source-rules.cjs tests/source-orders.cjs tests/source-appearance.cjs tests/source-parity.cjs tests/ads.cjs tests/source-passives.cjs tests/source-ai.cjs tests/source-buildings.cjs tests/prebattle.cjs tests/ad-policy.cjs tests/source-menu.cjs tests/source-polish.cjs tests/bot-progression.cjs tests/source-movement.cjs tests/source-wheel.cjs tests/save-store.cjs tests/source-effects.cjs tests/source-modes.cjs tests/source-collisions.cjs tests/source-stacks.cjs",
     "test:ui": "node tests/source-ui.cjs",
     "test:visual": "node tests/visual.cjs",
     "prepare:assets": "python3 scripts/prepare_reference.py",

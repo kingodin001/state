@@ -1,4 +1,4 @@
-"""Guarded asset-only update of the verified 0.18 Android host.
+"""Guarded asset-only update of the verified 0.19 Android host.
 
 Use a Gradle release build whenever Java, resources, manifest structure,
 ProGuard rules or dependencies change. Signing is deliberately a separate step.
@@ -7,8 +7,8 @@ import argparse,hashlib,json,struct,subprocess
 from pathlib import Path
 from zipfile import ZipFile,ZIP_DEFLATED
 ROOT=Path(__file__).resolve().parents[1]
-BASE_COMMIT='217949eb3b72295bf89bf1d7384d5180dd811638'
-BASE_SHA='851f1d736a4d473a5b24ffe50cb35c35ab19016f6cae6e997bf81c6747b769a9'
+BASE_COMMIT='ab7cd42d8ce7225e50b0b178fa8e591a064bfbb1'
+BASE_SHA='a9684646979687c92d99a11f4f35bee57abf5ab075ca5d9f9c3ed26618fee38f'
 sha=lambda b:hashlib.sha256(b).hexdigest()
 def manifest(data):
  b=bytearray(data);u16=lambda at:struct.unpack_from('<H',b,at)[0];u32=lambda at:struct.unpack_from('<I',b,at)[0]
@@ -35,9 +35,9 @@ def manifest(data):
     first=at+16+u16(at+24);stride=u16(at+26)
     for i in range(u16(at+28)):
      p=first+stride*i;name=strings[u32(p+4)]
-     if name=='versionCode':assert u32(p+16)==19;struct.pack_into('<I',b,p+16,20);changed_code+=1
+     if name=='versionCode':assert u32(p+16)==20;struct.pack_into('<I',b,p+16,21);changed_code+=1
      elif name=='versionName':
-      index=u32(p+16);assert strings[index]=='0.18.0';pos,nbytes,encoding=positions[index];new='0.19.0'.encode(encoding);assert len(new)==nbytes;b[pos:pos+nbytes]=new;changed_name+=1
+      index=u32(p+16);assert strings[index]=='0.19.0';pos,nbytes,encoding=positions[index];new='0.20.0'.encode(encoding);assert len(new)==nbytes;b[pos:pos+nbytes]=new;changed_name+=1
   at+=size
  assert changed_code==changed_name==1
  return bytes(b)
@@ -46,7 +46,7 @@ def build(base,out):
  protected=['app/src/main/java','app/src/main/res','app/src/main/AndroidManifest.xml','app/proguard-rules.pro','build.gradle','settings.gradle','gradle.properties']
  assert not subprocess.check_output(['git','diff',BASE_COMMIT,'--',*protected],cwd=ROOT),'Android host changed; use Gradle'
  previous=subprocess.check_output(['git','show',BASE_COMMIT+':app/build.gradle'],cwd=ROOT,text=True)
- current=(ROOT/'app/build.gradle').read_text().replace('versionCode 20','versionCode 19').replace("versionName '0.19.0'","versionName '0.18.0'")
+ current=(ROOT/'app/build.gradle').read_text().replace('versionCode 21','versionCode 20').replace("versionName '0.20.0'","versionName '0.19.0'")
  assert current==previous,'Android build configuration changed; use Gradle'
  assets={f.relative_to(ROOT/'app/src/main').as_posix():f for f in (ROOT/'app/src/main/assets').rglob('*') if f.is_file()}
  assert len(assets)>1157 and 'assets/game/source-ai.js' in assets
@@ -67,7 +67,7 @@ def build(base,out):
    assert source.read(name)==target.read(name),name
   assert not any(name.startswith('lib/') for name in target.namelist())
   for name,path in assets.items():assert target.read(name)==path.read_bytes(),name
-  report={'baseSha256':BASE_SHA,'unsignedSha256':sha(out.read_bytes()),'assets':len(assets),'classesDexSha256':sha(target.read('classes.dex')),'resourcesArscSha256':sha(target.read('resources.arsc')),'hostUnchanged':True,'version':'0.19.0','versionCode':20}
+  report={'baseSha256':BASE_SHA,'unsignedSha256':sha(out.read_bytes()),'assets':len(assets),'classesDexSha256':sha(target.read('classes.dex')),'resourcesArscSha256':sha(target.read('resources.arsc')),'hostUnchanged':True,'version':'0.20.0','versionCode':21}
  assert out.stat().st_size<59_000_000
  print(json.dumps(report))
 if __name__=='__main__':
