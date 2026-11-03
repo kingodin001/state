@@ -1,0 +1,20 @@
+{
+  "version": "0.19.0",
+  "branch": "work/camera-mechanics-019",
+  "artifacts": [
+    {
+      "name": "StateStorm-0.19.0.apk",
+      "sizeBytes": 25871918,
+      "sha256": "a9684646979687c92d99a11f4f35bee57abf5ab075ca5d9f9c3ed26618fee38f",
+      "libraryFileId": "libfile_dea328134a788191bcb8f84546bca51d",
+      "fileId": "file_00000000c91081fdb5463438ad13eb2a"
+    },
+    {
+      "name": "StateStorm-0.19.0-Publish-Pack.zip",
+      "sizeBytes": 28161933,
+      "sha256": "76420af1082b2463a5138100dc71f9013039c9394ec8f22fb04a3391e259fb66",
+      "libraryFileId": "libfile_8188dc09adec81918a5a1a80a3565c91",
+      "fileId": "file_00000000d64481fd882db6e19363c62d"
+    }
+  ]
+}

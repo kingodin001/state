@@ -129,10 +129,11 @@ class Battle {
  }
  arrive(u){
   const r=this.regions[u.to];if(r.active===false)return;if(r.owner===u.owner){r.units=this.level.sourcePort?r.units+1:Math.min(999,r.units+1);return;}
-  if(r.shieldPoints>0){r.shieldPoints--;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
   if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
+  let damage=(r.kind==='fort'?.7:1)*sourceEffects.attack(this,r)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):botLoadout.effect(this,u.owner,'damage')?.until>this.time?botLoadout.effect(this,u.owner,'damage').value:1);
+  if(r.shieldPoints>0){const absorbed=Math.min(r.shieldPoints,this.level.sourcePort?damage:1);r.shieldPoints-=absorbed;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});if(!this.level.sourcePort)return;damage-=absorbed;if(damage<=0)return;}
   if(this.level.sourcePort){this.sourceProductionImpact(r,this.sourceSkill(r.owner,'IncreaseProductionAfterDamageSkillConfig'));this.sourceProductionImpact(r,this.sourceSkill(u.owner,'ReduceProductionAfterDamageSkillConfig'));}
-  const damage=(r.kind==='fort'?.7:1)*sourceEffects.attack(this,r)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):botLoadout.effect(this,u.owner,'damage')?.until>this.time?botLoadout.effect(this,u.owner,'damage').value:1);r.units-=damage;
+  r.units-=damage;
   if(r.units<0){
    const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;

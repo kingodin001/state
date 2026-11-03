@@ -42,3 +42,5 @@ python3 scripts/check_ad_server.py
 5. В RuStore загрузите APK, иконку и минимум три снимка `screenshots/`, скопируйте `RUSTORE_CARD.json`. Укажите наличие рекламы и фактические данные SDK. Сначала разместите публичную политику.
 
 Официальные инструкции: https://ads.yandex.com/helpcenter/en/dev/android/rewarded ; https://ads.yandex.com/helpcenter/en/dev/android/interstitial ; https://ads.yandex.com/helpcenter/en/dev/android/adaptive-sticky-banner ; https://www.rustore.ru/help/developers/publishing-and-verifying-apps/app-publication .
+
+Смена условия ежедневной операции (`operation_reroll`) использует `rewarded_bonus`. Отменённое видео не меняет условие; подтверждённая награда меняет его один раз. Отдельный блок РСЯ для этого не нужен.

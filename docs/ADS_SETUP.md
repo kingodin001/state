@@ -1,4 +1,4 @@
-# StateStorm 0.18 — РСЯ
+# StateStorm 0.19 — РСЯ
 
 Yandex Mobile Ads SDK 8.6.0 встроен в Android-хост. Production ID пустые. Настройки: https://games-api.vymi.pro/state/ads.json . Смена ID не требует новой APK. Инструкция: [REG_RU_SETUP.md](../release/REG_RU_SETUP.md).
 
@@ -14,3 +14,5 @@ Yandex Mobile Ads SDK 8.6.0 встроен в Android-хост. Production ID п
 Достаточно трёх блоков: один rewarded ID можно вписать во все четыре rewarded_* поля. Позже их можно разделить. Сервер передаёт только публичные ID и enabled, не исполняемый код. Награда — после SDK onRewarded и закрытия рекламы; раннее закрытие, ошибка и отсутствие сети/ID ничего не начисляют. Видео ×3 подавляет межстраничную рекламу для того же результата. Поражения, дополнительные режимы и активный бой не включают межстраничную рекламу.
 
 Автопроверки: tests/ads.cjs, tests/ads-ui.cjs, tests/ad-policy.cjs, tests/ad-policy-ui.cjs, tests/instant-income-ui.cjs, tests/source-wheel-ui.cjs. Реальные показы отдельно проверяются на Android после настройки РСЯ.
+
+Смена условия ежедневной операции (`operation_reroll`) использует `rewarded_bonus`. Отменённое видео не меняет условие; подтверждённая награда меняет его один раз. Отдельный блок РСЯ для этого не нужен.

@@ -1,0 +1,156 @@
+{
+  "version": "0.19.0",
+  "versionCode": 20,
+  "date": "2026-11-03T22:12:53.387594+00:00",
+  "nodeTests": {
+    "total": 150,
+    "passed": 150,
+    "failed": 0
+  },
+  "uiSuites": [
+    {
+      "suite": "source-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-parity-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-polish-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-release-ui",
+      "exit": 0
+    },
+    {
+      "suite": "identity-ui",
+      "exit": 0
+    },
+    {
+      "suite": "ads-ui",
+      "exit": 0
+    },
+    {
+      "suite": "ad-policy-ui",
+      "exit": 0
+    },
+    {
+      "suite": "instant-income-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-wheel-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-menu-ui",
+      "exit": 0
+    },
+    {
+      "suite": "source-effects-ui",
+      "exit": 0
+    },
+    {
+      "suite": "operation-reroll-ui",
+      "exit": 0
+    }
+  ],
+  "finalApkAssets": {
+    "source-release-ui": "pass",
+    "source-effects-ui": "pass, 3 viewports"
+  },
+  "menuViewports": [
+    "360x640",
+    "390x844",
+    "600x800",
+    "360x590",
+    "390x794",
+    "600x710"
+  ],
+  "effectsViewports": [
+    "360x590",
+    "390x844",
+    "600x710"
+  ],
+  "movement": {
+    "nativeMetaWorldPerSecond": 3,
+    "mapUnitsPerWorld": 40,
+    "releaseMovementPacing": 0.5,
+    "releaseNormalMapUnitsPerSecond": 60,
+    "calibrationIsRecoveredNativeConstant": false,
+    "x2IsSeparate": true,
+    "nativePathOracleFixtureUnchanged": true
+  },
+  "level11": {
+    "commands": 45,
+    "winTimeSeconds": 132.425,
+    "fps": [
+      20,
+      40,
+      60,
+      120
+    ],
+    "ads": false,
+    "hero": false,
+    "editedMap": false,
+    "forcedWin": false
+  },
+  "originalLevelFiles": [
+    {
+      "path": "app/src/main/assets/game/maps.js",
+      "sha256": "cd2e44c6c5397d198b21791d4b1e3e368f312dcea338f1a7db00fd6864a71743",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference-levels.js",
+      "sha256": "2e5fbf9cd7985854bf8c81c1ccdbca3880f32ce97348492c8e37ab3cfcb1d067",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/campaign.js",
+      "sha256": "dfcf12f34395fb94dc9fb97b499bab201e0055a9c71e04c4157abab90898782e",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/config.js",
+      "sha256": "d87da8d65f5d85cfd9df2ea22ce92ff3a491f7fb3ce6feb0acab38e545e82dee",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/meta-config.js",
+      "sha256": "076804e8118be16380c471ccfde0479b44b286c820724575ded36f934c9c609f",
+      "unchanged": true
+    },
+    {
+      "path": "app/src/main/assets/game/reference/extra-config.js",
+      "sha256": "6670d334d46fc936fdf531ad4b90f734f81803f370d7f29dc261504876fb0710",
+      "unchanged": true
+    }
+  ],
+  "apk": {
+    "version": "0.19.0",
+    "versionCode": 20,
+    "package": "pro.vymi.terrastorm",
+    "sizeBytes": 25871918,
+    "sha256": "a9684646979687c92d99a11f4f35bee57abf5ab075ca5d9f9c3ed26618fee38f",
+    "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+    "gameFilesMatched": 1287,
+    "zipCrc": "pass",
+    "signatureV2V3": "pass",
+    "nativeLibraries": 0,
+    "dexFiles": 1,
+    "adsProvider": "yandex",
+    "productionAdIdsConfigured": false,
+    "physicalAndroidTested": false
+  },
+  "physicalAndroidTested": false,
+  "everyNativeAiDecisionReproduced": false,
+  "nativeVisualStackingPorted": false,
+  "nativeCollisionJobPorted": false,
+  "completeDailyMissionBoardPorted": false,
+  "productionAdIdsConfigured": false,
+  "regRuUploaded": false,
+  "ruStoreSubmitted": false
+}
