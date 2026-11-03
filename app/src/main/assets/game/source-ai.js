@@ -21,7 +21,7 @@ function choose(b,owner){const cfg=settings(b,owner);if(!cfg.max)return null;con
  const factors={};for(const c of s._commandFactors||[])factors[c._commandType]=sample(c._factor,()=>b.rng.next());const executeFactor=sample(s._commandExecuteTimeFactors,()=>b.rng.next());let best=null,bestScore=-Infinity;
  for(const command of candidates){const after=forecast(b,state,command,owner,cfg);let score,reached=after.reached,expected=false;if(command.target!==null&&!after.captured&&reached>=0){const estimated=M.reachTime(cfg.trace,reached,after.atReach,after.target);if(estimated>=0&&estimated<=cfg.trace+(s._captureExtrapolationDuration||0)){reached=estimated;expected=true;}}
  if(cfg.version===4)score=M.v4Score(before,power(after,owner,b),s,reached,expected);else if(cfg.version===3)score=M.v3Score(before,power(after,owner,b),s,reached,cfg.trace);else{score=0;for(const o of owners){const a=power(state,o,b),z=power(after,o,b),w=weights[o];score+=(z.forces-a.forces)/totalForces*w.forces+(z.buildings-a.buildings)/totalBuildings*w.buildings+(z.spawn-a.spawn)*w.spawn;}score-=Math.abs(executeFactor*(reached>=0?reached:cfg.trace)/cfg.trace);score=M.interest(score,factors[command.type]??1);}
- if(Number.isFinite(score)&&score>bestScore){bestScore=score;best=command;}}
+ score=M.interest(score,1,(g.TerraSourceObjectives||(typeof require!=='undefined'?require('./source-objectives.js'):null)).interest(b,owner,command.target,command.sources));if(Number.isFinite(score)&&score>bestScore){bestScore=score;best=command;}}
  return {command:best,score:bestScore,version:cfg.version,candidates:candidates.length};}
 const api={choose,travelTime,settings,forecast,initial,power};g.TerraSourceAI=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

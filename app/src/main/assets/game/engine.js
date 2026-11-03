@@ -7,6 +7,7 @@ const rules=root.TerraSourceRules||(typeof require!=='undefined'?require('./sour
 const botLoadout=root.TerraBotLoadout||(typeof require!=='undefined'?require('./bot-loadout.js'):null);
 const sourceAI=root.TerraSourceAI||(typeof require!=='undefined'?require('./source-ai.js'):null);
 const sourceMath=root.TerraSourceMath||(typeof require!=='undefined'?require('./source-math.js'):null);
+const objectives=root.TerraSourceObjectives||(typeof require!=='undefined'?require('./source-objectives.js'):null);
 const sourceEffects=root.TerraSourceEffects||(typeof require!=='undefined'?require('./source-effects.js'):null);
 const sourceMovement=root.TerraSourceMovement||(typeof require!=='undefined'?require('./source-movement.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -18,10 +19,10 @@ class Battle {
   this.sourceProduction=options.sourceProduction||1;this.production=level.sourcePort?(options.productionMultiplier||1):1+(options.production||0)*.18;this.factions=[...new Set(this.regions.filter(r=>r.active).map(r=>r.owner))].filter(x=>x>1);
   this.aiTimers={};this.botProfiles={};this.pendingAI=[];this.configureBots();if(level.sourcePort)botLoadout.setup(this);
   this.stats={sent:0,captured:0,lost:0,kills:0,commands:0};this.id=0;this.tutorial=(level.tutorial||!level.reference&&level.seed===1)&&!options.skipTutorial;
-  this.effects=sourceEffects.setup(this);this.movementPacing=level.sourcePort?(options.movementPacing??.5):1;this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};this.departureDelays={};
+  this.effects=sourceEffects.setup(this);this.objective=objectives.setup(this);this.movementPacing=level.sourcePort?(options.movementPacing??.5):1;this.firstCommand=false;this.lastCollisionCheck=0;this.departureClocks={};this.departureDelays={};
  }
  configureBots(){
-  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null;this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);profile.debut=(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).createDebut(profile.preset,()=>this.rng.next());profile.awaitingDebutEnd=!!profile.debut?.steps.length;this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
+  const used=[];for(const [i,f]of this.factions.entries()){const profile=this.level.sourceBotProfiles?.[f]||(this.level.sourcePort&&this.level.sourceStageConfig?rules.bot(this.level.sourceStageConfig,i,()=>this.rng.next(),this.options.playerColor||'c_0',used):null);this.botProfiles[f]=profile;if(profile){used.push(profile.skins.color);profile.levelMultipliers=this.level.sourceSkinLevelMultipliers;profile.debut=(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).createDebut(profile.preset,()=>this.rng.next());profile.awaitingDebutEnd=!!profile.debut?.steps.length;this.aiTimers[f]=rules.range(profile.preset._waitTimeBeforeFirstDecisions,()=>this.rng.next())+rules.range(profile.behavior._startCalculationDelay,()=>this.rng.next());}else this.aiTimers[f]=this.level.aiInterval+this.rng.next()*1.2;}
  }
  aiOrder(owner,sources,target,fraction){const b=this.botProfiles[owner];if(b)this.pendingAI.push({owner,sources,target,fraction,delay:rules.range(b.behavior._sendingDelay,()=>this.rng.next())});else this.command(sources,target,fraction,owner);}
  stageRegions(){return this.regions.filter(r=>(r.stage||0)===this.stage);}
@@ -223,6 +224,7 @@ class Battle {
    for(const owner of this.factions){const policy=root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null),profile=this.botProfiles[owner];if(this.level.sourcePort&&profile){const wasDebut=profile.debut&&!profile.debut.aborted&&profile.debut.index<profile.debut.steps.length;if(policy.debut(this,owner))continue;if(wasDebut||profile.awaitingDebutEnd){this.aiTimers[owner]=rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next());profile.awaitingDebutEnd=false;}}this.aiTimers[owner]-=dt;if(this.aiTimers[owner]<=0){this.aiTimers[owner]=profile?rules.range(policy.effective(this,owner)._waitTimeBetweenDecisions,()=>this.rng.next()):this.level.aiInterval*(.85+this.rng.next()*.3);this.ai(owner);}}
   }
   for(const order of this.pendingAI){order.delay-=dt;if(order.delay<=0)this.command(order.sources,order.target,order.fraction,order.owner);}this.pendingAI=this.pendingAI.filter(x=>x.delay>0);
+  const objectiveResult=objectives.tick(this,dt);if(objectiveResult){this.result=objectiveResult;this.emit('finish',{result:objectiveResult});return;}
   const current=this.stageRegions(),owners=new Set(current.map(r=>r.owner).filter(Boolean));
   for(const u of this.units)owners.add(u.owner);for(const w of this.waves)owners.add(w.owner);for(const d of this.effects.drops)owners.add(d.owner);
   if(!owners.has(1)){this.result='lose';this.emit('finish',{result:'lose'});}
@@ -237,7 +239,7 @@ class Battle {
   nextStage(){
    this.stage++;this.stageTransition=.85;this.units=[];this.waves=[];this.departureClocks={};this.departureDelays={};this.firstCommand=true;
    for(const r of this.regions){r.pulse=0;r.active=(r.stage||0)===this.stage;r.hidden=false;if(r.active){const source=this.level.regions[r.id];r.owner=source.owner;r.units=source.units+(r.owner===1?(this.options.start||0):0);r.shieldPoints=source.shieldPoints||0;}}
-   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);this.pendingAI=[];this.configureBots();if(this.level.sourcePort)botLoadout.setup(this);this.effects=sourceEffects.setup(this);
+   this.factions=[...new Set(this.stageRegions().map(r=>r.owner))].filter(f=>f>1);this.pendingAI=[];this.configureBots();if(this.level.sourcePort)botLoadout.setup(this);this.effects=sourceEffects.setup(this);this.objective=objectives.setup(this);
    this.emit('stage',{stage:this.stage,total:this.level.stages.length});
   }
   totals(){const a=Array(Math.max(4,...this.regions.map(r=>r.owner))+1).fill(0);for(const r of this.regions)if(r.active!==false)a[r.owner]+=Math.floor(r.units);for(const u of this.units)a[u.owner]++;return a;}
