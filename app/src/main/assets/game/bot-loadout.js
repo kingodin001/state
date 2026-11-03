@@ -23,7 +23,7 @@ function activate(b,owner){const p=b.botProfiles[owner],s=p?.loadout?.leader,own
  else if(s.kind.includes('Berserker'))p.effects.damage={until:b.time+s.Stat2,value:s.Stat1};
  else if(s.kind.includes('Poison'))for(const r of hostile){r.poison=s.Stat2;r.poisonElapsed=0;r.poisonDamage=s.Stat1;r.frozen=s.Stat2;}
  else if(s.kind.includes('Freeze')){for(const r of hostile)r.frozen=s.Stat2;p.effects.freeze={until:b.time+s.Stat2,value:s.Stat1};}
- else if(s.kind.includes('Sabotage')){const r=hostile[0];if(!r)return false;const start=b.level.regions.find(r=>r.stage===0&&r.owner===owner)?.units||10;r.units-=Math.floor(start*s.Stat1);if(r.units<0){const oldOwner=r.owner;r.owner=owner;r.units=-r.units;b.emit('capture',{id:r.id,owner,oldOwner,x:r.x,y:r.y});}}
+ else if(s.kind.includes('Sabotage')){const targets=b.regions.filter(r=>r.active&&r.owner!==owner).sort((a,c)=>a.units-c.units),r=targets[0];if(!r)return false;const start=b.level.regions.find(r=>r.stage===0&&r.owner===owner)?.units||10;(g.TerraSourceEffects||(typeof require!=='undefined'?require('./source-effects.js'):null)).drop(b,r.id,owner,Math.floor(start*s.Stat1),'sabotage',s.Stat2||1);}
  else return false;
  p.abilityCooldown=s.Cooldown;p.abilityDelay=null;b.emit('bot-ability',{owner,kind:s.kind,id:own[0].id});return true;
 }

@@ -15,3 +15,5 @@
 .wheel-special-reward{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px auto;color:#315571}.wheel-special-reward>.identity-icon{width:90px;height:90px;object-fit:contain}.wheel-special-reward b{font-size:17px;max-width:55%}
 .source-wheel-shell.spinning .wheel-pointer{animation:wheel-pointer-tick .16s ease-in-out infinite alternate}@keyframes wheel-pointer-tick{from{transform:translateX(-50%) rotate(-14deg)}to{transform:translateX(-50%) rotate(5deg)}}
 @media(max-height:650px){.source-wheel-shell .wheel-wrap{--wheel-size:min(260px,calc(100vw - 100px),36vh);margin-top:6px}.source-wheel-shell .wheel-caption{margin:6px 0}.wheel-spin-track{margin-top:5px}.wheel-spin-track>span{width:22px;height:22px;font-size:12px}.wheel-actions>button{min-height:40px;font-size:12px}}
+
+.operation-condition{display:flex;align-items:center;gap:18px;padding:18px;background:#e1eafa;border-radius:14px;color:#294b72}.operation-condition>img{width:72px;height:72px;object-fit:contain}.operation-condition>b{font-size:20px}

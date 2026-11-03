@@ -14,6 +14,11 @@ function bounds(map,overview){
  const xs=map.regions.map(r=>r.center[0]),ys=map.regions.map(r=>r.center[1]);
  return {x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
 }
+function menuCamera(map,rect){
+ const D=root.TerraControlConfig||(typeof require!=='undefined'?require('./reference/control-config.js'):null),c=map.previewCamera,aspect=rect.width/rect.height,settings=D.previewSettings[map.source],relative=c.halfHeight*D.cameraAspect/aspect;
+ let halfHeight=settings?.UseRelativeSize?Math.max(settings.MinSize*(map.unit||40),Math.min(settings.MaxSize*(map.unit||40),relative)):Math.max(map.unit||40,relative);
+ const s=rect.height/(2*halfHeight);return {s,baseScale:s,x:rect.x+rect.width/2-c.center[0]*s,y:rect.y+rect.height/2-c.center[1]*s,rect:{...rect},sourceCamera:c,stage:0};
+}
 function camera(map,rect,options={}){
  if(map.reference&&map.stages){
   const stage=options.stage||0,c=options.overview?map.previewCamera:map.stages[stage].camera,regs=options.overview?map.regions:map.regions.filter(r=>(r.stage||0)===stage),pad=options.overview?15:26,top=options.overview?16:42;
@@ -33,5 +38,5 @@ function camera(map,rect,options={}){
  return {s:s*zoom,baseScale:s,x:rect.x+rect.width/2-center.x*s*zoom+(options.pan?.x||0),y:rect.y+top+(rect.height-top-pad)/2-center.y*s*zoom+(options.pan?.y||0),rect:{...rect},bounds:b};
 }
 const SOURCE_TIMING=Object.freeze({departureInterval:.25,marchSpeed:120,marchVariation:0,waveSize:5});
-const api={SOURCE_TIMING,TIMING,inside,slot,bounds,camera};root.TerraField=api;if(typeof module!=='undefined')module.exports=api;
+const api={SOURCE_TIMING,TIMING,inside,slot,bounds,camera,menuCamera};root.TerraField=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
