@@ -1,0 +1,7 @@
+{
+  "source": "image_gen built-in",
+  "master": "art/brand/state-storm-icon-022-master.png",
+  "sha256": "89f3df01f4dcf1f9ee33f160f1bc6051935e1ca9eaa2623cc7d5ecd7458b792f",
+  "generation": "blue/coral territory conquest with opposing round and triangular troops, original coast and round hex-core forts; no text",
+  "conversion": "Lanczos downsample to512 and WebP94, no redrawing"
+}

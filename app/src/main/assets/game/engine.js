@@ -12,6 +12,7 @@ const collisions=root.TerraSourceCollisions||(typeof require!=='undefined'?requi
 const objectives=root.TerraSourceObjectives||(typeof require!=='undefined'?require('./source-objectives.js'):null);
 const sourceEffects=root.TerraSourceEffects||(typeof require!=='undefined'?require('./source-effects.js'):null);
 const sourceMovement=root.TerraSourceMovement||(typeof require!=='undefined'?require('./source-movement.js'):null);
+const abilities=root.TerraSourceAbilities||(typeof require!=='undefined'?require('./source-abilities.js'):null);
 const population=root.TerraSourcePopulation||(typeof require!=='undefined'?require('./source-population.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
@@ -54,7 +55,7 @@ class Battle {
   if(sent&&owner===1){if(this.level.sourcePort)(root.TerraSourceAIPolicy||(typeof require!=='undefined'?require('./source-ai-policy.js'):null)).react(this,sources,target);if(!this.level.sourcePort)this.stats.sent+=sent;this.stats.commands++;this.firstCommand=true;this.emit('command',{count:sent,target});}
   return sent;
  }
- sourceSpeed(owner,from=null,target=null){const dest=typeof target==='number'?this.regions[target]:target;let specific=1;if(dest){const kind=dest.owner===owner?'ReduceSelfDefenceSpeedSkillConfig':'IncreaseSelfAttackSpeedSkillConfig',skill=this.sourceSkill(owner,kind);if(skill)specific=skill.operationType===20?1+skill.Stat1:skill.Stat1;}return specific*this.timing.marchSpeed*this.movementPacing*sourceEffects.speed(this)*botLoadout.speed(this,owner)*botLoadout.movementFactor(this,owner)*(owner===1&&this.speedBoost>0?1+(this.sourceLeader?.Stat1||0):1)*(owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1);}
+ sourceSpeed(owner,from=null,target=null){const dest=typeof target==='number'?this.regions[target]:target;let multiplier=1,add=0;if(dest){const skill=this.sourceSkill(owner,dest.owner===owner?'ReduceSelfDefenceSpeedSkillConfig':'IncreaseSelfAttackSpeedSkillConfig');if(skill){if(skill.operationType===20)add=skill.Stat1;else multiplier=skill.Stat1;}}const role=owner===1?(this.options.sourceRoleSpeed??this.playerSpeed):1+(this.botProfiles[owner]?.loadout?.stats[14]||0),bonus=abilities.speedBonus(this,owner),speed=owner===1?this.playerSpeed/role*(role+bonus+add):role+bonus+add;return multiplier*this.timing.marchSpeed*this.movementPacing*sourceEffects.speed(this)*speed*abilities.enemyFactors(this,owner);}
  ownerProduction(owner){return botLoadout.production(this,owner);}
  departureDelay(source){if(!this.level.sourcePort)return this.timing.departureInterval;return sourceMath.waveDelay(sourceMath.upgrade(14),this.sourceSpeed(source.owner)/(this.level.unit||40),sourceMovement.settings(this.level,source).scale);}
  sourceBurst(a){const wave=this.waves.find(w=>w.from===a.id&&w.left>0&&w.owner===a.owner);if(!wave)return;const count=Math.min(this.timing.waveSize,wave.packets.length,Math.floor(a.units)),b=this.regions[wave.to];if(count<1){wave.left=0;return;}const botGroup=this.id;for(let batch=0;batch<count;batch++){const amount=Math.min(wave.packets.shift(),wave.left,Math.floor(a.units));if(amount<1){wave.left=0;break;}const path=sourceMovement.nodes(this.level,a,b,sourceMovement.lane(batch,count));a.units-=amount;a.lastBlockTimestamp=this.time;wave.left-=amount;wave.sequence++;if(wave.owner===1)this.stats.sent+=amount;this.units.push({id:this.id++,botGroup,createdAt:this.time,from:a.id,to:b.id,owner:wave.owner,amount,x:a.x,y:a.y,tx:b.x,ty:b.y,path,pathIndex:1,speed:this.sourceSpeed(wave.owner),dead:false});}this.departureDelays[a.id]=this.departureDelay(a);}
@@ -80,18 +81,7 @@ class Battle {
   }
   this.leaderCharges--;this.leaderCooldown=24;return true;
  }
- activateSourceLeader(){
-  const s=this.sourceLeader;if(!s||this.result||this.paused||this.leaderCooldown>0)return false;
-  const allies=this.regions.filter(r=>r.active&&r.owner===1).sort((a,b)=>a.units-b.units),enemies=this.regions.filter(r=>r.active&&r.owner>1).sort((a,b)=>a.units-b.units);if(!allies.length)return false;
-  if(s.kind.includes('Sabotage')){const targets=this.regions.filter(r=>r.active&&r.owner!==1).sort((a,b)=>a.units-b.units);if(!targets.length)return false;sourceEffects.drop(this,targets[0].id,1,Math.floor((this.options.sourceStart||10)*s.Stat1),'sabotage',s.Stat2||1);}
-  else if(s.kind.includes('IncreaseSpeed'))this.speedBoost=s.Stat2;
-  else if(s.kind.includes('Shield'))allies[0].shieldPoints+=Math.ceil(this.playerLimit*s.Stat1);
-  else if(s.kind.includes('ProductionBoost')){this.productionBoost=s.Stat2;this.sourceBoost=s.Stat1;}
-  else if(s.kind.includes('Berserker')){this.berserk=s.Stat2;this.berserkDamage=s.Stat1;}
-  else if(s.kind.includes('Poison'))for(const r of enemies){r.poison=s.Stat2;r.poisonElapsed=0;r.poisonDamage=s.Stat1;r.frozen=s.Stat2;}
-  else if(s.kind.includes('Freeze')){for(const r of enemies)r.frozen=s.Stat2;this.freezeEnemies=s.Stat2;}
-  this.leaderCooldown=s.Cooldown;this.emit('boost',{id:allies[0].id});return true;
- }
+ activateSourceLeader(){const s=this.sourceLeader;if(!s||this.result||this.paused||this.leaderCooldown>0||!abilities.schedule(this,1,s))return false;this.leaderCooldown=s.Cooldown;return true;}
  sourceSkill(owner,kind){return this.level.sourcePort?(owner===1?this.options.sourceSkills||[]:this.botProfiles[owner]?.loadout?.skills||[]).find(s=>s.kind===kind):null;}
  sourceProductionImpact(region,skill){
   if(!skill)return;region.productionImpacts=region.productionImpacts||[];
@@ -103,7 +93,7 @@ class Battle {
  sourceProductionRate(region,rate){
   let sum=0,base=0,multiplier=1;
   for(const x of region.productionImpacts||[]){if(x.until<=this.time)continue;if(x.operation===10)sum+=x.value;else if(x.operation===20)base+=x.value;else multiplier*=x.value;}
-  return (rate*(1+base)+sum)*multiplier;
+  return abilities.productionLocked(this,region.owner)?0:(rate*(1+base)+sum)*multiplier*abilities.enemyFactors(this,region.owner);
  }
  ai(owner){
   if(this.level.sourcePort&&this.botProfiles[owner]){const decision=sourceAI.choose(this,owner),c=decision?.command;this.lastAIDecision=decision;if(c&&c.target!==null)this.aiOrder(owner,c.sources,c.target,c.partial?.5:1);return;}
@@ -134,14 +124,15 @@ class Battle {
  }
  arrive(u){
   const r=this.regions[u.to];if(r.active===false)return;if(r.owner===u.owner){r.units=this.level.sourcePort?r.units+(u.amount??1):Math.min(999,r.units+1);return;}
-  if(r.shield>0){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
-  let damage=(u.amount??1)*(r.kind==='fort'?.7:1)*sourceEffects.attack(this,r)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):botLoadout.effect(this,u.owner,'damage')?.until>this.time?botLoadout.effect(this,u.owner,'damage').value:1);
-  if(r.shieldPoints>0){const absorbed=Math.min(r.shieldPoints,this.level.sourcePort?damage:1);r.shieldPoints-=absorbed;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});if(!this.level.sourcePort)return;damage-=absorbed;if(damage<=0)return;}
+  if(this.level.sourcePort&&r.owner>1)botLoadout.request(this,r.owner,'attacked');
+  if(r.shield>0||this.level.sourcePort&&abilities.invincible(this,r.owner)){this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});return;}
+  let damage=(u.amount??1)*(r.kind==='fort'?.7:1)*sourceEffects.attack(this,r)*(this.level.sourcePort?abilities.damageFactor(this,u.owner):u.owner===1&&this.berserk>0?(this.berserkDamage||1):1);
+  if(r.shieldPoints>0){const absorbed=this.level.sourcePort?abilities.absorb(r,damage):Math.min(r.shieldPoints,1);if(!this.level.sourcePort)r.shieldPoints-=absorbed;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});if(!this.level.sourcePort)return;damage-=absorbed;if(damage<=0)return;}
   if(this.level.sourcePort){this.sourceProductionImpact(r,this.sourceSkill(r.owner,'IncreaseProductionAfterDamageSkillConfig'));this.sourceProductionImpact(r,this.sourceSkill(u.owner,'ReduceProductionAfterDamageSkillConfig'));}
   if(this.level.sourcePort&&damage>0)r.lastBlockTimestamp=this.time;
-  r.units-=damage;
-  if(r.units<0){
-   const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
+  if(this.level.sourcePort){const removed=population.remove(r,damage);damage=Math.fround(damage-removed);}else r.units-=damage;
+  if(this.level.sourcePort?damage>0:r.units<0){
+   const oldOwner=r.owner;r.owner=u.owner;r.units=this.level.sourcePort?Math.trunc(damage):Math.abs(r.units);r.fractionalDamage=0;r.shieldPoints=0;r.abilityShieldPoints=0;r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
    if(u.owner===1)this.stats.captured++;if(oldOwner===1)this.stats.lost++;
    if(r.captureBonus&&!r.bonusClaimed){r.bonusClaimed=true;if(this.level.sourcePort)sourceEffects.drop(this,r.id,r.owner,r.captureBonus,'capture',.5);else r.units+=r.captureBonus;this.emit('reinforce',{id:r.id});}
    this.revealTutorial(r.id);
@@ -158,7 +149,7 @@ class Battle {
  tick(dt){
   if(this.stageTransition>0){this.stageTransition=Math.max(0,this.stageTransition-dt);return;}
   this.berserk=Math.max(0,(this.berserk||0)-dt);this.freezeEnemies=Math.max(0,(this.freezeEnemies||0)-dt);this.time+=dt;this.leaderCooldown=Math.max(0,this.leaderCooldown-dt);this.productionBoost=Math.max(0,this.productionBoost-dt);this.speedBoost=Math.max(0,this.speedBoost-dt);
-  if(this.level.sourcePort){botLoadout.tick(this,dt);sourceEffects.tick(this);}
+  if(this.level.sourcePort){abilities.tick(this);botLoadout.tick(this,dt);sourceEffects.tick(this);}
   for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);
   for(const r of this.regions){
    if(r.active===false)continue;
