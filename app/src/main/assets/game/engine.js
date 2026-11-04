@@ -12,6 +12,7 @@ const collisions=root.TerraSourceCollisions||(typeof require!=='undefined'?requi
 const objectives=root.TerraSourceObjectives||(typeof require!=='undefined'?require('./source-objectives.js'):null);
 const sourceEffects=root.TerraSourceEffects||(typeof require!=='undefined'?require('./source-effects.js'):null);
 const sourceMovement=root.TerraSourceMovement||(typeof require!=='undefined'?require('./source-movement.js'):null);
+const population=root.TerraSourcePopulation||(typeof require!=='undefined'?require('./source-population.js'):null);
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 class Battle {
  constructor(level,options={}){
@@ -56,7 +57,7 @@ class Battle {
  sourceSpeed(owner,from=null,target=null){const dest=typeof target==='number'?this.regions[target]:target;let specific=1;if(dest){const kind=dest.owner===owner?'ReduceSelfDefenceSpeedSkillConfig':'IncreaseSelfAttackSpeedSkillConfig',skill=this.sourceSkill(owner,kind);if(skill)specific=skill.operationType===20?1+skill.Stat1:skill.Stat1;}return specific*this.timing.marchSpeed*this.movementPacing*sourceEffects.speed(this)*botLoadout.speed(this,owner)*botLoadout.movementFactor(this,owner)*(owner===1&&this.speedBoost>0?1+(this.sourceLeader?.Stat1||0):1)*(owner!==1&&this.freezeEnemies>0?(this.sourceLeader?.Stat1||.5):1);}
  ownerProduction(owner){return botLoadout.production(this,owner);}
  departureDelay(source){if(!this.level.sourcePort)return this.timing.departureInterval;return sourceMath.waveDelay(sourceMath.upgrade(14),this.sourceSpeed(source.owner)/(this.level.unit||40),sourceMovement.settings(this.level,source).scale);}
- sourceBurst(a){const wave=this.waves.find(w=>w.from===a.id&&w.left>0&&w.owner===a.owner);if(!wave)return;const count=Math.min(this.timing.waveSize,wave.packets.length,Math.floor(a.units)),b=this.regions[wave.to];if(count<1){wave.left=0;return;}for(let batch=0;batch<count;batch++){const amount=Math.min(wave.packets.shift(),wave.left,Math.floor(a.units));if(amount<1){wave.left=0;break;}const path=sourceMovement.nodes(this.level,a,b,sourceMovement.lane(batch,count));a.units-=amount;wave.left-=amount;wave.sequence++;if(wave.owner===1)this.stats.sent+=amount;this.units.push({id:this.id++,from:a.id,to:b.id,owner:wave.owner,amount,x:a.x,y:a.y,tx:b.x,ty:b.y,path,pathIndex:1,speed:this.sourceSpeed(wave.owner),dead:false});}this.departureDelays[a.id]=this.departureDelay(a);}
+ sourceBurst(a){const wave=this.waves.find(w=>w.from===a.id&&w.left>0&&w.owner===a.owner);if(!wave)return;const count=Math.min(this.timing.waveSize,wave.packets.length,Math.floor(a.units)),b=this.regions[wave.to];if(count<1){wave.left=0;return;}const botGroup=this.id;for(let batch=0;batch<count;batch++){const amount=Math.min(wave.packets.shift(),wave.left,Math.floor(a.units));if(amount<1){wave.left=0;break;}const path=sourceMovement.nodes(this.level,a,b,sourceMovement.lane(batch,count));a.units-=amount;a.lastBlockTimestamp=this.time;wave.left-=amount;wave.sequence++;if(wave.owner===1)this.stats.sent+=amount;this.units.push({id:this.id++,botGroup,createdAt:this.time,from:a.id,to:b.id,owner:wave.owner,amount,x:a.x,y:a.y,tx:b.x,ty:b.y,path,pathIndex:1,speed:this.sourceSpeed(wave.owner),dead:false});}this.departureDelays[a.id]=this.departureDelay(a);}
 
  cast(type,target){
   const r=this.regions[target];if(this.result||this.paused||this.stageTransition>0||!r||r.active===false||r.owner!==1||this.cooldowns[type]>0||!this.skillCharges[type])return false;
@@ -137,6 +138,7 @@ class Battle {
   let damage=(u.amount??1)*(r.kind==='fort'?.7:1)*sourceEffects.attack(this,r)*(u.owner===1&&this.berserk>0?(this.berserkDamage||1):botLoadout.effect(this,u.owner,'damage')?.until>this.time?botLoadout.effect(this,u.owner,'damage').value:1);
   if(r.shieldPoints>0){const absorbed=Math.min(r.shieldPoints,this.level.sourcePort?damage:1);r.shieldPoints-=absorbed;this.emit('blocked',{x:r.x,y:r.y,owner:r.owner});if(!this.level.sourcePort)return;damage-=absorbed;if(damage<=0)return;}
   if(this.level.sourcePort){this.sourceProductionImpact(r,this.sourceSkill(r.owner,'IncreaseProductionAfterDamageSkillConfig'));this.sourceProductionImpact(r,this.sourceSkill(u.owner,'ReduceProductionAfterDamageSkillConfig'));}
+  if(this.level.sourcePort&&damage>0)r.lastBlockTimestamp=this.time;
   r.units-=damage;
   if(r.units<0){
    const oldOwner=r.owner;r.owner=u.owner;r.units=Math.abs(r.units);r.pulse=1;r.shield=0;r.poison=0;r.frozen=0;r.productionImpacts=[];const captureLock=this.sourceSkill(oldOwner,'PauseProductionAfterCaptureSkillConfig');r.productionLockedUntil=captureLock?this.time+captureLock.Stat2:0;
@@ -162,7 +164,7 @@ class Battle {
    if(r.active===false)continue;
    r.pulse=Math.max(0,r.pulse-dt*2);r.shield=Math.max(0,r.shield-dt);r.frozen=Math.max(0,r.frozen-dt);if(r.poison>0){if(this.level.sourcePort){r.poisonElapsed=(r.poisonElapsed||0)+Math.min(dt,r.poison);while(r.poisonElapsed+1e-8>=1){r.poisonElapsed-=1;r.units=Math.max(0,r.units-(r.poisonDamage||1));}}else r.units=Math.max(0,r.units-dt*1.5);r.poison=Math.max(0,r.poison-dt);}
    let cap=r.sourceCap===undefined?(r.owner===1?this.playerLimit:this.enemyLimit):r.sourceCap+(r.owner===1?Math.max(0,this.playerLimit-this.level.cap):0);
-   if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=botLoadout.limit(this,r.owner);if(this.level.sourcePort)cap=sourceEffects.cap(this,cap);
+   if(this.level.sourcePort&&!(r.sourceSettings?.LimitAmount>=0))cap=botLoadout.limit(this,r.owner);if(this.level.sourcePort)cap=sourceEffects.cap(this,Math.trunc(cap));
    const overflow=this.sourceSkill(r.owner,'UnlimitedPopulationProduceSkillConfig'),atCap=r.units>=cap;
    if(r.owner&&this.effects.type!==80&&(!atCap||overflow)&&r.frozen<=0&&!(r.productionLockedUntil>this.time)){
     let rate=r.owner===1?this.production*(this.productionBoost>0?(this.sourceBoost||1.8):1):this.level.enemyRate;
@@ -170,8 +172,9 @@ class Battle {
     if(this.level.sourcePort&&!(r.sourceSettings?.SpawnSpeed>=0))rate=botLoadout.production(this,r.owner);
     if(this.tutorial&&(!this.firstCommand||this.time<13)&&r.owner!==1)rate=0;
     if(this.level.sourcePort)rate=this.sourceProductionRate(r,rate);
-    const produced=dt*rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1)*(atCap?overflow.Stat1:1);r.units=atCap?r.units+produced:Math.min(cap,r.units+produced);
+    rate=rate*(r.kind==='factory'?1.6:r.kind==='turret'?0:1)*(atCap?overflow.Stat1:1);if(this.level.sourcePort)population.tick(r,this.time,dt,rate,cap,true,!!overflow);else r.units=atCap?r.units+dt*rate:Math.min(cap,r.units+dt*rate);
    }
+   else if(this.level.sourcePort)population.tick(r,this.time,dt,0,cap,false);
    if(r.kind==='turret'){
     if(this.level.sourcePort&&r.sourceTurret){
      const cfg=r.sourceTurret,working=(r.owner||cfg._workForNeutrals)&&(r.units>0||cfg._workWhenPopulationIsZero);
