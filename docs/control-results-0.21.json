@@ -1,0 +1,40 @@
+{
+  "version": "0.21.0",
+  "versionCode": 22,
+  "package": "pro.vymi.terrastorm",
+  "sizeBytes": 25884670,
+  "sha256": "386ec4f710bee4fc881c7ed6072aeb99a2b07a9a4329721b23bbdb97f0c00f7d",
+  "signerSha256": "d4c59cd000ab665581e15714036962a339b60b4d43e73ec741151f1a07159fef",
+  "gameFilesMatched": 1293,
+  "zipCrc": "pass",
+  "signatureV2V3": "pass",
+  "nativeLibraries": 0,
+  "dexFiles": 1,
+  "adsProvider": "yandex",
+  "productionAdIdsConfigured": false,
+  "physicalAndroidTested": false,
+  "nodeTests": {
+    "passed": 596,
+    "failed": 0
+  },
+  "uiSuites": {
+    "passed": 14,
+    "failed": 0
+  },
+  "nativeOracles": {
+    "aiStateTimelines": 168,
+    "populationTimelines": 60,
+    "aiScoreCases": 200,
+    "binarySha256": "e1ebe8dd23b9219b8e6ae9d646a361c049f6034492bbeda9ebb86ebdeb6edfd4"
+  },
+  "runtimeCampaignLevels": [
+    1,
+    11,
+    53,
+    100,
+    200,
+    629
+  ],
+  "originalMapsAndLevelQueueChanged": false,
+  "fullNativeGameEquivalenceClaimed": false
+}

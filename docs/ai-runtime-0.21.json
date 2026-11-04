@@ -1,0 +1,62 @@
+[
+  {
+    "level": 1,
+    "source": "Level_USA_0_SVG",
+    "time": 35.09999999999908,
+    "result": null,
+    "aiCalls": 3,
+    "score": 0.37729660029501333,
+    "finite": true,
+    "groups": 0
+  },
+  {
+    "level": 11,
+    "source": "Level_Africa_BM",
+    "time": 35.149999999999075,
+    "result": null,
+    "aiCalls": 6,
+    "score": 0.0476011066707267,
+    "finite": true,
+    "groups": 0
+  },
+  {
+    "level": 53,
+    "source": "Level_Africa_BM",
+    "time": 35.149999999999075,
+    "result": null,
+    "aiCalls": 4,
+    "score": 0.07140165834364076,
+    "finite": true,
+    "groups": 4
+  },
+  {
+    "level": 100,
+    "source": "Level_UK_SVG_BM",
+    "time": 14.000000000000131,
+    "result": "lose",
+    "aiCalls": 4,
+    "score": 0.1361254706855064,
+    "finite": true,
+    "groups": 260
+  },
+  {
+    "level": 200,
+    "source": "Level_India_SVG_BM",
+    "time": 35.02499999999908,
+    "result": null,
+    "aiCalls": 2,
+    "score": 0.07140165834364076,
+    "finite": true,
+    "groups": 27
+  },
+  {
+    "level": 629,
+    "source": "Level_India_SVG_BM",
+    "time": 35.17499999999907,
+    "result": null,
+    "aiCalls": 4,
+    "score": 0.05712132534495318,
+    "finite": true,
+    "groups": 81
+  }
+]

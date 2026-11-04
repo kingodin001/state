@@ -1,0 +1,62 @@
+{
+  "suites": [
+    {
+      "name": "source-release-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-menu-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-parity-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-polish-ui",
+      "exit": 0
+    },
+    {
+      "name": "ads-ui",
+      "exit": 0
+    },
+    {
+      "name": "identity-ui",
+      "exit": 0
+    },
+    {
+      "name": "instant-income-ui",
+      "exit": 0
+    },
+    {
+      "name": "ad-policy-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-effects-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-wheel-ui",
+      "exit": 0
+    },
+    {
+      "name": "operation-reroll-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-ai-ui",
+      "exit": 0
+    },
+    {
+      "name": "source-modes-ui",
+      "exit": 0
+    }
+  ],
+  "scope": "source-release-ui, source-effects-ui, source-modes-ui and source-ai-ui use final signed APK extraction; remaining suites use byte-matched checkout assets",
+  "allPassed": true
+}

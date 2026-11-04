@@ -1,0 +1,3 @@
+const{test}=require('node:test'),A=require('node:assert/strict'),M=require('../app/src/main/assets/game/source-ai-math.js'),data=require('./fixtures/native-ai-scores.json'),near=(a,b)=>A(Math.abs(a-b)<=Math.max(.000002,Math.abs(b)*.000002),a+' != '+b);
+for(const[i,c]of data.scores.entries())test('Native V4 score '+i,()=>near(M.v4Score(c.before,c.after,c.settings,c.reached,c.expected),c.score));
+for(const[i,c]of data.interests.entries())test('Native interest and sign-aware score '+i,()=>{near(M.commandInterest(c,id=>c.weights[id]),c.multiplier);near(M.interest(c.score,c.factor,c.multiplier),c.expected);});

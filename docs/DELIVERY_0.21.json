@@ -1,0 +1,32 @@
+{
+  "version": "0.21.0",
+  "versionCode": 22,
+  "branch": "work/ai-mechanics-021",
+  "checkpointCommit": "17d8f4299c53f7abd20daf4a433a9c5aa0eb9bba",
+  "artifacts": [
+    {
+      "path": "/workspace/scratch/23e5a5656fbb/state-control-021/dist/StateStorm-0.21.0.apk",
+      "name": "StateStorm-0.21.0.apk",
+      "bytes": 25884670,
+      "sha256": "386ec4f710bee4fc881c7ed6072aeb99a2b07a9a4329721b23bbdb97f0c00f7d",
+      "file_id": "file_00000000e3e481f892258830faf45270",
+      "library_file_id": "libfile_b3aae64b62b48191a9d9be23fc903987",
+      "file_name": "StateStorm-0.21.0.apk",
+      "current_version_number": 0
+    },
+    {
+      "path": "/workspace/scratch/23e5a5656fbb/state-control-021/dist/StateStorm-0.21.0-Publish-Pack.zip",
+      "name": "StateStorm-0.21.0-Publish-Pack.zip",
+      "bytes": 27648853,
+      "sha256": "1abece355d7fa7fbfe0aa264ccf107d6b0521adb31554bc8bcf2eee824104eda",
+      "file_id": "file_000000002e1c81fd8db5fa0ee37118ed",
+      "library_file_id": "libfile_cae5cedd5e5c81918c0408fd1ad6731c",
+      "file_name": "StateStorm-0.21.0-Publish-Pack.zip",
+      "current_version_number": 0
+    }
+  ],
+  "testResults": "control-results-0.21.json",
+  "scope": "CONTROL_AUDIT_0.21.md",
+  "physicalAndroidTested": false,
+  "serverAndRuStoreUpdated": false
+}
